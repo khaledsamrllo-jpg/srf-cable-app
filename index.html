@@ -9,15 +9,15 @@
 </head>
 <body class="bg-slate-50 font-sans min-h-screen text-slate-800 transition-all duration-300 flex flex-col">
 
-    <header class="bg-gradient-to-r from-blue-700 to-indigo-800 text-white shadow-lg sticky top-0 z-50">
+    <header class="bg-gradient-to-r from-slate-800 to-indigo-900 text-white shadow-md sticky top-0 z-50">
         <div class="container mx-auto px-4 py-4 flex justify-between items-center">
             <div class="flex items-center space-x-3 space-x-reverse">
                 <div class="bg-white/20 p-2 rounded-lg text-xl">
-                    <i class="fa-solid fa-boxes-stacked"></i>
+                    <i class="fa-solid fa-network-wired"></i>
                 </div>
                 <h1 id="nav-title" class="text-xl font-bold tracking-wide">نظام تتبع مخزون الكوابل الشخصي الحر</h1>
             </div>
-            <button onclick="toggleLanguage()" class="bg-white text-blue-700 hover:bg-blue-50 px-4 py-2 rounded-full text-sm font-bold shadow transition duration-200 flex items-center space-x-2 space-x-reverse">
+            <button onclick="toggleLanguage()" class="bg-white text-indigo-900 hover:bg-slate-100 px-4 py-2 rounded-full text-sm font-bold shadow transition duration-200 flex items-center space-x-2 space-x-reverse">
                 <i class="fa-solid fa-language text-lg"></i>
                 <span id="lang-btn-text">Français</span>
             </button>
@@ -27,8 +27,8 @@
     <main class="container mx-auto px-4 py-8 max-w-6xl flex-grow">
         
         <h2 id="section-stock-title" class="text-md font-bold mb-4 text-slate-500 flex items-center gap-2"><i class="fa-solid fa-chart-pie"></i> حالة المخزن الحالي</h2>
-        <section id="dashboard-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div class="bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-2xl p-6 shadow-md relative overflow-hidden">
+        <section id="dashboard-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-gradient-to-br from-slate-700 to-slate-800 text-white rounded-2xl p-6 shadow-md relative overflow-hidden col-span-1 sm:col-span-2 md:col-span-1">
                 <div class="absolute -right-6 -bottom-6 text-white/10 text-8xl"><i class="fa-solid fa-warehouse"></i></div>
                 <div class="flex justify-between items-start mb-4 relative z-10">
                     <h3 id="card-total-title" class="text-lg font-medium opacity-90">المجموع الكلي للمخزون</h3>
@@ -96,13 +96,13 @@
             </div>
         </div>
 
-        <section class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 overflow-hidden mb-8">
-            <div class="flex justify-between items-center mb-6 border-b pb-4 border-slate-100">
+        <section class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 mb-8">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 border-b pb-4 border-slate-100">
                 <div class="flex items-center space-x-3 space-x-reverse">
-                    <span class="bg-indigo-100 text-indigo-600 p-2 rounded-lg"><i class="fa-solid fa-list-check"></i></span>
-                    <h2 id="table-title" class="text-lg font-bold">جدول سجل العمليات والتركيبات الميدانية لهذا الهاتف</h2>
+                    <span class="bg-indigo-100 text-indigo-600 p-2 rounded-lg"><i class="fa-solid fa-users-gear"></i></span>
+                    <h2 id="table-title" class="text-lg font-bold">سجل العمليات والتركيبات الميدانية المنظم</h2>
                 </div>
-                <button onclick="toggleResetPanel()" class="text-red-500 hover:text-red-700 text-sm font-bold flex items-center space-x-1 space-x-reverse border border-red-200 hover:bg-red-50 px-3 py-1.5 rounded-lg transition">
+                <button onclick="toggleResetPanel()" class="text-red-500 hover:text-red-700 text-sm font-bold flex items-center space-x-1 space-x-reverse border border-red-100 hover:bg-red-50 px-3 py-1.5 rounded-lg transition">
                     <i class="fa-solid fa-triangle-exclamation"></i>
                     <span id="btn-reset-panel">خيارات التصفير وإعادة البدء</span>
                 </button>
@@ -117,22 +117,12 @@
                 </div>
             </div>
 
-            <div class="overflow-x-auto">
-                <table class="w-full text-right border-collapse">
-                    <thead>
-                        <tr class="bg-slate-50 border-b border-slate-200 text-slate-600 text-sm">
-                            <th id="th-name" class="p-4 font-semibold">اسم الزبون</th>
-                            <th id="th-phone" class="p-4 font-semibold">رقم الهاتف</th>
-                            <th id="th-cable" class="p-4 font-semibold">نوع الكابل المستخدم</th>
-                            <th id="th-status" class="p-4 font-semibold">الحالة</th>
-                        </tr>
-                    </thead>
-                    <tbody id="operations-log-list" class="divide-y divide-slate-100 text-sm text-slate-700"></tbody>
-                </table>
-                <div id="no-data-msg" class="text-center py-8 text-slate-400 font-medium hidden">
-                    <i class="fa-solid fa-folder-open text-2xl block mb-2"></i>
-                    <span id="no-data-txt">لا توجد عمليات مسجلة حالياً لبداية جديدة</span>
+            <div id="customers-cards-container" class="space-y-4">
                 </div>
+
+            <div id="no-data-msg" class="text-center py-12 text-slate-400 font-medium hidden">
+                <i class="fa-solid fa-folder-open text-3xl block mb-2 text-slate-300"></i>
+                <span id="no-data-txt">لا توجد عمليات مسجلة حالياً لبداية جديدة</span>
             </div>
         </section>
     </main>
@@ -149,23 +139,32 @@
     </footer>
 
     <script>
-        let appData = JSON.parse(localStorage.getItem('cableInventoryData_Dynamic_V2')) || {
-            stocks: { "50": 0, "80": 0 },
+        // الذاكرة التخزينية المحسنة
+        let appData = JSON.parse(localStorage.getItem('cableInventoryData_Dynamic_V3')) || {
+            stocks: { "20": 0, "30": 0, "50": 0, "80": 0 }, // تهيئة الأربع فئات المطلوبة
             installations: []
         };
 
         let currentLang = 'ar';
 
+        // خريطة ذكية للألوان والأيقونات المخصصة حسب فئة الطول بالكود
+        const styleConfig = {
+            "20": { bg: "from-purple-500 to-purple-600", border: "border-purple-200", badge: "bg-purple-100 text-purple-800", icon: "fa-solid fa-bezier-curve" },
+            "30": { bg: "from-orange-500 to-orange-600", border: "border-orange-200", badge: "bg-orange-100 text-orange-800", icon: "fa-solid fa-circle-notch" },
+            "50": { bg: "from-blue-500 to-blue-600", border: "border-blue-200", badge: "bg-blue-100 text-blue-800", icon: "fa-solid fa-route" },
+            "80": { bg: "from-pink-600 to-pink-700", border: "border-pink-200", badge: "bg-pink-100 text-pink-800", icon: "fa-solid fa-scroll" },
+            "default": { bg: "from-slate-500 to-slate-600", border: "border-slate-200", badge: "bg-slate-100 text-slate-800", icon: "fa-solid fa-faucet-力を" }
+        };
+
         const translations = {
             ar: {
                 navTitle: "نظام تتبع مخزون الكوابل الشخصي الحر", langBtn: "Français", cardTotal: "المجموع الكلي للمخزون",
-                unitT: "بكرة إجمالية", unitM: "بكرة متاحة", formIn: "إمداد وتغذية المخزن (إدخال فئات حر)", lblTypeIn: "اختر الفئة أو اختر \"إدخال يدوي\"",
+                unitT: "بكرة إجمالية", unitM: "بكرة متاحة", formIn: "إمداد وتغذية المخزن (إدخل فئات حر)", lblTypeIn: "اختر الفئة أو اختر \"إدخال يدوي\"",
                 lblManualType: "اكتب طول الفئة الجديدة بالأمتار", customOpt: "✍️ إدخال يدوي فئة جديدة...", lblQtyIn: "الكمية (عدد البكرات)",
                 btnIn: "تأكيد الإدخال للمخزن", formOut: "تسجيل زبون وتركيب جديد (حركة خارجة)", lblCustName: "اسم الزبون الكامل",
                 lblCustPhone: "رقم الهاتف", lblTypeOut: "الكابل المستخدم للتركيب", btnOut: "حفظ البيانات وخصم المخزن فورا",
-                tableTitle: "جدول سجل العمليات والتركيبات الميدانية لهذا الهاتف", btnResetP: "خيارات التصفير وإعادة البدء",
-                thName: "اسم الزبون", thPhone: "رقم الهاتف", thCable: "نوع الكابل المستخدم", thStatus: "الحالة",
-                noData: "لا توجد عمليات مسجلة حالياً لبداية جديدة", badgeOut: "تم التركيب والخصم",
+                tableTitle: "سجل العمليات والتركيبات الميدانية المنظم", btnResetP: "خيارات التصفير وإعادة البدء",
+                noData: "لا توجد عمليات مسجلة حالياً لبداية جديدة", badgeOut: "تم التركيب والخصم بنجاح",
                 alertNoStock: "🚨 خطأ: كمية الكابل المطلوبة غير متوفرة في مخزن هذا الهاتف!",
                 warnReset: "⚠️ تحذير: هذه الخطوة ستمسح السجلات. لتفادي الأخطاء، اكتب كلمة \"تأكيد\" لتفعيل الأزرار:",
                 noStockAvailable: "لا توجد كوابل متوفرة بالمخزن حالياً",
@@ -177,9 +176,8 @@
                 lblManualType: "Entrez la taille en mètres", customOpt: "✍️ Saisir manuellement...", lblQtyIn: "Quantité",
                 btnIn: "Confirmer l'entrée", formOut: "Nouvelle Installation", lblCustName: "Nom complet du client",
                 lblCustPhone: "Numéro de téléphone", lblTypeOut: "Câble utilisé", btnOut: "Enregistrer et déduire",
-                tableTitle: "Registre des opérations de ce téléphone", btnResetP: "Options de réinitialisation",
-                thName: "Nom du Client", thPhone: "Téléphone", thCable: "Câble Utilisé", thStatus: "Statut",
-                noData: "Aucune opération enregistrée", badgeOut: "Installé & Déduit",
+                tableTitle: "Registre des opérations structuré", btnResetP: "Options de réinitialisation",
+                noData: "Aucune opération enregistrée", badgeOut: "Installation Validée",
                 alertNoStock: "🚨 Erreur: Stock insuffisant!",
                 warnReset: "⚠️ Attention: Écrivez \"تأكيد\" pour déverrouiller:",
                 noStockAvailable: "Aucun câble disponible",
@@ -200,10 +198,11 @@
         }
 
         function updateUI() {
-            localStorage.setItem('cableInventoryData_Dynamic_V2', JSON.stringify(appData));
+            localStorage.setItem('cableInventoryData_Dynamic_V3', JSON.stringify(appData));
             
             const grid = document.getElementById('dashboard-grid');
             const cards = grid.querySelectorAll('.bg-gradient-to-br');
+            // إزالة الكروت المتغيرة والإبقاء على كرت المجموع الكلي الأول
             for(let i = 1; i < cards.length; i++) { cards[i].remove(); }
 
             let totalSum = 0;
@@ -220,6 +219,7 @@
                 const qty = appData.stocks[cat];
                 totalSum += qty;
 
+                // التغذية التلقائية للقوائم
                 const optIn = document.createElement('option');
                 optIn.value = cat;
                 optIn.innerText = `كابل فئة ${cat} متر (Câble ${cat}M)`;
@@ -232,13 +232,16 @@
                     outSelect.appendChild(optOut);
                 }
 
+                // سحب تنسيق اللون والأيقونة المخصص للفئة أو الافتراضي
+                const conf = styleConfig[cat] || styleConfig["default"];
+
                 const card = document.createElement('div');
-                card.className = "bg-gradient-to-br from-amber-500 to-amber-600 text-white rounded-2xl p-6 shadow-md relative overflow-hidden";
+                card.className = `bg-gradient-to-br ${conf.bg} text-white rounded-2xl p-6 shadow-md relative overflow-hidden transition-all duration-200 hover:shadow-lg`;
                 card.innerHTML = `
-                    <div class="absolute -right-6 -bottom-6 text-white/10 text-8xl"><i class="fa-solid fa-scroll"></i></div>
+                    <div class="absolute -right-6 -bottom-6 text-white/10 text-8xl"><i class="${conf.icon}"></i></div>
                     <div class="flex justify-between items-start mb-4 relative z-10">
                         <h3 class="text-lg font-medium opacity-90">${currentLang === 'ar' ? 'كابل فئة' : 'Câble'} ${cat} M</h3>
-                        <span class="bg-white/20 p-2 rounded-lg"><i class="fa-solid fa-arrows-left-right text-xl"></i></span>
+                        <span class="bg-white/20 p-2 rounded-lg"><i class="${conf.icon} text-xl"></i></span>
                     </div>
                     <p class="text-4xl font-extrabold relative z-10 flex items-baseline">
                         <span>${qty}</span>
@@ -266,23 +269,45 @@
 
             document.getElementById('total-stock').innerText = totalSum;
 
-            const listContainer = document.getElementById('operations-log-list');
-            listContainer.innerHTML = '';
+            // بناء واجهة سجل الزبائن المنظم الجديد
+            const customersContainer = document.getElementById('customers-cards-container');
+            customersContainer.innerHTML = '';
             
             if(appData.installations.length === 0) {
                 document.getElementById('no-data-msg').classList.remove('hidden');
             } else {
                 document.getElementById('no-data-msg').classList.add('hidden');
                 appData.installations.forEach(item => {
-                    const tr = document.createElement('tr');
-                    tr.className = "hover:bg-slate-50 transition";
-                    tr.innerHTML = `
-                        <td class="p-4 font-medium">${item.name}</td>
-                        <td class="p-4 text-slate-500">${item.phone}</td>
-                        <td class="p-4"><span class="bg-indigo-100 text-indigo-800 font-semibold px-2.5 py-1 rounded text-xs">${currentLang === 'ar' ? 'كابل' : 'Câble'} ${item.cableType} M</span></td>
-                        <td class="p-4"><span class="bg-emerald-100 text-emerald-800 font-bold px-2.5 py-1 rounded-full text-xs"><i class="fa-solid fa-circle-check ml-1 mr-1"></i>${translations[currentLang].badgeOut}</span></td>
+                    const firstLetter = item.name.trim().charAt(0).toUpperCase();
+                    const conf = styleConfig[item.cableType] || styleConfig["default"];
+                    
+                    const card = document.createElement('div');
+                    card.className = "bg-slate-50 rounded-xl p-4 border border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 transition hover:bg-slate-100/70";
+                    card.innerHTML = `
+                        <div class="flex items-center gap-3 w-full sm:w-auto">
+                            <div class="w-10 h-10 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-md shadow-sm shrink-0">
+                                ${firstLetter}
+                            </div>
+                            <div class="min-w-0">
+                                <h4 class="font-bold text-slate-800 text-sm md:text-base truncate">${item.name}</h4>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <span class="text-slate-500 text-xs md:text-sm font-medium tracking-wide">${item.phone}</span>
+                                    <a href="tel:${item.phone}" class="text-indigo-600 hover:text-indigo-800 bg-white border border-slate-300 rounded px-1.5 py-0.5 text-xs flex items-center gap-1 shadow-sm font-bold transition">
+                                        <i class="fa-solid fa-phone text-[10px]"></i> ${currentLang === 'ar' ? 'اتصال مباشر' : 'Appeler'}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-end border-t sm:border-t-0 pt-2 sm:pt-0 border-slate-200">
+                            <span class="${conf.badge} text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-1">
+                                <i class="${conf.icon}"></i> ${currentLang === 'ar' ? 'كابل فئة' : 'Câble'} ${item.cableType} M
+                            </span>
+                            <span class="bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-medium px-2.5 py-1.5 rounded-lg flex items-center gap-1">
+                                <i class="fa-solid fa-square-check text-emerald-500"></i> ${translations[currentLang].badgeOut}
+                            </span>
+                        </div>
                     `;
-                    listContainer.appendChild(tr);
+                    customersContainer.appendChild(card);
                 });
             }
             toggleManualInputVisibility();
@@ -352,7 +377,7 @@
         }
 
         function resetAllFactory() {
-            appData = { stocks: { "50": 0, "80": 0 }, installations: [] };
+            appData = { stocks: { "20": 0, "30": 0, "50": 0, "80": 0 }, installations: [] };
             document.getElementById('reset-confirm-input').value = '';
             checkResetConfirmation();
             toggleResetPanel();
@@ -389,10 +414,6 @@
             document.getElementById('btn-out-submit').querySelector('span').innerText = dict.btnOut;
             document.getElementById('table-title').innerText = dict.tableTitle;
             document.getElementById('btn-reset-panel').innerText = dict.btnResetP;
-            document.getElementById('th-name').innerText = dict.thName;
-            document.getElementById('th-phone').innerText = dict.thPhone;
-            document.getElementById('th-cable').innerText = dict.thCable;
-            document.getElementById('th-status').innerText = dict.thStatus;
             document.getElementById('no-data-txt').innerText = dict.noData;
             document.getElementById('reset-warn-text').innerHTML = dict.warnReset;
             document.getElementById('footer-rights').innerText = dict.footerRights;
