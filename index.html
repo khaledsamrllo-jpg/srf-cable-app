@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام إدارة مخزون الكوابل المرن والأرشيف</title>
+    <title>نظام إدارة مخزون الكوابل المحترف والأرشيف</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -39,7 +39,10 @@
 
     <main id="stock-page" class="container mx-auto px-4 py-8 max-w-6xl flex-grow app-page">
         
-        <h2 id="section-stock-title" class="text-md font-bold mb-4 text-slate-500 flex items-center gap-2"><i class="fa-solid fa-chart-pie"></i> حالة المخزن الحالي</h2>
+        <div class="flex justify-between items-center mb-4">
+            <h2 id="section-stock-title" class="text-md font-bold text-slate-500 flex items-center gap-2"><i class="fa-solid fa-chart-pie"></i> حالة المخزن الحالي (اضغط على أي كرت للتعديل المباشر)</h2>
+        </div>
+        
         <section id="dashboard-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-8">
             <div class="bg-gradient-to-br from-slate-700 to-slate-800 text-white rounded-2xl p-6 shadow-md relative overflow-hidden col-span-1 sm:col-span-2 md:col-span-1">
                 <div class="absolute -right-6 -bottom-6 text-white/10 text-8xl"><i class="fa-solid fa-warehouse"></i></div>
@@ -58,7 +61,7 @@
             <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
                 <div class="flex items-center space-x-3 space-x-reverse mb-6 border-b pb-4 border-slate-100">
                     <span class="bg-emerald-100 text-emerald-600 p-3 rounded-xl"><i class="fa-solid fa-circle-arrow-down text-xl"></i></span>
-                    <h2 id="form-in-title" class="text-lg font-bold">إمداد وتغذية المخزن (تأريخ تلقائي لفئات حر)</h2>
+                    <h2 id="form-in-title" class="text-lg font-bold">إمداد وتغذية المخزن (إدخال فئات حر)</h2>
                 </div>
                 <form id="form-stock-in" onsubmit="handleStockIn(event)" class="space-y-4">
                     <div>
@@ -145,14 +148,12 @@
             <div class="border-b pb-4 border-slate-100 mb-6">
                 <h2 id="table-title" class="text-xl font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-address-book text-indigo-600"></i> قاعدة بيانات وسجلات الزبائن المسجلة</h2>
             </div>
-
             <div class="relative mb-6">
                 <span class="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400">
                     <i class="fa-solid fa-magnifying-glass"></i>
                 </span>
                 <input type="text" id="customer-search-input" oninput="filterCustomers()" class="w-full bg-slate-50 border border-slate-200 rounded-xl pr-11 pl-4 py-3 text-sm outline-none focus:border-indigo-500 focus:bg-white transition" placeholder="ابحث هنا عن اسم الزبون أو رقم الهاتف...">
             </div>
-
             <div id="customers-cards-container" class="space-y-4"></div>
             <div id="no-data-msg" class="text-center py-12 text-slate-400 font-medium hidden">
                 <i class="fa-solid fa-folder-open text-3xl block mb-2 text-slate-300"></i>
@@ -176,7 +177,6 @@
         <section class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
             <div class="border-b pb-4 border-slate-100 mb-6">
                 <h2 id="archive-title" class="text-xl font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-clock-rotate-left text-amber-600"></i> أرشيف سجل التوريدات وشحنات المخزن المؤرخة</h2>
-                <p class="text-xs text-slate-400 mt-1">تتبع تاريخي لكل الشحنات والكميات التي قمت بإدخالها وتغذيتها للمخزن باليوم والساعة</p>
             </div>
 
             <div id="reset-panel" class="hidden bg-red-50 border border-red-200 rounded-xl p-4 mb-6 transition-all">
@@ -188,13 +188,35 @@
             </div>
 
             <div id="archive-cards-container" class="space-y-4"></div>
-
             <div id="no-archive-msg" class="text-center py-12 text-slate-400 font-medium hidden">
                 <i class="fa-solid fa-history text-3xl block mb-2 text-slate-300"></i>
-                <span id="no-arch-txt">الأرشيف فارغ حالياً، لم يتم تسجيل أي توريدات شحنات جديدة بعد</span>
+                <span id="no-arch-txt">الأرشيف فارغ حالياً</span>
             </div>
         </section>
     </main>
+
+    <div id="quick-stock-modal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4 opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl border border-slate-100 transform scale-95 transition-transform duration-300">
+            <div class="flex justify-between items-center border-b pb-3 mb-4">
+                <div class="flex items-center gap-2">
+                    <span id="modal-badge-icon" class="p-2 rounded-lg text-white text-sm"><i class="fa-solid fa-box"></i></span>
+                    <h3 id="modal-title" class="font-bold text-lg text-slate-800">إدخال بكرات مباشر</h3>
+                </div>
+                <button onclick="closeQuickStockModal()" class="text-slate-400 hover:text-slate-600 text-xl p-1"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form onsubmit="handleQuickStockSubmit(event)" class="space-y-4">
+                <input type="hidden" id="modal-category-id">
+                <div>
+                    <label id="modal-lbl" class="block text-sm font-semibold mb-2 text-slate-600">كم عدد البكرات التي تريد إضافتها حالياً للمخزن؟</label>
+                    <input type="number" id="modal-qty-input" min="1" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 transition text-center text-2xl font-black font-mono" placeholder="0">
+                </div>
+                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl shadow transition flex justify-center items-center gap-2">
+                    <i class="fa-solid fa-square-plus"></i>
+                    <span id="modal-btn-txt">تحديث وأرشفة الشحنة فوراً</span>
+                </button>
+            </form>
+        </div>
+    </div>
 
     <footer class="bg-slate-900 text-slate-400 text-center py-6 border-t border-slate-800 text-xs mt-auto">
         <div class="container mx-auto px-4 flex flex-col sm:flex-row justify-center items-center gap-2">
@@ -208,11 +230,10 @@
     </footer>
 
     <script>
-        // دمج قاعدة بيانات الأرشيف المؤرخ في الـ localStorage
         let appData = JSON.parse(localStorage.getItem('cableInventoryData_Dynamic_V4')) || {
             stocks: { "20": 0, "30": 0, "50": 0, "80": 0 },
             installations: [],
-            supplyArchive: [] // أرشيف الشحنات الموردة المؤرخ
+            supplyArchive: []
         };
 
         let currentLang = 'ar';
@@ -228,25 +249,27 @@
         const translations = {
             ar: {
                 navTitle: "نظام تتبع مخزون الكوابل المحترف", langBtn: "Français", cardTotal: "المجموع الكلي للمخزون", navCust: "سجل الزبائن",
-                navArch: "أرشيف الشحنات الواردة", unitT: "بكرة إجمالية", unitM: "بكرة متاحة", formIn: "إمداد وتغذية المخزن (تأريخ تلقائي لفئات حر)",
+                navArch: "أرشيف الشحنات الواردة", unitT: "بكرة إجمالية", unitM: "بكرة متاحة", formIn: "إمداد وتغذية المخزن (إدخال فئات حر)",
                 lblTypeIn: "اختر الفئة أو اختر \"إدخال يدوي\"", lblManualType: "اكتب طول الفئة الجديدة بالأمتار", customOpt: "✍️ إدخال يدوي فئة جديدة...",
                 lblQtyIn: "الكمية الموردة الحالية (عدد البكرات)", btnIn: "تأكيد الإدخال والأرشفة بالتاريخ", formOut: "تسجيل زبون وتركيب جديد (حركة خارجة)",
                 lblCustName: "اسم الزبون الكامل", lblCustPhone: "رقم الهاتف", lblTypeOut: "الكابل المستخدم للتركيب", btnOut: "حفظ البيانات وخصم المخزن فورا",
                 tableTitle: "قاعدة بيانات وسجلات الزبائن المسجلة", archiveTitle: "أرشيف سجل التوريدات وشحنات المخزن المؤرخة", searchPlh: "ابحث هنا عن اسم الزبون أو رقم الهاتف...",
                 noData: "لا توجد عمليات مسجلة حالياً لبداية جديدة", badgeOut: "تم التركيب والخصم بنجاح", alertNoStock: "🚨 خطأ: كمية الكابل المطلوبة غير متوفرة!",
                 backBtn: "العودة للمخزن الرئيسي", callBtn: "اتصال مباشر", noStockAvailable: "لا توجد كوابل متوفرة بالمخزن حالياً",
-                footerRights: "© 2026 جميع الحقوق محفوظة. تم التطوير وبناء النظام بواسطة:", supplyText: "شحنة واردة جديدة وتغذية للمخزن"
+                footerRights: "© 2026 جميع الحقوق محفوظة. تم التطوير وبناء النظام بواسطة:", supplyText: "شحنة واردة جديدة وتغذية للمخزن",
+                modalTitle: "إدخال وتغذية فئة", modalLbl: "كم عدد البكرات التي تريد إضافتها حالياً للمخزن؟", modalBtn: "تحديث وأرشفة الشحنة فوراً"
             },
             fr: {
                 navTitle: "Gestion de Stock Pro", langBtn: "العربية", cardTotal: "Stock Global Total", navCust: "Clients",
-                navArch: "Archive des Entrées", unitT: "Rouleaux au total", unitM: "Disponibles", formIn: "Entrée de stock (Horodatée)",
+                navArch: "Archive des Entrées", unitT: "Rouleaux au total", unitM: "Disponibles", formIn: "Entrée de stock",
                 lblTypeIn: "Sélectionnez ou Saisir manuellement", lblManualType: "Entrez la taille en mètres", customOpt: "✍️ Saisir manuellement...",
                 lblQtyIn: "Quantité livrée (Rouleaux)", btnIn: "Confirmer l'entrée et archiver", formOut: "Nouvelle Installation",
                 lblCustName: "Nom complet du client", lblCustPhone: "Numéro de téléphone", lblTypeOut: "Câble utilisé", btnOut: "Enregistrer et déduire",
                 tableTitle: "Base de données des clients", archiveTitle: "Historique et Archive des Approvisionnements", searchPlh: "Rechercher un client ou téléphone...",
                 noData: "Aucune opération enregistrée", badgeOut: "Installation Validée", alertNoStock: "🚨 Erreur: Stock insuffisant!",
                 backBtn: "Retour au Stock Principal", callBtn: "Appeler", noStockAvailable: "Aucun câble disponible",
-                footerRights: "© 2026 Tous droits réservés. Développé et conçu par:", supplyText: "Nouvel arrivage et approvisionnement"
+                footerRights: "© 2026 Tous droits réservés. Développé et conçu par:", supplyText: "Nouvel arrivage et approvisionnement",
+                modalTitle: "Approvisionner la Catégorie", modalLbl: "Combien de rouleaux voulez-vous ajouter au stock ?", modalBtn: "Mettre à jour et Archiver"
             }
         };
 
@@ -254,6 +277,64 @@
             document.querySelectorAll('.app-page').forEach(page => page.classList.add('hidden'));
             document.getElementById(pageId).classList.remove('hidden');
             window.scrollTo(0,0);
+        }
+
+        // دالة فتح النافذة المنبثقة للتسجيل المباشر داخل الكرت
+        function openQuickStockModal(category) {
+            const conf = styleConfig[category] || styleConfig["default"];
+            const bgClass = conf.bg.split(' ')[0]; 
+
+            document.getElementById('modal-category-id').value = category;
+            document.getElementById('modal-title').innerText = `${translations[currentLang].modalTitle} ${category} M`;
+            
+            const badgeIcon = document.getElementById('modal-badge-icon');
+            badgeIcon.className = `p-2 rounded-lg text-white text-sm ${bgClass}`;
+            badgeIcon.innerHTML = `<i class="${conf.icon}"></i>`;
+            
+            document.getElementById('modal-qty-input').value = '';
+            
+            const modal = document.getElementById('quick-stock-modal');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modal.querySelector('.bg-white').classList.remove('scale-95');
+            }, 10);
+        }
+
+        function closeQuickStockModal() {
+            const modal = document.getElementById('quick-stock-modal');
+            modal.classList.add('opacity-0');
+            modal.querySelector('.bg-white').classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        // دالة معالجة الإدخال والتأريخ المباشر من الكرت
+        function handleQuickStockSubmit(e) {
+            e.preventDefault();
+            const category = document.getElementById('modal-category-id').value;
+            const qty = parseInt(document.getElementById('modal-qty-input').value);
+            
+            if(!category || !qty) return;
+
+            if(!appData.stocks[category]) appData.stocks[category] = 0;
+            appData.stocks[category] += qty;
+
+            const now = new Date();
+            const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+            const currentFormattedDateTime = now.toLocaleDateString(currentLang === 'ar' ? 'ar-DZ' : 'fr-FR', options);
+
+            if(!appData.supplyArchive) appData.supplyArchive = [];
+            appData.supplyArchive.unshift({
+                cableType: category,
+                quantity: qty,
+                dateTime: currentFormattedDateTime
+            });
+
+            closeQuickStockModal();
+            updateUI();
+            showPage('archive-page');
         }
 
         function toggleManualInputVisibility() {
@@ -304,12 +385,14 @@
                 const conf = styleConfig[cat] || styleConfig["default"];
 
                 const card = document.createElement('div');
-                card.className = `bg-gradient-to-br ${conf.bg} text-white rounded-2xl p-6 shadow-md relative overflow-hidden transition-all duration-200 hover:shadow-lg`;
+                // إضافة أحداث النقر cursor-pointer وتأثيرات التحجيم للحصول على تجربة لمس ممتازة
+                card.className = `bg-gradient-to-br ${conf.bg} text-white rounded-2xl p-6 shadow-md relative overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer active:scale-95 select-none`;
+                card.setAttribute('onclick', `openQuickStockModal('${cat}')`);
                 card.innerHTML = `
                     <div class="absolute -right-6 -bottom-6 text-white/10 text-8xl"><i class="${conf.icon}"></i></div>
                     <div class="flex justify-between items-start mb-4 relative z-10">
                         <h3 class="text-lg font-medium opacity-90">${currentLang === 'ar' ? 'كابل فئة' : 'Câble'} ${cat} M</h3>
-                        <span class="bg-white/20 p-2 rounded-lg"><i class="${conf.icon} text-xl"></i></span>
+                        <span class="bg-white/20 p-2 rounded-lg"><i class="fa-solid fa-file-pen text-xs ml-1 opacity-70"></i><i class="${conf.icon} text-md"></i></span>
                     </div>
                     <p class="text-4xl font-extrabold relative z-10 flex items-baseline">
                         <span>${qty}</span>
@@ -381,7 +464,6 @@
             }
         }
 
-        // دالة بناء وعرض قائمة أرشيف التوريدات المؤرخة بالوقت الحقيقي وسنة الإدخال
         function renderArchiveList() {
             const container = document.getElementById('archive-cards-container');
             container.innerHTML = '';
@@ -432,7 +514,6 @@
             renderCustomersList(filtered);
         }
 
-        // دالة إدخال وتغذية المخزن مع الأرشفة والتأريخ التلقائي للوقت الحالي والسنة
         function handleStockIn(e) {
             e.preventDefault();
             const selectField = document.getElementById('in-type-select').value;
@@ -450,15 +531,12 @@
                 appData.stocks[finalCategory] = 0;
             }
 
-            // إضافة الكمية للمخزن
             appData.stocks[finalCategory] += qty;
 
-            // توليد صيغة تاريخ اليوم والوقت والسنة الحالية تلقائياً باللغتين
             const now = new Date();
             const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
             const currentFormattedDateTime = now.toLocaleDateString(currentLang === 'ar' ? 'ar-DZ' : 'fr-FR', options);
 
-            // أرشفة الإدخال في قاعدة البيانات التاريخية
             if(!appData.supplyArchive) appData.supplyArchive = [];
             appData.supplyArchive.unshift({
                 cableType: finalCategory,
@@ -470,8 +548,6 @@
             document.getElementById('in-type-manual').value = '';
             document.getElementById('in-type-select').value = finalCategory;
             updateUI();
-
-            // تحويل المستخدم تلقائياً لصفحة الأرشيف لرؤية التوثيق بالوقت والتاريخ الحقيقي
             showPage('archive-page');
         }
 
@@ -547,14 +623,24 @@
             document.getElementById('lbl-type-out').innerText = dict.lblTypeOut;
             document.getElementById('btn-out-submit').querySelector('span').innerText = dict.btnOut;
             document.getElementById('table-title').innerText = dict.tableTitle;
-            document.getElementById('archive-title').querySelector('span')?.remove(); 
             document.getElementById('no-data-txt').innerText = dict.noData;
             document.getElementById('footer-rights').innerText = dict.footerRights;
             document.getElementById('back-btn-text').innerText = dict.backBtn;
             document.getElementById('back-btn-text-arch').innerText = dict.backBtn;
             document.getElementById('customer-search-input').placeholder = dict.searchPlh;
+            
+            document.getElementById('modal-lbl').innerText = dict.modalLbl;
+            document.getElementById('modal-btn-txt').innerText = dict.modalBtn;
 
             updateUI();
+        }
+
+        // إغلاق النافذة المنبثقة عند الضغط خارجها للحفاظ على تجربة مستخدم ممتازة
+        window.onclick = function(event) {
+            const modal = document.getElementById('quick-stock-modal');
+            if (event.target === modal) {
+                closeQuickStockModal();
+            }
         }
 
         updateUI();
