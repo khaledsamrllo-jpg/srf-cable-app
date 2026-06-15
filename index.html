@@ -3,29 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام إدارة مخزون الكوابل المرن</title>
+    <title>نظام إدارة مخزون الكوابل المرن والأرشيف</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="bg-slate-50 font-sans min-h-screen text-slate-800 transition-all duration-300 flex flex-col">
 
     <header class="bg-gradient-to-r from-slate-800 to-indigo-900 text-white shadow-lg sticky top-0 z-50">
-        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+        <div class="container mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
             <div onclick="showPage('stock-page')" class="flex items-center space-x-3 space-x-reverse cursor-pointer group">
                 <div class="bg-white/20 p-2 rounded-lg text-xl group-hover:bg-white/30 transition">
                     <i class="fa-solid fa-network-wired"></i>
                 </div>
-                <h1 id="nav-title" class="text-xl font-bold tracking-wide">نظام تتبع مخزون الكوابل</h1>
+                <h1 id="nav-title" class="text-xl font-bold tracking-wide">نظام تتبع مخزون الكوابل المحترف</h1>
             </div>
             
-            <div class="flex items-center gap-4">
-                <button onclick="showPage('customers-page')" class="bg-indigo-600/50 hover:bg-indigo-600 border border-indigo-400/30 px-4 py-2 rounded-xl text-sm font-bold shadow transition duration-200 flex items-center space-x-2 space-x-reverse">
+            <div class="flex flex-wrap items-center justify-center gap-3">
+                <button onclick="showPage('customers-page')" class="bg-indigo-600/50 hover:bg-indigo-600 border border-indigo-400/30 px-3 py-2 rounded-xl text-xs md:text-sm font-bold shadow transition flex items-center gap-2">
                     <i class="fa-solid fa-users"></i>
                     <span id="nav-cust-btn">سجل الزبائن</span>
                 </button>
+
+                <button onclick="showPage('archive-page')" class="bg-amber-600/50 hover:bg-amber-600 border border-amber-400/30 px-3 py-2 rounded-xl text-xs md:text-sm font-bold shadow transition flex items-center gap-2">
+                    <i class="fa-solid fa-box-archive"></i>
+                    <span id="nav-arch-btn">أرشيف الشحنات الواردة</span>
+                </button>
                 
-                <button onclick="toggleLanguage()" class="bg-white text-indigo-900 hover:bg-slate-100 px-3 py-2 rounded-xl text-sm font-bold shadow transition duration-200 flex items-center space-x-1 space-x-reverse">
-                    <i class="fa-solid fa-language text-lg"></i>
+                <button onclick="toggleLanguage()" class="bg-white text-indigo-900 hover:bg-slate-100 px-3 py-2 rounded-xl text-xs font-bold shadow transition flex items-center gap-1">
+                    <i class="fa-solid fa-language text-base"></i>
                     <span id="lang-btn-text">Français</span>
                 </button>
             </div>
@@ -53,7 +58,7 @@
             <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
                 <div class="flex items-center space-x-3 space-x-reverse mb-6 border-b pb-4 border-slate-100">
                     <span class="bg-emerald-100 text-emerald-600 p-3 rounded-xl"><i class="fa-solid fa-circle-arrow-down text-xl"></i></span>
-                    <h2 id="form-in-title" class="text-lg font-bold">إمداد وتغذية المخزن (إدخال فئات حر)</h2>
+                    <h2 id="form-in-title" class="text-lg font-bold">إمداد وتغذية المخزن (تأريخ تلقائي لفئات حر)</h2>
                 </div>
                 <form id="form-stock-in" onsubmit="handleStockIn(event)" class="space-y-4">
                     <div>
@@ -67,12 +72,12 @@
                         <input type="number" id="in-type-manual" min="1" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none focus:border-emerald-500 transition" placeholder="مثال: 20 أو 30">
                     </div>
                     <div>
-                        <label id="lbl-qty-in" class="block text-sm font-semibold mb-2 text-slate-600">الكمية الموردة (عدد البكرات)</label>
-                        <input type="number" id="in-qty" min="1" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none focus:border-emerald-500 transition" placeholder="مثال: 10">
+                        <label id="lbl-qty-in" class="block text-sm font-semibold mb-2 text-slate-600">الكمية الموردة الحالية (عدد البكرات)</label>
+                        <input type="number" id="in-qty" min="1" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none focus:border-emerald-500 transition" placeholder="مثال: 200">
                     </div>
                     <button type="submit" id="btn-in-submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl shadow transition flex justify-center items-center space-x-2 space-x-reverse">
-                        <i class="fa-solid fa-plus-circle"></i>
-                        <span>تأكيد الإدخال للمخزن</span>
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                        <span>تأكيد الإدخال والأرشفة بالتاريخ</span>
                     </button>
                 </form>
             </div>
@@ -103,18 +108,30 @@
             </div>
         </div>
         
-        <div onclick="showPage('customers-page')" class="bg-indigo-50 border border-indigo-100 rounded-2xl p-4 flex justify-between items-center shadow-sm cursor-pointer hover:bg-indigo-100/50 transition">
-            <div class="flex items-center gap-3">
-                <span class="bg-indigo-600 text-white p-2.5 rounded-xl"><i class="fa-solid fa-users text-lg"></i></span>
-                <div>
-                    <h4 class="font-bold text-indigo-900 text-sm md:text-base">تصفح سجل العمليات المخفية للزبائن</h4>
-                    <p class="text-xs text-indigo-600/80 mt-0.5">انقر هنا لعرض والبحث في قائمة المشتركين الذين تم التركيب لهم</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div onclick="showPage('customers-page')" class="bg-indigo-50 border border-indigo-100 rounded-2xl p-4 flex justify-between items-center shadow-sm cursor-pointer hover:bg-indigo-100/50 transition">
+                <div class="flex items-center gap-3">
+                    <span class="bg-indigo-600 text-white p-2.5 rounded-xl"><i class="fa-solid fa-users text-md"></i></span>
+                    <div>
+                        <h4 class="font-bold text-indigo-900 text-sm">قاعدة بيانات المشتركين والزبائن</h4>
+                        <p class="text-[11px] text-indigo-600/80 mt-0.5">تصفح والبحث والاتصال السريع بالزبائن</p>
+                    </div>
                 </div>
+                <i class="fa-solid fa-chevron-left text-indigo-400 text-sm"></i>
             </div>
-            <i class="fa-solid fa-chevron-left text-indigo-400 text-sm"></i>
+
+            <div onclick="showPage('archive-page')" class="bg-amber-50 border border-amber-100 rounded-2xl p-4 flex justify-between items-center shadow-sm cursor-pointer hover:bg-amber-100/50 transition">
+                <div class="flex items-center gap-3">
+                    <span class="bg-amber-600 text-white p-2.5 rounded-xl"><i class="fa-solid fa-box-archive text-md"></i></span>
+                    <div>
+                        <h4 class="font-bold text-amber-900 text-sm">أرشيف وسجل التوريدات التاريخي</h4>
+                        <p class="text-[11px] text-amber-600/80 mt-0.5">مراجعة الشحنات المدخلة بالتاريخ والوقت والسنة</p>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-left text-amber-400 text-sm"></i>
+            </div>
         </div>
     </main>
-
 
     <main id="customers-page" class="container mx-auto px-4 py-8 max-w-4xl flex-grow app-page hidden">
         <div class="flex justify-between items-center mb-6">
@@ -122,16 +139,11 @@
                 <i class="fa-solid fa-arrow-right"></i>
                 <span id="back-btn-text">العودة للمخزن الرئيسي</span>
             </button>
-            <button onclick="toggleResetPanel()" class="text-red-500 hover:text-red-700 text-xs font-bold flex items-center space-x-1 space-x-reverse border border-red-100 hover:bg-red-50 px-3 py-1.5 rounded-lg transition">
-                <i class="fa-solid fa-triangle-exclamation"></i>
-                <span id="btn-reset-panel">خيارات التصفير</span>
-            </button>
         </div>
 
         <section class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
             <div class="border-b pb-4 border-slate-100 mb-6">
                 <h2 id="table-title" class="text-xl font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-address-book text-indigo-600"></i> قاعدة بيانات وسجلات الزبائن المسجلة</h2>
-                <p class="text-xs text-slate-400 mt-1">يمكنك البحث عن الزبائن بالاسم أو برقم الهاتف في الحقل أدناه</p>
             </div>
 
             <div class="relative mb-6">
@@ -141,27 +153,48 @@
                 <input type="text" id="customer-search-input" oninput="filterCustomers()" class="w-full bg-slate-50 border border-slate-200 rounded-xl pr-11 pl-4 py-3 text-sm outline-none focus:border-indigo-500 focus:bg-white transition" placeholder="ابحث هنا عن اسم الزبون أو رقم الهاتف...">
             </div>
 
-            <div id="reset-panel" class="hidden bg-red-50 border border-red-200 rounded-xl p-4 mb-6 transition-all">
-                <p id="reset-warn-text" class="text-xs text-red-700 font-medium mb-3">⚠️ تحذير: ستمسح السجلات. اكتب كلمة <span class="font-bold underline text-sm">"تأكيد"</span> لتفعيل الأزرار:</p>
-                <input type="text" id="reset-confirm-input" oninput="checkResetConfirmation()" class="bg-white border border-red-300 rounded-lg px-3 py-2 text-sm outline-none w-full max-w-xs mb-3 block" placeholder="اكتب التأكيد هنا">
-                <div class="flex flex-wrap gap-3">
-                    <button id="btn-reset-ops" disabled onclick="resetOperationsOnly()" class="bg-red-200 text-red-700 font-bold px-4 py-2 text-xs rounded-lg transition disabled:opacity-50 hover:bg-red-600 hover:text-white">حذف سجل الزبائن فقط والابقاء على السلع</button>
-                    <button id="btn-reset-all" disabled onclick="resetAllFactory()" class="bg-red-600 text-white font-bold px-4 py-2 text-xs rounded-lg transition disabled:opacity-50 hover:bg-red-800">التصفير الشامل للمصنع (كل شيء 0)</button>
-                </div>
-            </div>
-
             <div id="customers-cards-container" class="space-y-4"></div>
-
             <div id="no-data-msg" class="text-center py-12 text-slate-400 font-medium hidden">
                 <i class="fa-solid fa-folder-open text-3xl block mb-2 text-slate-300"></i>
-                <span id="no-data-txt">لا توجد عمليات مسجلة حالياً لبداية جديدة</span>
+                <span>لا توجد عمليات مسجلة حالياً لبداية جديدة</span>
             </div>
         </section>
     </main>
 
-    <div id="floating-btn" onclick="showPage('customers-page')" class="fixed bottom-6 left-6 bg-indigo-600 hover:bg-indigo-700 text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center cursor-pointer transition duration-300 hover:scale-110 z-40">
-        <i class="fa-solid fa-users text-xl"></i>
-    </div>
+    <main id="archive-page" class="container mx-auto px-4 py-8 max-w-4xl flex-grow app-page hidden">
+        <div class="flex justify-between items-center mb-6">
+            <button onclick="showPage('stock-page')" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-4 py-2 rounded-xl text-sm transition flex items-center gap-2">
+                <i class="fa-solid fa-arrow-right"></i>
+                <span id="back-btn-text-arch">العودة للمخزن الرئيسي</span>
+            </button>
+            <button onclick="toggleResetPanel()" class="text-red-500 hover:text-red-700 text-xs font-bold flex items-center space-x-1 space-x-reverse border border-red-100 hover:bg-red-50 px-3 py-1.5 rounded-lg transition">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span>خيارات التصفير الشامل</span>
+            </button>
+        </div>
+
+        <section class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+            <div class="border-b pb-4 border-slate-100 mb-6">
+                <h2 id="archive-title" class="text-xl font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-clock-rotate-left text-amber-600"></i> أرشيف سجل التوريدات وشحنات المخزن المؤرخة</h2>
+                <p class="text-xs text-slate-400 mt-1">تتبع تاريخي لكل الشحنات والكميات التي قمت بإدخالها وتغذيتها للمخزن باليوم والساعة</p>
+            </div>
+
+            <div id="reset-panel" class="hidden bg-red-50 border border-red-200 rounded-xl p-4 mb-6 transition-all">
+                <p class="text-xs text-red-700 font-medium mb-3">⚠️ تحذير: ستمسح كل شيء. اكتب كلمة <span class="font-bold underline text-sm">"تأكيد"</span> لتفعيل التصفير الشامل الحذر:</p>
+                <input type="text" id="reset-confirm-input" oninput="checkResetConfirmation()" class="bg-white border border-red-300 rounded-lg px-3 py-2 text-sm outline-none w-full max-w-xs mb-3 block" placeholder="اكتب التأكيد هنا">
+                <div class="flex gap-3">
+                    <button id="btn-reset-all" disabled onclick="resetAllFactory()" class="bg-red-600 text-white font-bold px-4 py-2 text-xs rounded-lg transition disabled:opacity-50 hover:bg-red-800">التصفير الشامل وإعادة البدء من الصفر</button>
+                </div>
+            </div>
+
+            <div id="archive-cards-container" class="space-y-4"></div>
+
+            <div id="no-archive-msg" class="text-center py-12 text-slate-400 font-medium hidden">
+                <i class="fa-solid fa-history text-3xl block mb-2 text-slate-300"></i>
+                <span id="no-arch-txt">الأرشيف فارغ حالياً، لم يتم تسجيل أي توريدات شحنات جديدة بعد</span>
+            </div>
+        </section>
+    </main>
 
     <footer class="bg-slate-900 text-slate-400 text-center py-6 border-t border-slate-800 text-xs mt-auto">
         <div class="container mx-auto px-4 flex flex-col sm:flex-row justify-center items-center gap-2">
@@ -175,9 +208,11 @@
     </footer>
 
     <script>
-        let appData = JSON.parse(localStorage.getItem('cableInventoryData_Dynamic_V3')) || {
+        // دمج قاعدة بيانات الأرشيف المؤرخ في الـ localStorage
+        let appData = JSON.parse(localStorage.getItem('cableInventoryData_Dynamic_V4')) || {
             stocks: { "20": 0, "30": 0, "50": 0, "80": 0 },
-            installations: []
+            installations: [],
+            supplyArchive: [] // أرشيف الشحنات الموردة المؤرخ
         };
 
         let currentLang = 'ar';
@@ -192,46 +227,32 @@
 
         const translations = {
             ar: {
-                navTitle: "نظام تتبع مخزون الكوابل", langBtn: "Français", cardTotal: "المجموع الكلي للمخزون", navCust: "سجل الزبائن",
-                unitT: "بكرة إجمالية", unitM: "بكرة متاحة", formIn: "إمداد وتغذية المخزن (إدخال فئات حر)", lblTypeIn: "اختر الفئة أو اختر \"إدخال يدوي\"",
-                lblManualType: "اكتب طول الفئة الجديدة بالأمتار", customOpt: "✍️ إدخال يدوي فئة جديدة...", lblQtyIn: "الكمية (عدد البكرات)",
-                btnIn: "تأكيد الإدخال للمخزن", formOut: "تسجيل زبون وتركيب جديد (حركة خارجة)", lblCustName: "اسم الزبون الكامل",
-                lblCustPhone: "رقم الهاتف", lblTypeOut: "الكابل المستخدم للتركيب", btnOut: "حفظ البيانات وخصم المخزن فورا",
-                tableTitle: "قاعدة بيانات وسجلات الزبائن المسجلة", btnResetP: "خيارات التصفير", searchPlh: "ابحث هنا عن اسم الزبون أو رقم الهاتف...",
-                noData: "لا توجد عمليات مسجلة حالياً لبداية جديدة", badgeOut: "تم التركيب والخصم بنجاح",
-                alertNoStock: "🚨 خطأ: كمية الكابل المطلوبة غير متوفرة في مخزن هذا الهاتف!", backBtn: "العودة للمخزن الرئيسي",
-                warnReset: "⚠️ تحذير: ستمسح السجلات. اكتب كلمة \"تأكيد\" لتفعيل الأزرار:",
-                noStockAvailable: "لا توجد كوابل متوفرة بالمخزن حالياً", callBtn: "اتصال مباشر",
-                footerRights: "© 2026 جميع الحقوق محفوظة. تم التطوير وبناء النظام بواسطة:"
+                navTitle: "نظام تتبع مخزون الكوابل المحترف", langBtn: "Français", cardTotal: "المجموع الكلي للمخزون", navCust: "سجل الزبائن",
+                navArch: "أرشيف الشحنات الواردة", unitT: "بكرة إجمالية", unitM: "بكرة متاحة", formIn: "إمداد وتغذية المخزن (تأريخ تلقائي لفئات حر)",
+                lblTypeIn: "اختر الفئة أو اختر \"إدخال يدوي\"", lblManualType: "اكتب طول الفئة الجديدة بالأمتار", customOpt: "✍️ إدخال يدوي فئة جديدة...",
+                lblQtyIn: "الكمية الموردة الحالية (عدد البكرات)", btnIn: "تأكيد الإدخال والأرشفة بالتاريخ", formOut: "تسجيل زبون وتركيب جديد (حركة خارجة)",
+                lblCustName: "اسم الزبون الكامل", lblCustPhone: "رقم الهاتف", lblTypeOut: "الكابل المستخدم للتركيب", btnOut: "حفظ البيانات وخصم المخزن فورا",
+                tableTitle: "قاعدة بيانات وسجلات الزبائن المسجلة", archiveTitle: "أرشيف سجل التوريدات وشحنات المخزن المؤرخة", searchPlh: "ابحث هنا عن اسم الزبون أو رقم الهاتف...",
+                noData: "لا توجد عمليات مسجلة حالياً لبداية جديدة", badgeOut: "تم التركيب والخصم بنجاح", alertNoStock: "🚨 خطأ: كمية الكابل المطلوبة غير متوفرة!",
+                backBtn: "العودة للمخزن الرئيسي", callBtn: "اتصال مباشر", noStockAvailable: "لا توجد كوابل متوفرة بالمخزن حالياً",
+                footerRights: "© 2026 جميع الحقوق محفوظة. تم التطوير وبناء النظام بواسطة:", supplyText: "شحنة واردة جديدة وتغذية للمخزن"
             },
             fr: {
-                navTitle: "Gestion de Stock", langBtn: "العربية", cardTotal: "Stock Global Total", navCust: "Clients",
-                unitT: "Rouleaux au total", unitM: "Disponibles", formIn: "Entrée de stock", lblTypeIn: "Sélectionnez ou Saisir manuellement",
-                lblManualType: "Entrez la taille en mètres", customOpt: "✍️ Saisir manuellement...", lblQtyIn: "Quantité",
-                btnIn: "Confirmer l'entrée", formOut: "Nouvelle Installation", lblCustName: "Nom complet du client",
-                lblCustPhone: "Numéro de téléphone", lblTypeOut: "Câble utilisé", btnOut: "Enregistrer et déduire",
-                tableTitle: "Base de données des clients enregistrés", btnResetP: "Réinitialisation", searchPlh: "Rechercher un client ou téléphone...",
-                noData: "Aucune opération enregistrée", badgeOut: "Installation Validée", backBtn: "Retour au Stock Principal",
-                alertNoStock: "🚨 Erreur: Stock insuffisant!", callBtn: "Appeler",
-                warnReset: "⚠️ Attention: Écrivez \"تأكيد\" pour déverrouiller:",
-                noStockAvailable: "Aucun câble disponible",
-                footerRights: "© 2026 Tous droits réservés. Développé et conçu par:"
+                navTitle: "Gestion de Stock Pro", langBtn: "العربية", cardTotal: "Stock Global Total", navCust: "Clients",
+                navArch: "Archive des Entrées", unitT: "Rouleaux au total", unitM: "Disponibles", formIn: "Entrée de stock (Horodatée)",
+                lblTypeIn: "Sélectionnez ou Saisir manuellement", lblManualType: "Entrez la taille en mètres", customOpt: "✍️ Saisir manuellement...",
+                lblQtyIn: "Quantité livrée (Rouleaux)", btnIn: "Confirmer l'entrée et archiver", formOut: "Nouvelle Installation",
+                lblCustName: "Nom complet du client", lblCustPhone: "Numéro de téléphone", lblTypeOut: "Câble utilisé", btnOut: "Enregistrer et déduire",
+                tableTitle: "Base de données des clients", archiveTitle: "Historique et Archive des Approvisionnements", searchPlh: "Rechercher un client ou téléphone...",
+                noData: "Aucune opération enregistrée", badgeOut: "Installation Validée", alertNoStock: "🚨 Erreur: Stock insuffisant!",
+                backBtn: "Retour au Stock Principal", callBtn: "Appeler", noStockAvailable: "Aucun câble disponible",
+                footerRights: "© 2026 Tous droits réservés. Développé et conçu par:", supplyText: "Nouvel arrivage et approvisionnement"
             }
         };
 
-        // نظام التبديل بين الصفحات وإخفاء الزر العائم حسب الصفحة
         function showPage(pageId) {
             document.querySelectorAll('.app-page').forEach(page => page.classList.add('hidden'));
             document.getElementById(pageId).classList.remove('hidden');
-            
-            const floatingBtn = document.getElementById('floating-btn');
-            if (pageId === 'customers-page') {
-                floatingBtn.classList.add('hidden');
-                document.getElementById('customer-search-input').value = '';
-                filterCustomers();
-            } else {
-                floatingBtn.classList.remove('hidden');
-            }
             window.scrollTo(0,0);
         }
 
@@ -248,7 +269,7 @@
         }
 
         function updateUI() {
-            localStorage.setItem('cableInventoryData_Dynamic_V3', JSON.stringify(appData));
+            localStorage.setItem('cableInventoryData_Dynamic_V4', JSON.stringify(appData));
             
             const grid = document.getElementById('dashboard-grid');
             const cards = grid.querySelectorAll('.bg-gradient-to-br');
@@ -316,10 +337,10 @@
 
             document.getElementById('total-stock').innerText = totalSum;
             renderCustomersList(appData.installations);
+            renderArchiveList();
             toggleManualInputVisibility();
         }
 
-        // دالة توليد وبناء الكروت المستقلة للزبائن مع زر الاتصال السريع
         function renderCustomersList(installationsArray) {
             const customersContainer = document.getElementById('customers-cards-container');
             customersContainer.innerHTML = '';
@@ -353,9 +374,6 @@
                             <span class="${conf.badge} text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-1">
                                 <i class="${conf.icon}"></i> ${currentLang === 'ar' ? 'كابل فئة' : 'Câble'} ${item.cableType} M
                             </span>
-                            <span class="bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-medium px-2.5 py-1.5 rounded-lg flex items-center gap-1">
-                                <i class="fa-solid fa-square-check text-emerald-500"></i> ${translations[currentLang].badgeOut}
-                            </span>
                         </div>
                     `;
                     customersContainer.appendChild(card);
@@ -363,7 +381,45 @@
             }
         }
 
-        // دالة الفلترة والبحث الذكي الفوري
+        // دالة بناء وعرض قائمة أرشيف التوريدات المؤرخة بالوقت الحقيقي وسنة الإدخال
+        function renderArchiveList() {
+            const container = document.getElementById('archive-cards-container');
+            container.innerHTML = '';
+            
+            if(!appData.supplyArchive || appData.supplyArchive.length === 0) {
+                document.getElementById('no-archive-msg').classList.remove('hidden');
+            } else {
+                document.getElementById('no-archive-msg').classList.add('hidden');
+                appData.supplyArchive.forEach(item => {
+                    const conf = styleConfig[item.cableType] || styleConfig["default"];
+                    
+                    const card = document.createElement('div');
+                    card.className = "bg-slate-50 rounded-xl p-4 border border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 hover:bg-slate-100/50 transition";
+                    card.innerHTML = `
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-lg shadow-inner">
+                                <i class="fa-solid fa-arrow-turn-down"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-sm md:text-base">${translations[currentLang].supplyText}</h4>
+                                <div class="flex items-center gap-2 text-slate-400 text-xs mt-0.5">
+                                    <i class="fa-regular fa-clock"></i>
+                                    <span>${item.dateTime}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3 w-full sm:w-auto justify-end border-t sm:border-t-0 pt-2 sm:pt-0 border-slate-200">
+                            <span class="text-lg font-black text-emerald-600 font-mono">+${item.quantity}</span>
+                            <span class="${conf.badge} text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-1">
+                                <i class="${conf.icon}"></i> ${currentLang === 'ar' ? 'كابل فئة' : 'Câble'} ${item.cableType} M
+                            </span>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            }
+        }
+
         function filterCustomers() {
             const query = document.getElementById('customer-search-input').value.toLowerCase().trim();
             if(!query) {
@@ -376,6 +432,7 @@
             renderCustomersList(filtered);
         }
 
+        // دالة إدخال وتغذية المخزن مع الأرشفة والتأريخ التلقائي للوقت الحالي والسنة
         function handleStockIn(e) {
             e.preventDefault();
             const selectField = document.getElementById('in-type-select').value;
@@ -393,12 +450,29 @@
                 appData.stocks[finalCategory] = 0;
             }
 
+            // إضافة الكمية للمخزن
             appData.stocks[finalCategory] += qty;
+
+            // توليد صيغة تاريخ اليوم والوقت والسنة الحالية تلقائياً باللغتين
+            const now = new Date();
+            const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+            const currentFormattedDateTime = now.toLocaleDateString(currentLang === 'ar' ? 'ar-DZ' : 'fr-FR', options);
+
+            // أرشفة الإدخال في قاعدة البيانات التاريخية
+            if(!appData.supplyArchive) appData.supplyArchive = [];
+            appData.supplyArchive.unshift({
+                cableType: finalCategory,
+                quantity: qty,
+                dateTime: currentFormattedDateTime
+            });
 
             document.getElementById('in-qty').value = '';
             document.getElementById('in-type-manual').value = '';
             document.getElementById('in-type-select').value = finalCategory;
             updateUI();
+
+            // تحويل المستخدم تلقائياً لصفحة الأرشيف لرؤية التوثيق بالوقت والتاريخ الحقيقي
+            showPage('archive-page');
         }
 
         function handleNewInstallation(e) {
@@ -418,8 +492,6 @@
             document.getElementById('out-name').value = '';
             document.getElementById('out-phone').value = '';
             updateUI();
-            
-            // تحويل تلقائي فوري لصفحة الزبائن لمشاهدة الحركة المدخلة
             showPage('customers-page');
         }
 
@@ -430,20 +502,11 @@
         function checkResetConfirmation() {
             const val = document.getElementById('reset-confirm-input').value.trim();
             const isConfirmed = (val === 'تأكيد' || val === 'RESET' || val === 'reset');
-            document.getElementById('btn-reset-ops').disabled = !isConfirmed;
             document.getElementById('btn-reset-all').disabled = !isConfirmed;
         }
 
-        function resetOperationsOnly() {
-            appData.installations = [];
-            document.getElementById('reset-confirm-input').value = '';
-            checkResetConfirmation();
-            toggleResetPanel();
-            updateUI();
-        }
-
         function resetAllFactory() {
-            appData = { stocks: { "20": 0, "30": 0, "50": 0, "80": 0 }, installations: [] };
+            appData = { stocks: { "20": 0, "30": 0, "50": 0, "80": 0 }, installations: [], supplyArchive: [] };
             document.getElementById('reset-confirm-input').value = '';
             checkResetConfirmation();
             toggleResetPanel();
@@ -469,6 +532,7 @@
 
             document.getElementById('nav-title').innerText = dict.navTitle;
             document.getElementById('nav-cust-btn').innerText = dict.navCust;
+            document.getElementById('nav-arch-btn').innerText = dict.navArch;
             document.getElementById('lang-btn-text').innerText = dict.langBtn;
             document.getElementById('card-total-title').innerText = dict.cardTotal;
             document.getElementById('unit-total').innerText = dict.unitT;
@@ -483,11 +547,11 @@
             document.getElementById('lbl-type-out').innerText = dict.lblTypeOut;
             document.getElementById('btn-out-submit').querySelector('span').innerText = dict.btnOut;
             document.getElementById('table-title').innerText = dict.tableTitle;
-            document.getElementById('btn-reset-panel').innerText = dict.btnResetP;
+            document.getElementById('archive-title').querySelector('span')?.remove(); 
             document.getElementById('no-data-txt').innerText = dict.noData;
-            document.getElementById('reset-warn-text').innerHTML = dict.warnReset;
             document.getElementById('footer-rights').innerText = dict.footerRights;
             document.getElementById('back-btn-text').innerText = dict.backBtn;
+            document.getElementById('back-btn-text-arch').innerText = dict.backBtn;
             document.getElementById('customer-search-input').placeholder = dict.searchPlh;
 
             updateUI();
