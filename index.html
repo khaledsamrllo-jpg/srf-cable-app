@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SRF App - المخزون وتفاصيل شبكات ODN</title>
+    <title>SRF App - إدارة شبكات ODN والمخزون</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -142,7 +142,6 @@
     </main>
 
     <main id="odn-page" class="container mx-auto px-4 py-8 max-w-6xl flex-grow app-page hidden">
-        
         <section class="bg-gradient-to-r from-slate-800 to-indigo-900 text-white rounded-2xl p-6 shadow-md mb-8 flex flex-col md:flex-row justify-between items-center gap-6">
             <div class="flex items-center gap-4 w-full md:w-auto">
                 <span class="bg-emerald-500 text-white p-3.5 rounded-xl text-xl shadow"><i class="fa-solid fa-map-location-dot"></i></span>
@@ -395,7 +394,8 @@
 
         function showPage(pageId) {
             document.querySelectorAll('.app-page').forEach(page => page.classList.add('hidden'));
-            document.getElementById(pageId).classList.remove('hidden');
+            const p = document.getElementById(pageId);
+            if(p) p.classList.remove('hidden');
             window.scrollTo(0,0);
         }
 
@@ -403,13 +403,17 @@
             currentLang = lang;
             ['ar', 'fr', 'en'].forEach(l => {
                 const btn = document.getElementById(`lang-${l}-btn`);
-                btn.className = (l === lang) ? "px-2 py-1 rounded-lg text-[10px] font-bold bg-white text-indigo-900 transition shadow" : "px-2 py-1 rounded-lg text-[10px] font-bold text-white hover:bg-white/10 transition";
+                if(btn) {
+                    btn.className = (l === lang) ? "px-2 py-1 rounded-lg text-[10px] font-bold bg-white text-indigo-900 transition shadow" : "px-2 py-1 rounded-lg text-[10px] font-bold text-white hover:bg-white/10 transition";
+                }
             });
 
             document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
             document.documentElement.lang = lang;
 
             const dict = translations[lang];
+            if(!dict) return;
+
             document.getElementById('nav-title').innerText = dict.navTitle;
             document.getElementById('nav-stock-btn').innerText = dict.navStock;
             document.getElementById('nav-cust-btn').innerText = dict.navCust;
@@ -466,7 +470,6 @@
             localStorage.setItem('cableInventoryData_Dynamic_V6', JSON.stringify(appData));
         }
 
-        // 🧠 حفظ علامات المتر الأصلية بجانب الفارق الحسابي الفعلي للأمتار
         function handleNewOdnBuilding(e) {
             e.preventDefault();
             const name = document.getElementById('odn-b-name').value.trim();
@@ -503,7 +506,6 @@
             updateUI();
         }
 
-        // 🔒 ترحيل الحي مع أمتاره وقائمة بناياته كاملة بعلامات المتر للأرشيف التاريخي
         function archiveCurrentDistrict() {
             const districtName = appData.currentDistrict || document.getElementById('odn-district-input').value.trim();
             if(!districtName || appData.odnBuildings.length === 0) {
@@ -529,7 +531,7 @@
                 groundSum: totalGround,
                 aerialSum: totalAerial,
                 bldgsCount: appData.odnBuildings.length,
-                details: [...appData.odnBuildings] // نسخ عميق للبنايات بتفاصيل علاماتها الرقمية
+                details: [...appData.odnBuildings]
             });
 
             appData.currentDistrict = "";
@@ -539,7 +541,6 @@
             updateUI();
         }
 
-        // 👁️ فتح نافذة التفاصيل الميدانية الدقيقة للبنايات داخل الأحياء المؤرشفة القديمة
         function openDistrictDetails(districtId) {
             const target = appData.archivedDistricts.find(d => d.id === districtId);
             if(!target) return;
@@ -554,9 +555,9 @@
                 tr.className = "border-b text-slate-700 hover:bg-slate-50";
                 tr.innerHTML = `
                     <td class="p-2.5 font-bold text-slate-800">${b.name}</td>
-                    <td class="p-2.5 text-purple-700 font-mono">${b.facade} M <span class="text-[10px] text-slate-400 block">${b.facadeMark}</span></td>
-                    <td class="p-2.5 text-amber-700 font-mono">${b.ground} M <span class="text-[10px] text-slate-400 block">${b.groundMark}</span></td>
-                    <td class="p-2.5 text-sky-700 font-mono">${b.aerial} M <span class="text-[10px] text-slate-400 block">${b.aerialMark}</span></td>
+                    <td class="p-2.5 text-purple-700 font-mono">${b.facade} M <span class="text-[10px] text-slate-400 block">${b.facadeMark || ''}</span></td>
+                    <td class="p-2.5 text-amber-700 font-mono">${b.ground} M <span class="text-[10px] text-slate-400 block">${b.groundMark || ''}</span></td>
+                    <td class="p-2.5 text-sky-700 font-mono">${b.aerial} M <span class="text-[10px] text-slate-400 block">${b.aerialMark || ''}</span></td>
                     <td class="p-2.5 bg-slate-50 font-black font-mono">${totalM} M</td>
                 `;
                 tbody.appendChild(tr);
@@ -577,7 +578,6 @@
             }
         }
 
-        // 📊 بناء الجدول الحالي وعرض الأرقام الأصلية تحت الأمتار مباشرة بشكل منسق جداً للهاتف
         function renderOdnDashboard() {
             document.getElementById('odn-district-input').value = appData.currentDistrict || "";
             const tbody = document.getElementById('odn-table-body');
@@ -599,12 +599,12 @@
                     tr.className = "hover:bg-slate-50 border-b border-slate-100 transition text-slate-700";
                     tr.innerHTML = `
                         <td class="p-3 font-bold text-slate-800">${b.name}</td>
-                        <td class="p-3 text-purple-600 font-mono font-bold">${b.facade} M <span class="text-[10px] text-slate-400 font-normal block">${b.facadeMark}</span></td>
-                        <td class="p-3 text-amber-600 font-mono font-bold">${b.ground} M <span class="text-[10px] text-slate-400 font-normal block">${b.groundMark}</span></td>
-                        <td class="p-3 text-sky-600 font-mono font-bold">${b.aerial} M <span class="text-[10px] text-slate-400 font-normal block">${b.aerialMark}</span></td>
+                        <td class="p-3 text-purple-600 font-mono font-bold">${b.facade} M <span class="text-[10px] text-slate-400 font-normal block">${b.facadeMark || ''}</span></td>
+                        <td class="p-3 text-amber-600 font-mono font-bold">${b.ground} M <span class="text-[10px] text-slate-400 font-normal block">${b.groundMark || ''}</span></td>
+                        <td class="p-3 text-sky-600 font-mono font-bold">${b.aerial} M <span class="text-[10px] text-slate-400 font-normal block">${b.aerialMark || ''}</span></td>
                         <td class="p-3 text-slate-900 font-black font-mono bg-slate-50">${rowTotal} M</td>
                         <td class="p-3 text-center">
-                            <button onclick="deleteOdnBuilding(${index})" class="text-red-400 hover:text-red-600 p-1"><i class="fa-solid fa-trash-can"></i></button>
+                            <button type="button" onclick="deleteOdnBuilding(${index})" class="text-red-400 hover:text-red-600 p-1"><i class="fa-solid fa-trash-can"></i></button>
                         </td>
                     `;
                     tbody.appendChild(tr);
@@ -629,9 +629,9 @@
                             <span class="text-[10px] text-slate-400 block sm:inline sm:mr-3 font-mono"><i class="fa-regular fa-calendar-check"></i> ${dist.date}</span>
                         </div>
                         <div class="flex flex-wrap items-center gap-3 text-xs font-bold text-slate-600">
-                            <span>${translations[currentLang].bldgsCount} <span class="bg-indigo-200 text-indigo-800 px-2 py-0.5 rounded font-mono">${dist.bldgsCount}</span></span>
+                            <span>${translations[currentLang].bldgsCount || 'عدد البنايات:'} <span class="bg-indigo-200 text-indigo-800 px-2 py-0.5 rounded font-mono">${dist.bldgsCount}</span></span>
                             <span>📐 <span class="bg-slate-800 text-white px-2 py-0.5 rounded font-mono">${totalDistMeters} M</span></span>
-                            <button onclick="openDistrictDetails(${dist.id})" class="bg-indigo-600 hover:bg-indigo-700 text-white px-2.5 py-1 rounded text-[11px] flex items-center gap-1 shadow transition">${translations[currentLang].viewDetails}</button>
+                            <button type="button" onclick="openDistrictDetails(${dist.id})" class="bg-indigo-600 hover:bg-indigo-700 text-white px-2.5 py-1 rounded text-[11px] flex items-center gap-1 shadow transition">${translations[currentLang].viewDetails || 'عرض التفاصيل'}</button>
                         </div>
                     </div>
                     <div class="grid grid-cols-3 gap-2 text-center text-[11px] font-bold">
@@ -686,6 +686,8 @@
         function updateUI() {
             localStorage.setItem('cableInventoryData_Dynamic_V6', JSON.stringify(appData));
             const grid = document.getElementById('dashboard-grid');
+            
+            // تنظيف الكروت المضافة ديناميكياً لتجنب تكرارها عند التحديث
             const cards = grid.querySelectorAll('.bg-gradient-to-br');
             for(let i = 1; i < cards.length; i++) { cards[i].remove(); }
 
@@ -726,4 +728,96 @@
             });
 
             const customOpt = document.createElement('option');
-            customOpt.value = 'custom'; customOpt.innerText = translations[currentLang].custom
+            customOpt.value = 'custom'; customOpt.innerText = translations[currentLang].customOpt;
+            inSelect.appendChild(customOpt);
+
+            document.getElementById('total-stock').innerText = totalSum;
+            
+            renderCustomersList(appData.installations);
+            renderArchiveList();
+            renderOdnDashboard();
+            toggleManualInputVisibility();
+        }
+
+        function renderCustomersList(arr) {
+            const container = document.getElementById('customers-cards-container');
+            container.innerHTML = '';
+            if(arr.length === 0) {
+                document.getElementById('no-data-msg').classList.remove('hidden');
+            } else {
+                document.getElementById('no-data-msg').classList.add('hidden');
+                arr.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = "bg-slate-50 rounded-xl p-4 border border-slate-200 flex justify-between items-center";
+                    card.innerHTML = `
+                        <div>
+                            <h4 class="font-bold text-slate-800 text-sm">${item.name}</h4>
+                            <span class="text-slate-500 text-xs font-mono">${item.phone}</span>
+                        </div>
+                        <span class="bg-indigo-100 text-indigo-800 text-xs font-bold px-3 py-1 rounded-full">${item.cableType} M</span>
+                    `;
+                    container.appendChild(card);
+                });
+            }
+        }
+
+        function renderArchiveList() {
+            const container = document.getElementById('archive-cards-container');
+            container.innerHTML = '';
+            appData.supplyArchive.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "bg-slate-50 rounded-xl p-4 border border-slate-200 flex justify-between items-center";
+                card.innerHTML = `
+                    <div><h4 class="font-bold text-slate-800 text-sm">${item.dateTime}</h4></div>
+                    <span class="text-emerald-600 font-bold text-sm font-mono">+${item.quantity} [f: ${item.cableType}M]</span>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function filterCustomers() {
+            const q = document.getElementById('customer-search-input').value.toLowerCase().trim();
+            if(!q) { renderCustomersList(appData.installations); return; }
+            const f = appData.installations.filter(i => i.name.toLowerCase().includes(q) || i.phone.includes(q));
+            renderCustomersList(f);
+        }
+
+        function handleStockIn(e) {
+            e.preventDefault();
+            const selectField = document.getElementById('in-type-select').value;
+            const qty = parseInt(document.getElementById('in-qty').value);
+            let finalCategory = (selectField === 'custom') ? document.getElementById('in-type-manual').value.trim() : selectField;
+            if(!finalCategory) return;
+            appData.stocks[finalCategory] = (appData.stocks[finalCategory] || 0) + qty;
+            const now = new Date();
+            const formatted = now.toLocaleDateString('ar-DZ', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+            appData.supplyArchive.unshift({ cableType: finalCategory, quantity: qty, dateTime: formatted });
+            document.getElementById('in-qty').value = '';
+            updateUI();
+            showPage('archive-page');
+        }
+
+        function handleNewInstallation(e) {
+            e.preventDefault();
+            const name = document.getElementById('out-name').value;
+            const phone = document.getElementById('out-phone').value;
+            const type = document.getElementById('out-type').value;
+            if(!type || !appData.stocks[type] || appData.stocks[type] < 1) { alert(translations[currentLang].noStock); return; }
+            appData.stocks[type] -= 1;
+            appData.installations.unshift({ name, phone, cableType: type });
+            document.getElementById('out-name').value = ''; document.getElementById('out-phone').value = '';
+            updateUI();
+            showPage('customers-page');
+        }
+
+        function toggleResetPanel() { document.getElementById('reset-panel').classList.toggle('hidden'); }
+        function checkResetConfirmation() { document.getElementById('btn-reset-all').disabled = (document.getElementById('reset-confirm-input').value.trim() !== 'تأكيد'); }
+        function resetAllFactory() { appData = { stocks: { "20": 0, "30": 0, "50": 0, "80": 0 }, installations: [], supplyArchive: [], currentDistrict: "", odnBuildings: [], archivedDistricts: [] }; updateUI(); showPage('stock-page'); }
+
+        // الإقلاع التلقائي المستقر
+        window.onload = function() {
+            changeLanguage('ar');
+        };
+    </script>
+</body>
+</html>
