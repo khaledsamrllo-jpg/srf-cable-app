@@ -39,7 +39,7 @@
                     <span id="unit-total" class="text-sm font-normal mr-2 ml-2">بكرة إجمالية</span>
                 </p>
             </div>
-            </section>
+        </section>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
             
@@ -86,8 +86,7 @@
                     </div>
                     <div>
                         <label id="lbl-type-out" class="block text-sm font-semibold mb-2 text-slate-600">الكابل المستخدم للتركيب</label>
-                        <select id="out-type" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none focus:border-sky-500 transition">
-                            </select>
+                        <select id="out-type" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none focus:border-sky-500 transition"></select>
                     </div>
                     <button type="submit" id="btn-out-submit" class="w-full bg-sky-600 hover:bg-sky-700 text-white font-bold py-3 rounded-xl shadow transition flex justify-center items-center space-x-2 space-x-reverse">
                         <i class="fa-solid fa-check-double"></i>
@@ -110,7 +109,7 @@
             </div>
 
             <div id="reset-panel" class="hidden bg-red-50 border border-red-200 rounded-xl p-4 mb-6 transition-all">
-                <p id="reset-warn-text" class="text-xs text-red-700 font-medium mb-3">⚠️ تحذير: هذه الخطوة ستمسح السجلات. لتفادي الأخطاء، اكتب كلمة <span class="font-bold underline text-sm">"تأكيد"</span> أو <span class="font-bold underline text-sm">"RESET"</span> لتفعيل الأزرار:</p>
+                <p id="reset-warn-text" class="text-xs text-red-700 font-medium mb-3">⚠️ تحذير: هذه الخطوة ستمسح السجلات. لتفادي الأخطاء، اكتب كلمة <span class="font-bold underline text-sm">"تأكيد"</span> لتفعيل الأزرار:</p>
                 <input type="text" id="reset-confirm-input" oninput="checkResetConfirmation()" class="bg-white border border-red-300 rounded-lg px-3 py-2 text-sm outline-none w-full max-w-xs mb-3 block" placeholder="اكتب التأكيد هنا">
                 <div class="flex flex-wrap gap-3">
                     <button id="btn-reset-ops" disabled onclick="resetOperationsOnly()" class="bg-red-200 text-red-700 font-bold px-4 py-2 text-xs rounded-lg transition disabled:opacity-50 hover:bg-red-600 hover:text-white">حذف سجل الزبائن فقط والابقاء على السلع</button>
@@ -139,9 +138,8 @@
     </main>
 
     <script>
-        // هيكلة بيانات مرنة تعتمد على الكائنات (الأجسام الديناميكية) لتقبل أي فئة
-        let appData = JSON.parse(localStorage.getItem('cableInventoryData_Dynamic')) || {
-            stocks: { "50": 0, "80": 0 }, // فئات افتراضية لتبدأ بها
+        let appData = JSON.parse(localStorage.getItem('cableInventoryData_Dynamic_V2')) || {
+            stocks: { "50": 0, "80": 0 },
             installations: []
         };
 
@@ -150,7 +148,7 @@
         const translations = {
             ar: {
                 navTitle: "نظام تتبع مخزون الكوابل الشخصي الحر", langBtn: "Français", cardTotal: "المجموع الكلي للمخزون",
-                unitT: "بكرة إجمالية", unitM: "بكرة متاحة", formIn: "إمداد وتغذية المخزن (إدخل فئات حر)", lblTypeIn: "اختر الفئة أو اختر \"إدخال يدوي\"",
+                unitT: "بكرة إجمالية", unitM: "بكرة متاحة", formIn: "إمداد وتغذية المخزن (إدخال فئات حر)", lblTypeIn: "اختر الفئة أو اختر \"إدخال يدوي\"",
                 lblManualType: "اكتب طول الفئة الجديدة بالأمتار", customOpt: "✍️ إدخال يدوي فئة جديدة...", lblQtyIn: "الكمية (عدد البكرات)",
                 btnIn: "تأكيد الإدخال للمخزن", formOut: "تسجيل زبون وتركيب جديد (حركة خارجة)", lblCustName: "اسم الزبون الكامل",
                 lblCustPhone: "رقم الهاتف", lblTypeOut: "الكابل المستخدم للتركيب", btnOut: "حفظ البيانات وخصم المخزن فورا",
@@ -158,21 +156,21 @@
                 thName: "اسم الزبون", thPhone: "رقم الهاتف", thCable: "نوع الكابل المستخدم", thStatus: "الحالة",
                 noData: "لا توجد عمليات مسجلة حالياً لبداية جديدة", badgeOut: "تم التركيب والخصم",
                 alertNoStock: "🚨 خطأ: كمية الكابل المطلوبة غير متوفرة في مخزن هذا الهاتف!",
-                warnReset: "⚠️ تحذير: هذه الخطوة ستمسح السجلات. لتفادي الأخطاء، اكتب كلمة \"تأكيد\" أو \"RESET\" لتفعيل الأزرار:",
+                warnReset: "⚠️ تحذير: هذه الخطوة ستمسح السجلات. لتفادي الأخطاء، اكتب كلمة \"تأكيد\" لتفعيل الأزرار:",
                 noStockAvailable: "لا توجد كوابل متوفرة بالمخزن حالياً"
             },
             fr: {
                 navTitle: "Gestion de Stock Flexible", langBtn: "العربية", cardTotal: "Stock Global Total",
-                unitT: "Rouleaux au total", unitM: "Disponibles", formIn: "Entrée de stock (Champs Libres)", lblTypeIn: "Sélectionnez ou Saisir manuellement",
-                lblManualType: "Entrez la taille de la catégorie en mètres", customOpt: "✍️ Saisir manuellement...", lblQtyIn: "Quantité (Nombre de rouleaux)",
-                btnIn: "Confirmer l'entrée", formOut: "Nouvelle Installation (Sortie)", lblCustName: "Nom complet du client",
+                unitT: "Rouleaux au total", unitM: "Disponibles", formIn: "Entrée de stock", lblTypeIn: "Sélectionnez ou Saisir manuellement",
+                lblManualType: "Entrez la taille en mètres", customOpt: "✍️ Saisir manuellement...", lblQtyIn: "Quantité",
+                btnIn: "Confirmer l'entrée", formOut: "Nouvelle Installation", lblCustName: "Nom complet du client",
                 lblCustPhone: "Numéro de téléphone", lblTypeOut: "Câble utilisé", btnOut: "Enregistrer et déduire",
                 tableTitle: "Registre des opérations de ce téléphone", btnResetP: "Options de réinitialisation",
                 thName: "Nom du Client", thPhone: "Téléphone", thCable: "Câble Utilisé", thStatus: "Statut",
                 noData: "Aucune opération enregistrée", badgeOut: "Installé & Déduit",
-                alertNoStock: "🚨 Erreur: Stock insuffisant sur ce téléphone!",
-                warnReset: "⚠️ Attention: Écrivez \"تأكيد\" ou \"RESET\" pour déverrouiller:",
-                noStockAvailable: "Aucun câble disponible en stock"
+                alertNoStock: "🚨 Erreur: Stock insuffisant!",
+                warnReset: "⚠️ Attention: Écrivez \"تأكيد\" pour déverrouiller:",
+                noStockAvailable: "Aucun câble disponible"
             }
         };
 
@@ -189,40 +187,31 @@
         }
 
         function updateUI() {
-            localStorage.setItem('cableInventoryData_Dynamic', JSON.stringify(appData));
+            localStorage.setItem('cableInventoryData_Dynamic_V2', JSON.stringify(appData));
             
-            // 1. تنظيف الكروت الديناميكية القديمة وإعادة بنائها حسب الفئات المخزنة فعلياً
             const grid = document.getElementById('dashboard-grid');
-            // مسح الكروت السابقة باستثناء الكرت الأول (كرت الإجمالي العام)
-            const cards = grid.querySelectorAll('.relative');
+            const cards = grid.querySelectorAll('.bg-gradient-to-br');
             for(let i = 1; i < cards.length; i++) { cards[i].remove(); }
 
             let totalSum = 0;
-            
-            // ملء واجهات القوائم المنسدلة (الداخل والخارج)
             const inSelect = document.getElementById('in-type-select');
             const outSelect = document.getElementById('out-type');
-            
-            // حفظ القيمة المحددة حالياً لتجنب مسح اختيار المستخدم
             const currentInVal = inSelect.value;
             
             inSelect.innerHTML = '';
             outSelect.innerHTML = '';
 
-            // ترتيب الفئات تصاعدياً لعرض منظم
             const sortedCategories = Object.keys(appData.stocks).sort((a,b) => parseInt(a) - parseInt(b));
 
             sortedCategories.forEach(cat => {
                 const qty = appData.stocks[cat];
                 totalSum += qty;
 
-                // إضافة الخيارات لقائمة الإمداد
                 const optIn = document.createElement('option');
                 optIn.value = cat;
                 optIn.innerText = `كابل فئة ${cat} متر (Câble ${cat}M)`;
                 inSelect.appendChild(optIn);
 
-                // إضافة الخيارات لقائمة السحب للزبائن (فقط لو كانت الكمية > 0)
                 if(qty > 0) {
                     const optOut = document.createElement('option');
                     optOut.value = cat;
@@ -230,13 +219,12 @@
                     outSelect.appendChild(optOut);
                 }
 
-                // إنشاء الكرت الأصفر بصرياً في لوحة التحكم بشكل تلقائي
                 const card = document.createElement('div');
-                card.className = "bg-gradient-to-br from-amber-500 to-amber-600 text-white rounded-2xl p-6 shadow-md transform hover:scale-[1.02] transition duration-200 relative overflow-hidden";
+                card.className = "bg-gradient-to-br from-amber-500 to-amber-600 text-white rounded-2xl p-6 shadow-md relative overflow-hidden";
                 card.innerHTML = `
                     <div class="absolute -right-6 -bottom-6 text-white/10 text-8xl"><i class="fa-solid fa-scroll"></i></div>
                     <div class="flex justify-between items-start mb-4 relative z-10">
-                        <h3 class="text-lg font-medium opacity-90">${currentLang === 'ar' ? 'كابل فئة' : 'Câble'} ${cat} ${currentLang === 'ar' ? 'متر' : 'Meters'}</h3>
+                        <h3 class="text-lg font-medium opacity-90">${currentLang === 'ar' ? 'كابل فئة' : 'Câble'} ${cat} M</h3>
                         <span class="bg-white/20 p-2 rounded-lg"><i class="fa-solid fa-arrows-left-right text-xl"></i></span>
                     </div>
                     <p class="text-4xl font-extrabold relative z-10 flex items-baseline">
@@ -247,7 +235,6 @@
                 grid.appendChild(card);
             });
 
-            // إرجاع خيار الإدخال اليدوي الحر للقائمة
             const customOpt = document.createElement('option');
             customOpt.value = 'custom';
             customOpt.innerText = translations[currentLang].customOpt;
@@ -264,10 +251,8 @@
                 outSelect.appendChild(noOpt);
             }
 
-            // تحديث رقم المجموع العام
             document.getElementById('total-stock').innerText = totalSum;
 
-            // إحلال جدول العمليات
             const listContainer = document.getElementById('operations-log-list');
             listContainer.innerHTML = '';
             
@@ -281,7 +266,7 @@
                     tr.innerHTML = `
                         <td class="p-4 font-medium">${item.name}</td>
                         <td class="p-4 text-slate-500">${item.phone}</td>
-                        <td class="p-4"><span class="bg-indigo-100 text-indigo-800 font-semibold px-2.5 py-1 rounded text-xs">${currentLang === 'ar' ? 'كابل' : 'Câble'} ${item.cableType} ${currentLang === 'ar' ? 'متر' : 'M'}</span></td>
+                        <td class="p-4"><span class="bg-indigo-100 text-indigo-800 font-semibold px-2.5 py-1 rounded text-xs">${currentLang === 'ar' ? 'كابل' : 'Câble'} ${item.cableType} M</span></td>
                         <td class="p-4"><span class="bg-emerald-100 text-emerald-800 font-bold px-2.5 py-1 rounded-full text-xs"><i class="fa-solid fa-circle-check ml-1 mr-1"></i>${translations[currentLang].badgeOut}</span></td>
                     `;
                     listContainer.appendChild(tr);
@@ -303,7 +288,6 @@
                 finalCategory = selectField;
             }
 
-            // إذا كانت الفئة جديدة كلياً (مثل 20 أو 30)، ينشئها النظام في الذاكرة فوراً
             if(!appData.stocks[finalCategory]) {
                 appData.stocks[finalCategory] = 0;
             }
@@ -327,7 +311,6 @@
                 return;
             }
 
-            // الخصم التلقائي الدقيق
             appData.stocks[type] -= 1;
             appData.installations.unshift({ name, phone, cableType: type });
             
@@ -341,8 +324,8 @@
         }
 
         function checkResetConfirmation() {
-            const val = document.getElementById('reset-confirm-input').value.trim().toUpperCase();
-            const isConfirmed = (val === 'تأكيد' || val === 'RESET');
+            const val = document.getElementById('reset-confirm-input').value.trim();
+            const isConfirmed = (val === 'تأكيد' || val === 'RESET' || val === 'reset');
             document.getElementById('btn-reset-ops').disabled = !isConfirmed;
             document.getElementById('btn-reset-all').disabled = !isConfirmed;
         }
@@ -403,7 +386,6 @@
             updateUI();
         }
 
-        // تشغيل أولي
         updateUI();
     </script>
 </body>
