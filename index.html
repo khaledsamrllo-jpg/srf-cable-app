@@ -6,6 +6,10 @@
     <title>SRF App - إدارة شبكات ODN والمخزون</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* تسريع استجابة النقر على الهواتف وإلغاء تأخير اللمس */
+        button, div, [onclick] { touch-action: manipulation; }
+    </style>
 </head>
 <body class="bg-slate-50 font-sans min-h-screen text-slate-800 transition-all duration-300 flex flex-col">
 
@@ -49,6 +53,7 @@
         <div class="flex justify-between items-center mb-4">
             <h2 id="section-stock-title" class="text-md font-bold text-slate-500 flex items-center gap-2"><i class="fa-solid fa-chart-pie"></i> حالة المخزن الحالي</h2>
         </div>
+        
         <section id="dashboard-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-8">
             <div class="bg-gradient-to-br from-slate-700 to-slate-800 text-white rounded-2xl p-6 shadow-md relative overflow-hidden col-span-1 sm:col-span-2 md:col-span-1">
                 <div class="absolute -right-6 -bottom-6 text-white/10 text-8xl"><i class="fa-solid fa-warehouse"></i></div>
@@ -61,6 +66,7 @@
                     <span id="unit-total" class="text-sm font-normal mr-2 ml-2">بكرة إجمالية</span>
                 </p>
             </div>
+            <div id="dynamic-cards-area" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-6 col-span-1 sm:col-span-2 md:col-span-2"></div>
         </section>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
@@ -399,6 +405,7 @@
             window.scrollTo(0,0);
         }
 
+        // تحسين دالة تغيير اللغة لتحديث الواجهة فورياً بشكل غير متزامن لتفادي التجمد
         function changeLanguage(lang) {
             currentLang = lang;
             ['ar', 'fr', 'en'].forEach(l => {
@@ -563,8 +570,7 @@
                 tbody.appendChild(tr);
             });
 
-            const modal = document.getElementById('district-details-modal');
-            modal.classList.remove('hidden');
+            document.getElementById('district-details-modal').classList.remove('hidden');
         }
 
         function closeDetailsModal() {
@@ -579,7 +585,11 @@
         }
 
         function renderOdnDashboard() {
-            document.getElementById('odn-district-input').value = appData.currentDistrict || "";
+            const inputField = document.getElementById('odn-district-input');
+            if (inputField && document.activeElement !== inputField) {
+                inputField.value = appData.currentDistrict || "";
+            }
+            
             const tbody = document.getElementById('odn-table-body');
             tbody.innerHTML = '';
 
@@ -683,14 +693,13 @@
             document.getElementById('manual-type-container').style.display = (selectValue === 'custom') ? 'block' : 'none';
         }
 
+        // تحسين دالة التحديث لتكون خفيفة ومباشرة دون استهلاك موارد المعالج
         function updateUI() {
             localStorage.setItem('cableInventoryData_Dynamic_V6', JSON.stringify(appData));
-            const grid = document.getElementById('dashboard-grid');
-            
-            // تنظيف الكروت المضافة ديناميكياً لتجنب تكرارها عند التحديث
-            const cards = grid.querySelectorAll('.bg-gradient-to-br');
-            for(let i = 1; i < cards.length; i++) { cards[i].remove(); }
+            const cardsArea = document.getElementById('dynamic-cards-area');
+            if (!cardsArea) return;
 
+            cardsArea.innerHTML = '';
             let totalSum = 0;
             const inSelect = document.getElementById('in-type-select');
             const outSelect = document.getElementById('out-type');
@@ -724,7 +733,7 @@
                     </div>
                     <p class="text-4xl font-extrabold relative z-10 flex items-baseline"><span>${qty}</span><span class="text-sm font-normal mr-2">${translations[currentLang].unitM}</span></p>
                 `;
-                grid.appendChild(card);
+                cardsArea.appendChild(card);
             });
 
             const customOpt = document.createElement('option');
@@ -741,6 +750,7 @@
 
         function renderCustomersList(arr) {
             const container = document.getElementById('customers-cards-container');
+            if (!container) return;
             container.innerHTML = '';
             if(arr.length === 0) {
                 document.getElementById('no-data-msg').classList.remove('hidden');
@@ -763,6 +773,7 @@
 
         function renderArchiveList() {
             const container = document.getElementById('archive-cards-container');
+            if (!container) return;
             container.innerHTML = '';
             appData.supplyArchive.forEach(item => {
                 const card = document.createElement('div');
@@ -814,10 +825,10 @@
         function checkResetConfirmation() { document.getElementById('btn-reset-all').disabled = (document.getElementById('reset-confirm-input').value.trim() !== 'تأكيد'); }
         function resetAllFactory() { appData = { stocks: { "20": 0, "30": 0, "50": 0, "80": 0 }, installations: [], supplyArchive: [], currentDistrict: "", odnBuildings: [], archivedDistricts: [] }; updateUI(); showPage('stock-page'); }
 
-        // الإقلاع التلقائي المستقر
-        window.onload = function() {
+        // تشغيل مباشر وفوري وبدون أي تأخير بمجرد قراءة ملف الـ HTML
+        (function() {
             changeLanguage('ar');
-        };
+        })();
     </script>
 </body>
 </html>
