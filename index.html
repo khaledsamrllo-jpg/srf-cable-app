@@ -9,22 +9,30 @@
 </head>
 <body class="bg-slate-50 font-sans min-h-screen text-slate-800 transition-all duration-300 flex flex-col">
 
-    <header class="bg-gradient-to-r from-slate-800 to-indigo-900 text-white shadow-md sticky top-0 z-50">
+    <header class="bg-gradient-to-r from-slate-800 to-indigo-900 text-white shadow-lg sticky top-0 z-50">
         <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-            <div class="flex items-center space-x-3 space-x-reverse">
-                <div class="bg-white/20 p-2 rounded-lg text-xl">
+            <div onclick="showPage('stock-page')" class="flex items-center space-x-3 space-x-reverse cursor-pointer group">
+                <div class="bg-white/20 p-2 rounded-lg text-xl group-hover:bg-white/30 transition">
                     <i class="fa-solid fa-network-wired"></i>
                 </div>
-                <h1 id="nav-title" class="text-xl font-bold tracking-wide">نظام تتبع مخزون الكوابل الشخصي الحر</h1>
+                <h1 id="nav-title" class="text-xl font-bold tracking-wide">نظام تتبع مخزون الكوابل</h1>
             </div>
-            <button onclick="toggleLanguage()" class="bg-white text-indigo-900 hover:bg-slate-100 px-4 py-2 rounded-full text-sm font-bold shadow transition duration-200 flex items-center space-x-2 space-x-reverse">
-                <i class="fa-solid fa-language text-lg"></i>
-                <span id="lang-btn-text">Français</span>
-            </button>
+            
+            <div class="flex items-center gap-4">
+                <button onclick="showPage('customers-page')" class="bg-indigo-600/50 hover:bg-indigo-600 border border-indigo-400/30 px-4 py-2 rounded-xl text-sm font-bold shadow transition duration-200 flex items-center space-x-2 space-x-reverse">
+                    <i class="fa-solid fa-users"></i>
+                    <span id="nav-cust-btn">سجل الزبائن</span>
+                </button>
+                
+                <button onclick="toggleLanguage()" class="bg-white text-indigo-900 hover:bg-slate-100 px-3 py-2 rounded-xl text-sm font-bold shadow transition duration-200 flex items-center space-x-1 space-x-reverse">
+                    <i class="fa-solid fa-language text-lg"></i>
+                    <span id="lang-btn-text">Français</span>
+                </button>
+            </div>
         </div>
     </header>
 
-    <main class="container mx-auto px-4 py-8 max-w-6xl flex-grow">
+    <main id="stock-page" class="container mx-auto px-4 py-8 max-w-6xl flex-grow app-page">
         
         <h2 id="section-stock-title" class="text-md font-bold mb-4 text-slate-500 flex items-center gap-2"><i class="fa-solid fa-chart-pie"></i> حالة المخزن الحالي</h2>
         <section id="dashboard-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-8">
@@ -42,7 +50,6 @@
         </section>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-            
             <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
                 <div class="flex items-center space-x-3 space-x-reverse mb-6 border-b pb-4 border-slate-100">
                     <span class="bg-emerald-100 text-emerald-600 p-3 rounded-xl"><i class="fa-solid fa-circle-arrow-down text-xl"></i></span>
@@ -95,21 +102,47 @@
                 </form>
             </div>
         </div>
-
-        <section class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 mb-8">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 border-b pb-4 border-slate-100">
-                <div class="flex items-center space-x-3 space-x-reverse">
-                    <span class="bg-indigo-100 text-indigo-600 p-2 rounded-lg"><i class="fa-solid fa-users-gear"></i></span>
-                    <h2 id="table-title" class="text-lg font-bold">سجل العمليات والتركيبات الميدانية المنظم</h2>
+        
+        <div onclick="showPage('customers-page')" class="bg-indigo-50 border border-indigo-100 rounded-2xl p-4 flex justify-between items-center shadow-sm cursor-pointer hover:bg-indigo-100/50 transition">
+            <div class="flex items-center gap-3">
+                <span class="bg-indigo-600 text-white p-2.5 rounded-xl"><i class="fa-solid fa-users text-lg"></i></span>
+                <div>
+                    <h4 class="font-bold text-indigo-900 text-sm md:text-base">تصفح سجل العمليات المخفية للزبائن</h4>
+                    <p class="text-xs text-indigo-600/80 mt-0.5">انقر هنا لعرض والبحث في قائمة المشتركين الذين تم التركيب لهم</p>
                 </div>
-                <button onclick="toggleResetPanel()" class="text-red-500 hover:text-red-700 text-sm font-bold flex items-center space-x-1 space-x-reverse border border-red-100 hover:bg-red-50 px-3 py-1.5 rounded-lg transition">
-                    <i class="fa-solid fa-triangle-exclamation"></i>
-                    <span id="btn-reset-panel">خيارات التصفير وإعادة البدء</span>
-                </button>
+            </div>
+            <i class="fa-solid fa-chevron-left text-indigo-400 text-sm"></i>
+        </div>
+    </main>
+
+
+    <main id="customers-page" class="container mx-auto px-4 py-8 max-w-4xl flex-grow app-page hidden">
+        <div class="flex justify-between items-center mb-6">
+            <button onclick="showPage('stock-page')" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-4 py-2 rounded-xl text-sm transition flex items-center gap-2">
+                <i class="fa-solid fa-arrow-right"></i>
+                <span id="back-btn-text">العودة للمخزن الرئيسي</span>
+            </button>
+            <button onclick="toggleResetPanel()" class="text-red-500 hover:text-red-700 text-xs font-bold flex items-center space-x-1 space-x-reverse border border-red-100 hover:bg-red-50 px-3 py-1.5 rounded-lg transition">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span id="btn-reset-panel">خيارات التصفير</span>
+            </button>
+        </div>
+
+        <section class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+            <div class="border-b pb-4 border-slate-100 mb-6">
+                <h2 id="table-title" class="text-xl font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-address-book text-indigo-600"></i> قاعدة بيانات وسجلات الزبائن المسجلة</h2>
+                <p class="text-xs text-slate-400 mt-1">يمكنك البحث عن الزبائن بالاسم أو برقم الهاتف في الحقل أدناه</p>
+            </div>
+
+            <div class="relative mb-6">
+                <span class="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </span>
+                <input type="text" id="customer-search-input" oninput="filterCustomers()" class="w-full bg-slate-50 border border-slate-200 rounded-xl pr-11 pl-4 py-3 text-sm outline-none focus:border-indigo-500 focus:bg-white transition" placeholder="ابحث هنا عن اسم الزبون أو رقم الهاتف...">
             </div>
 
             <div id="reset-panel" class="hidden bg-red-50 border border-red-200 rounded-xl p-4 mb-6 transition-all">
-                <p id="reset-warn-text" class="text-xs text-red-700 font-medium mb-3">⚠️ تحذير: هذه الخطوة ستمسح السجلات. لتفادي الأخطاء، اكتب كلمة <span class="font-bold underline text-sm">"تأكيد"</span> لتفعيل الأزرار:</p>
+                <p id="reset-warn-text" class="text-xs text-red-700 font-medium mb-3">⚠️ تحذير: ستمسح السجلات. اكتب كلمة <span class="font-bold underline text-sm">"تأكيد"</span> لتفعيل الأزرار:</p>
                 <input type="text" id="reset-confirm-input" oninput="checkResetConfirmation()" class="bg-white border border-red-300 rounded-lg px-3 py-2 text-sm outline-none w-full max-w-xs mb-3 block" placeholder="اكتب التأكيد هنا">
                 <div class="flex flex-wrap gap-3">
                     <button id="btn-reset-ops" disabled onclick="resetOperationsOnly()" class="bg-red-200 text-red-700 font-bold px-4 py-2 text-xs rounded-lg transition disabled:opacity-50 hover:bg-red-600 hover:text-white">حذف سجل الزبائن فقط والابقاء على السلع</button>
@@ -117,8 +150,7 @@
                 </div>
             </div>
 
-            <div id="customers-cards-container" class="space-y-4">
-                </div>
+            <div id="customers-cards-container" class="space-y-4"></div>
 
             <div id="no-data-msg" class="text-center py-12 text-slate-400 font-medium hidden">
                 <i class="fa-solid fa-folder-open text-3xl block mb-2 text-slate-300"></i>
@@ -126,6 +158,10 @@
             </div>
         </section>
     </main>
+
+    <div id="floating-btn" onclick="showPage('customers-page')" class="fixed bottom-6 left-6 bg-indigo-600 hover:bg-indigo-700 text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center cursor-pointer transition duration-300 hover:scale-110 z-40">
+        <i class="fa-solid fa-users text-xl"></i>
+    </div>
 
     <footer class="bg-slate-900 text-slate-400 text-center py-6 border-t border-slate-800 text-xs mt-auto">
         <div class="container mx-auto px-4 flex flex-col sm:flex-row justify-center items-center gap-2">
@@ -139,51 +175,65 @@
     </footer>
 
     <script>
-        // الذاكرة التخزينية المحسنة
         let appData = JSON.parse(localStorage.getItem('cableInventoryData_Dynamic_V3')) || {
-            stocks: { "20": 0, "30": 0, "50": 0, "80": 0 }, // تهيئة الأربع فئات المطلوبة
+            stocks: { "20": 0, "30": 0, "50": 0, "80": 0 },
             installations: []
         };
 
         let currentLang = 'ar';
 
-        // خريطة ذكية للألوان والأيقونات المخصصة حسب فئة الطول بالكود
         const styleConfig = {
             "20": { bg: "from-purple-500 to-purple-600", border: "border-purple-200", badge: "bg-purple-100 text-purple-800", icon: "fa-solid fa-bezier-curve" },
             "30": { bg: "from-orange-500 to-orange-600", border: "border-orange-200", badge: "bg-orange-100 text-orange-800", icon: "fa-solid fa-circle-notch" },
             "50": { bg: "from-blue-500 to-blue-600", border: "border-blue-200", badge: "bg-blue-100 text-blue-800", icon: "fa-solid fa-route" },
             "80": { bg: "from-pink-600 to-pink-700", border: "border-pink-200", badge: "bg-pink-100 text-pink-800", icon: "fa-solid fa-scroll" },
-            "default": { bg: "from-slate-500 to-slate-600", border: "border-slate-200", badge: "bg-slate-100 text-slate-800", icon: "fa-solid fa-faucet-力を" }
+            "default": { bg: "from-slate-500 to-slate-600", border: "border-slate-200", badge: "bg-slate-100 text-slate-800", icon: "fa-solid fa-box" }
         };
 
         const translations = {
             ar: {
-                navTitle: "نظام تتبع مخزون الكوابل الشخصي الحر", langBtn: "Français", cardTotal: "المجموع الكلي للمخزون",
-                unitT: "بكرة إجمالية", unitM: "بكرة متاحة", formIn: "إمداد وتغذية المخزن (إدخل فئات حر)", lblTypeIn: "اختر الفئة أو اختر \"إدخال يدوي\"",
+                navTitle: "نظام تتبع مخزون الكوابل", langBtn: "Français", cardTotal: "المجموع الكلي للمخزون", navCust: "سجل الزبائن",
+                unitT: "بكرة إجمالية", unitM: "بكرة متاحة", formIn: "إمداد وتغذية المخزن (إدخال فئات حر)", lblTypeIn: "اختر الفئة أو اختر \"إدخال يدوي\"",
                 lblManualType: "اكتب طول الفئة الجديدة بالأمتار", customOpt: "✍️ إدخال يدوي فئة جديدة...", lblQtyIn: "الكمية (عدد البكرات)",
                 btnIn: "تأكيد الإدخال للمخزن", formOut: "تسجيل زبون وتركيب جديد (حركة خارجة)", lblCustName: "اسم الزبون الكامل",
                 lblCustPhone: "رقم الهاتف", lblTypeOut: "الكابل المستخدم للتركيب", btnOut: "حفظ البيانات وخصم المخزن فورا",
-                tableTitle: "سجل العمليات والتركيبات الميدانية المنظم", btnResetP: "خيارات التصفير وإعادة البدء",
+                tableTitle: "قاعدة بيانات وسجلات الزبائن المسجلة", btnResetP: "خيارات التصفير", searchPlh: "ابحث هنا عن اسم الزبون أو رقم الهاتف...",
                 noData: "لا توجد عمليات مسجلة حالياً لبداية جديدة", badgeOut: "تم التركيب والخصم بنجاح",
-                alertNoStock: "🚨 خطأ: كمية الكابل المطلوبة غير متوفرة في مخزن هذا الهاتف!",
-                warnReset: "⚠️ تحذير: هذه الخطوة ستمسح السجلات. لتفادي الأخطاء، اكتب كلمة \"تأكيد\" لتفعيل الأزرار:",
-                noStockAvailable: "لا توجد كوابل متوفرة بالمخزن حالياً",
+                alertNoStock: "🚨 خطأ: كمية الكابل المطلوبة غير متوفرة في مخزن هذا الهاتف!", backBtn: "العودة للمخزن الرئيسي",
+                warnReset: "⚠️ تحذير: ستمسح السجلات. اكتب كلمة \"تأكيد\" لتفعيل الأزرار:",
+                noStockAvailable: "لا توجد كوابل متوفرة بالمخزن حالياً", callBtn: "اتصال مباشر",
                 footerRights: "© 2026 جميع الحقوق محفوظة. تم التطوير وبناء النظام بواسطة:"
             },
             fr: {
-                navTitle: "Gestion de Stock Flexible", langBtn: "العربية", cardTotal: "Stock Global Total",
+                navTitle: "Gestion de Stock", langBtn: "العربية", cardTotal: "Stock Global Total", navCust: "Clients",
                 unitT: "Rouleaux au total", unitM: "Disponibles", formIn: "Entrée de stock", lblTypeIn: "Sélectionnez ou Saisir manuellement",
                 lblManualType: "Entrez la taille en mètres", customOpt: "✍️ Saisir manuellement...", lblQtyIn: "Quantité",
                 btnIn: "Confirmer l'entrée", formOut: "Nouvelle Installation", lblCustName: "Nom complet du client",
                 lblCustPhone: "Numéro de téléphone", lblTypeOut: "Câble utilisé", btnOut: "Enregistrer et déduire",
-                tableTitle: "Registre des opérations structuré", btnResetP: "Options de réinitialisation",
-                noData: "Aucune opération enregistrée", badgeOut: "Installation Validée",
-                alertNoStock: "🚨 Erreur: Stock insuffisant!",
+                tableTitle: "Base de données des clients enregistrés", btnResetP: "Réinitialisation", searchPlh: "Rechercher un client ou téléphone...",
+                noData: "Aucune opération enregistrée", badgeOut: "Installation Validée", backBtn: "Retour au Stock Principal",
+                alertNoStock: "🚨 Erreur: Stock insuffisant!", callBtn: "Appeler",
                 warnReset: "⚠️ Attention: Écrivez \"تأكيد\" pour déverrouiller:",
                 noStockAvailable: "Aucun câble disponible",
                 footerRights: "© 2026 Tous droits réservés. Développé et conçu par:"
             }
         };
+
+        // نظام التبديل بين الصفحات وإخفاء الزر العائم حسب الصفحة
+        function showPage(pageId) {
+            document.querySelectorAll('.app-page').forEach(page => page.classList.add('hidden'));
+            document.getElementById(pageId).classList.remove('hidden');
+            
+            const floatingBtn = document.getElementById('floating-btn');
+            if (pageId === 'customers-page') {
+                floatingBtn.classList.add('hidden');
+                document.getElementById('customer-search-input').value = '';
+                filterCustomers();
+            } else {
+                floatingBtn.classList.remove('hidden');
+            }
+            window.scrollTo(0,0);
+        }
 
         function toggleManualInputVisibility() {
             const selectValue = document.getElementById('in-type-select').value;
@@ -202,7 +252,6 @@
             
             const grid = document.getElementById('dashboard-grid');
             const cards = grid.querySelectorAll('.bg-gradient-to-br');
-            // إزالة الكروت المتغيرة والإبقاء على كرت المجموع الكلي الأول
             for(let i = 1; i < cards.length; i++) { cards[i].remove(); }
 
             let totalSum = 0;
@@ -219,7 +268,6 @@
                 const qty = appData.stocks[cat];
                 totalSum += qty;
 
-                // التغذية التلقائية للقوائم
                 const optIn = document.createElement('option');
                 optIn.value = cat;
                 optIn.innerText = `كابل فئة ${cat} متر (Câble ${cat}M)`;
@@ -232,7 +280,6 @@
                     outSelect.appendChild(optOut);
                 }
 
-                // سحب تنسيق اللون والأيقونة المخصص للفئة أو الافتراضي
                 const conf = styleConfig[cat] || styleConfig["default"];
 
                 const card = document.createElement('div');
@@ -268,16 +315,20 @@
             }
 
             document.getElementById('total-stock').innerText = totalSum;
+            renderCustomersList(appData.installations);
+            toggleManualInputVisibility();
+        }
 
-            // بناء واجهة سجل الزبائن المنظم الجديد
+        // دالة توليد وبناء الكروت المستقلة للزبائن مع زر الاتصال السريع
+        function renderCustomersList(installationsArray) {
             const customersContainer = document.getElementById('customers-cards-container');
             customersContainer.innerHTML = '';
             
-            if(appData.installations.length === 0) {
+            if(installationsArray.length === 0) {
                 document.getElementById('no-data-msg').classList.remove('hidden');
             } else {
                 document.getElementById('no-data-msg').classList.add('hidden');
-                appData.installations.forEach(item => {
+                installationsArray.forEach(item => {
                     const firstLetter = item.name.trim().charAt(0).toUpperCase();
                     const conf = styleConfig[item.cableType] || styleConfig["default"];
                     
@@ -292,8 +343,8 @@
                                 <h4 class="font-bold text-slate-800 text-sm md:text-base truncate">${item.name}</h4>
                                 <div class="flex items-center gap-2 mt-1">
                                     <span class="text-slate-500 text-xs md:text-sm font-medium tracking-wide">${item.phone}</span>
-                                    <a href="tel:${item.phone}" class="text-indigo-600 hover:text-indigo-800 bg-white border border-slate-300 rounded px-1.5 py-0.5 text-xs flex items-center gap-1 shadow-sm font-bold transition">
-                                        <i class="fa-solid fa-phone text-[10px]"></i> ${currentLang === 'ar' ? 'اتصال مباشر' : 'Appeler'}
+                                    <a href="tel:${item.phone}" class="text-indigo-600 hover:text-indigo-800 bg-white border border-slate-300 rounded px-2 py-1 text-xs flex items-center gap-1 shadow-sm font-bold transition">
+                                        <i class="fa-solid fa-phone text-[10px]"></i> ${translations[currentLang].callBtn}
                                     </a>
                                 </div>
                             </div>
@@ -310,7 +361,19 @@
                     customersContainer.appendChild(card);
                 });
             }
-            toggleManualInputVisibility();
+        }
+
+        // دالة الفلترة والبحث الذكي الفوري
+        function filterCustomers() {
+            const query = document.getElementById('customer-search-input').value.toLowerCase().trim();
+            if(!query) {
+                renderCustomersList(appData.installations);
+                return;
+            }
+            const filtered = appData.installations.filter(item => {
+                return item.name.toLowerCase().includes(query) || item.phone.includes(query);
+            });
+            renderCustomersList(filtered);
         }
 
         function handleStockIn(e) {
@@ -355,6 +418,9 @@
             document.getElementById('out-name').value = '';
             document.getElementById('out-phone').value = '';
             updateUI();
+            
+            // تحويل تلقائي فوري لصفحة الزبائن لمشاهدة الحركة المدخلة
+            showPage('customers-page');
         }
 
         function toggleResetPanel() {
@@ -382,6 +448,7 @@
             checkResetConfirmation();
             toggleResetPanel();
             updateUI();
+            showPage('stock-page');
         }
 
         function toggleLanguage() {
@@ -392,13 +459,16 @@
                 document.documentElement.dir = 'rtl';
                 document.documentElement.lang = 'ar';
                 document.getElementById('out-phone').className = "w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none text-right";
+                document.getElementById('customer-search-input').className = "w-full bg-slate-50 border border-slate-200 rounded-xl pr-11 pl-4 py-3 text-sm outline-none focus:border-indigo-500 focus:bg-white transition";
             } else {
                 document.documentElement.dir = 'ltr';
                 document.documentElement.lang = 'fr';
                 document.getElementById('out-phone').className = "w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none text-left";
+                document.getElementById('customer-search-input').className = "w-full bg-slate-50 border border-slate-200 rounded-xl pl-11 pr-4 py-3 text-sm outline-none focus:border-indigo-500 focus:bg-white transition";
             }
 
             document.getElementById('nav-title').innerText = dict.navTitle;
+            document.getElementById('nav-cust-btn').innerText = dict.navCust;
             document.getElementById('lang-btn-text').innerText = dict.langBtn;
             document.getElementById('card-total-title').innerText = dict.cardTotal;
             document.getElementById('unit-total').innerText = dict.unitT;
@@ -417,6 +487,8 @@
             document.getElementById('no-data-txt').innerText = dict.noData;
             document.getElementById('reset-warn-text').innerHTML = dict.warnReset;
             document.getElementById('footer-rights').innerText = dict.footerRights;
+            document.getElementById('back-btn-text').innerText = dict.backBtn;
+            document.getElementById('customer-search-input').placeholder = dict.searchPlh;
 
             updateUI();
         }
