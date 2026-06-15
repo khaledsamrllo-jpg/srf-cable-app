@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام إدارة مخزون الكوابل الفني</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-50 font-sans min-h-screen text-slate-800 transition-all duration-300">
+
+    <header class="bg-gradient-to-r from-blue-700 to-indigo-800 text-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-3 space-x-reverse">
+                <div class="bg-white/20 p-2 rounded-lg text-xl">
+                    <i class="fa-solid fa-boxes-stacked"></i>
+                </div>
+                <h1 id="nav-title" class="text-xl font-bold tracking-wide">نظام تتبع مخزون الكوابل الشخصي</h1>
+            </div>
+            <button onclick="toggleLanguage()" class="bg-white text-blue-700 hover:bg-blue-50 px-4 py-2 rounded-full text-sm font-bold shadow transition duration-200 flex items-center space-x-2 space-x-reverse">
+                <i class="fa-solid fa-language text-lg"></i>
+                <span id="lang-btn-text">Français</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8 max-w-6xl">
+        
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-2xl p-6 shadow-md transform hover:scale-[1.02] transition duration-200 relative overflow-hidden">
+                <div class="absolute -right-6 -bottom-6 text-white/10 text-8xl">
+                    <i class="fa-solid fa-warehouse"></i>
+                </div>
+                <div class="flex justify-between items-start mb-4 relative z-10">
+                    <h3 id="card-total-title" class="text-lg font-medium opacity-90">المجموع الكلي للمخزون</h3>
+                    <span class="bg-white/20 p-2 rounded-lg"><i class="fa-solid fa-calculator text-xl"></i></span>
+                </div>
+                <p class="text-4xl font-extrabold relative z-10 flex items-baseline">
+                    <span id="total-stock">0</span>
+                    <span id="unit-total" class="text-sm font-normal mr-2 ml-2">بكرة / وحدة</span>
+                </p>
+            </div>
+
+            <div class="bg-gradient-to-br from-amber-500 to-amber-600 text-white rounded-2xl p-6 shadow-md transform hover:scale-[1.02] transition duration-200 relative overflow-hidden">
+                <div class="absolute -right-6 -bottom-6 text-white/10 text-8xl">
+                    <i class="fa-solid fa-scroll"></i>
+                </div>
+                <div class="flex justify-between items-start mb-4 relative z-10">
+                    <h3 id="card-50-title" class="text-lg font-medium opacity-90">كابل فئة 50 متر</h3>
+                    <span class="bg-white/20 p-2 rounded-lg"><i class="fa-solid fa-arrows-left-right text-xl"></i></span>
+                </div>
+                <p class="text-4xl font-extrabold relative z-10 flex items-baseline">
+                    <span id="stock-50">0</span>
+                    <span id="unit-50" class="text-sm font-normal mr-2 ml-2">بكرة المتاحة</span>
+                </p>
+            </div>
+
+            <div class="bg-gradient-to-br from-yellow-500 to-yellow-600 text-white rounded-2xl p-6 shadow-md transform hover:scale-[1.02] transition duration-200 relative overflow-hidden">
+                <div class="absolute -right-6 -bottom-6 text-white/10 text-8xl">
+                    <i class="fa-solid fa-scroll"></i>
+                </div>
+                <div class="flex justify-between items-start mb-4 relative z-10">
+                    <h3 id="card-80-title" class="text-lg font-medium opacity-90">كابل فئة 80 متر</h3>
+                    <span class="bg-white/20 p-2 rounded-lg"><i class="fa-solid fa-arrows-left-right text-xl"></i></span>
+                </div>
+                <p class="text-4xl font-extrabold relative z-10 flex items-baseline">
+                    <span id="stock-80">0</span>
+                    <span id="unit-80" class="text-sm font-normal mr-2 ml-2">بكرة المتاحة</span>
+                </p>
+            </div>
+        </section>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+                <div class="flex items-center space-x-3 space-x-reverse mb-6 border-b pb-4 border-slate-100">
+                    <span class="bg-emerald-100 text-emerald-600 p-3 rounded-xl"><i class="fa-solid fa-circle-arrow-down text-xl"></i></span>
+                    <h2 id="form-in-title" class="text-lg font-bold">إمداد وتغذية المخزن الشخصي (داخل)</h2>
+                </div>
+                <form id="form-stock-in" onsubmit="handleStockIn(event)" class="space-y-4">
+                    <div>
+                        <label id="lbl-type-in" class="block text-sm font-semibold mb-2 text-slate-600">نوع الكابل المورد</label>
+                        <select id="in-type" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none focus:border-emerald-500 transition">
+                            <option value="50">كابل فئة 50 متر (Câble 50M)</option>
+                            <option value="80">كابل فئة 80 متر (Câble 80M)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label id="lbl-qty-in" class="block text-sm font-semibold mb-2 text-slate-600">الكمية (عدد البكرات)</label>
+                        <input type="number" id="in-qty" min="1" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none focus:border-emerald-500 transition" placeholder="مثال: 10">
+                    </div>
+                    <button type="submit" id="btn-in-submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl shadow transition duration-200 flex justify-center items-center space-x-2 space-x-reverse">
+                        <i class="fa-solid fa-plus-circle"></i>
+                        <span>تأكيد الإدخال للمخزن</span>
+                    </button>
+                </form>
+            </div>
+
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+                <div class="flex items-center space-x-3 space-x-reverse mb-6 border-b pb-4 border-slate-100">
+                    <span class="bg-sky-100 text-sky-600 p-3 rounded-xl"><i class="fa-solid fa-user-plus text-xl"></i></span>
+                    <h2 id="form-out-title" class="text-lg font-bold">تسجيل زبون وتركيب جديد (حركة خارجة)</h2>
+                </div>
+                <form id="form-sale" onsubmit="handleNewInstallation(event)" class="space-y-4">
+                    <div>
+                        <label id="lbl-cust-name" class="block text-sm font-semibold mb-2 text-slate-600">اسم الزبون الكامل</label>
+                        <input type="text" id="out-name" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none focus:border-sky-500 transition" placeholder="اسم المشترك">
+                    </div>
+                    <div>
+                        <label id="lbl-cust-phone" class="block text-sm font-semibold mb-2 text-slate-600">رقم الهاتف</label>
+                        <input type="tel" id="out-phone" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none focus:border-sky-500 transition text-right" placeholder="06XXXXXXXX">
+                    </div>
+                    <div>
+                        <label id="lbl-type-out" class="block text-sm font-semibold mb-2 text-slate-600">الكابل المراد تركيبه واستهلاكه</label>
+                        <select id="out-type" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none focus:border-sky-500 transition">
+                            <option value="50">كابل فئة 50 متر (Câble 50M)</option>
+                            <option value="80">كابل فئة 80 متر (Câble 80M)</option>
+                        </select>
+                    </div>
+                    <button type="submit" id="btn-out-submit" class="w-full bg-sky-600 hover:bg-sky-700 text-white font-bold py-3 rounded-xl shadow transition duration-200 flex justify-center items-center space-x-2 space-x-reverse">
+                        <i class="fa-solid fa-check-double"></i>
+                        <span>حفظ البيانات وخصم المخزن فورا</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <section class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 overflow-hidden mb-8">
+            <div class="flex justify-between items-center mb-6 border-b pb-4 border-slate-100">
+                <div class="flex items-center space-x-3 space-x-reverse">
+                    <span class="bg-indigo-100 text-indigo-600 p-2 rounded-lg"><i class="fa-solid fa-list-check"></i></span>
+                    <h2 id="table-title" class="text-lg font-bold">جدول سجل العمليات والتركيبات الميدانية لهذا الهاتف</h2>
+                </div>
+                <button onclick="toggleResetPanel()" class="text-red-500 hover:text-red-700 text-sm font-bold flex items-center space-x-1 space-x-reverse border border-red-200 hover:bg-red-50 px-3 py-1.5 rounded-lg transition">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <span id="btn-reset-panel">خيارات التصفير وإعادة البدء</span>
+                </button>
+            </div>
+
+            <div id="reset-panel" class="hidden bg-red-50 border border-red-200 rounded-xl p-4 mb-6 transition-all">
+                <p id="reset-warn-text" class="text-xs text-red-700 font-medium mb-3">⚠️ تحذير: هذه الخطوة ستمسح السجلات. لتفادي الأخطاء، اكتب كلمة <span class="font-bold underline text-sm">"تأكيد"</span> أو <span class="font-bold underline text-sm">"RESET"</span> في الحقل أدناه لتفعيل الأزرار:</p>
+                <input type="text" id="reset-confirm-input" oninput="checkResetConfirmation()" class="bg-white border border-red-300 rounded-lg px-3 py-2 text-sm outline-none w-full max-w-xs mb-3 block" placeholder="اكتب التأكيد هنا">
+                <div class="flex flex-wrap gap-3">
+                    <button id="btn-reset-ops" disabled onclick="resetOperationsOnly()" class="bg-red-200 text-red-700 font-bold px-4 py-2 text-xs rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed hover:bg-red-600 hover:text-white">حذف سجل الزبائن فقط والابقاء على السلع</button>
+                    <button id="btn-reset-all" disabled onclick="resetAllFactory()" class="bg-red-600 text-white font-bold px-4 py-2 text-xs rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed hover:bg-red-800">التصفير الشامل للمصنع (كل شيء 0)</button>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-right border-collapse">
+                    <thead>
+                        <tr class="bg-slate-50 border-b border-slate-200 text-slate-600 text-sm">
+                            <th id="th-name" class="p-4 font-semibold">اسم الزبون</th>
+                            <th id="th-phone" class="p-4 font-semibold">رقم الهاتف</th>
+                            <th id="th-cable" class="p-4 font-semibold">نوع الكابل المستخدم</th>
+                            <th id="th-status" class="p-4 font-semibold">الحالة</th>
+                        </tr>
+                    </thead>
+                    <tbody id="operations-log-list" class="divide-y divide-slate-100 text-sm text-slate-700">
+                        </tbody>
+                </table>
+                <div id="no-data-msg" class="text-center py-8 text-slate-400 font-medium hidden">
+                    <i class="fa-solid fa-folder-open text-2xl block mb-2"></i>
+                    <span id="no-data-txt">لا توجد عمليات مسجلة حالياً لبداية جديدة</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        let appData = JSON.parse(localStorage.getItem('cableInventoryData_Isolated')) || {
+            stock50: 0,
+            stock80: 0,
+            installations: []
+        };
+
+        let currentLang = 'ar';
+
+        const translations = {
+            ar: {
+                navTitle: "نظام تتبع مخزون الكوابل الشخصي", langBtn: "Français", cardTotal: "المجموع الكلي للمخزون",
+                card50: "كابل فئة 50 متر", card80: "كابل فئة 80 متر", unitT: "بكرة / وحدة", unit50: "بكرة المتاحة",
+                unit80: "بكرة المتاحة", formIn: "إمداد وتغذية المخزن الشخصي (داخل)", lblTypeIn: "نوع الكابل المورد",
+                lblQtyIn: "الكمية (عدد البكرات)", btnIn: "تأكيد الإدخال للمخزن", formOut: "تسجيل زبون وتركيب جديد (حركة خارجة)",
+                lblCustName: "اسم الزبون الكامل", lblCustPhone: "رقم الهاتف", lblTypeOut: "الكابل المراد تركيبه واستهلاكه",
+                btnOut: "حفظ البيانات وخصم المخزن فورا", tableTitle: "جدول سجل العمليات والتركيبات الميدانية لهذا الهاتف",
+                btnResetP: "خيارات التصفير وإعادة البدء", thName: "اسم الزبون", thPhone: "رقم الهاتف",
+                thCable: "نوع الكابل المستخدم", thStatus: "الحالة", noData: "لا توجد عمليات مسجلة حالياً لبداية جديدة",
+                badgeOut: "تم الخروج والتركيب", alertNoStock: "🚨 خطأ: كمية الكابل المطلوبة غير متوفرة في مخزنك الشخصي لهذا الهاتف!",
+                warnReset: "⚠️ تحذير: هذه الخطوة ستمسح السجلات. لتفادي الأخطاء، اكتب كلمة \"تأكيد\" أو \"RESET\" في الحقل أدناه لتفعيل الأزرار:"
+            },
+            fr: {
+                navTitle: "Gestion de Stock Personnel", langBtn: "العربية", cardTotal: "Stock Global Total",
+                card50: "Câble Fiche 50 Mètres", card80: "Câble Fiche 80 Mètres", unitT: "Rouleaux au total", unit50: "Disponibles",
+                unit80: "Disponibles", formIn: "Entrée de Stock Personnel", lblTypeIn: "Type de câble reçu",
+                lblQtyIn: "Quantité reçue (Nombre de rouleaux)", btnIn: "Confirmer l'entrée", formOut: "Nouvelle Installation (Sortie)",
+                lblCustName: "Nom complet du client", lblCustPhone: "Numéro de téléphone", lblTypeOut: "Câble à installer",
+                btnOut: "Enregistrer et déduire du stock", tableTitle: "Registre des opérations de ce téléphone",
+                btnResetP: "Options de réinitialisation", thName: "Nom du Client", thPhone: "Téléphone",
+                thCable: "Type de Câble Utilisé", thStatus: "Statut", noData: "Aucune opération enregistrée",
+                badgeOut: "Installé & Déduit", alertNoStock: "🚨 Erreur: Stock insuffisant sur ce téléphone!",
+                warnReset: "⚠️ Attention: Écrivez \"تأكيد\" ou \"RESET\" pour déverrouiller les boutons:"
+            }
+        };
+
+        function updateUI() {
+            localStorage.setItem('cableInventoryData_Isolated', JSON.stringify(appData));
+            
+            document.getElementById('stock-50').innerText = appData.stock50;
+            document.getElementById('stock-80').innerText = appData.stock80;
+            document.getElementById('total-stock').innerText = appData.stock50 + appData.stock80;
+
+            const listContainer = document.getElementById('operations-log-list');
+            listContainer.innerHTML = '';
+            
+            if(appData.installations.length === 0) {
+                document.getElementById('no-data-msg').classList.remove('hidden');
+            } else {
+                document.getElementById('no-data-msg').classList.add('hidden');
+                appData.installations.forEach(item => {
+                    const tr = document.createElement('tr');
+                    tr.className = "hover:bg-slate-50 transition";
+                    tr.innerHTML = `
+                        <td class="p-4 font-medium">${item.name}</td>
+                        <td class="p-4 text-slate-500">${item.phone}</td>
+                        <td class="p-4"><span class="bg-amber-100 text-amber-800 font-semibold px-2.5 py-1 rounded text-xs">كابل ${item.cableType} متر</span></td>
+                        <td class="p-4"><span class="bg-emerald-100 text-emerald-800 font-bold px-2.5 py-1 rounded-full text-xs"><i class="fa-solid fa-circle-check ml-1 mr-1"></i>${translations[currentLang].badgeOut}</span></td>
+                    `;
+                    listContainer.appendChild(tr);
+                });
+            }
+        }
+
+        function handleStockIn(e) {
+            e.preventDefault();
+            const type = document.getElementById('in-type').value;
+            const qty = parseInt(document.getElementById('in-qty').value);
+
+            if(type === '50') appData.stock50 += qty;
+            if(type === '80') appData.stock80 += qty;
+
+            document.getElementById('in-qty').value = '';
+            updateUI();
+        }
+
+        function handleNewInstallation(e) {
+            e.preventDefault();
+            const name = document.getElementById('out-name').value;
+            const phone = document.getElementById('out-phone').value;
+            const type = document.getElementById('out-type').value;
+
+            if(type === '50' && appData.stock50 < 1) {
+                alert(translations[currentLang].alertNoStock);
+                return;
+            }
+            if(type === '80' && appData.stock80 < 1) {
+                alert(translations[currentLang].alertNoStock);
+                return;
+            }
+
+            if(type === '50') appData.stock50 -= 1;
+            if(type === '80') appData.stock80 -= 1;
+
+            appData.installations.unshift({ name, phone, cableType: type });
+            
+            document.getElementById('out-name').value = '';
+            document.getElementById('out-phone').value = '';
+            updateUI();
+        }
+
+        function toggleResetPanel() {
+            document.getElementById('reset-panel').classList.toggle('hidden');
+        }
+
+        document.getElementById('out-phone').addEventListener('input', function() {
+            if(currentLang === 'ar') this.style.direction = 'ltr';
+        });
+
+        function checkResetConfirmation() {
+            const val = document.getElementById('reset-confirm-input').value.trim().toUpperCase();
+            const isConfirmed = (val === 'تأكيد' || val === 'RESET');
+            document.getElementById('btn-reset-ops').disabled = !isConfirmed;
+            document.getElementById('btn-reset-all').disabled = !isConfirmed;
+        }
+
+        function resetOperationsOnly() {
+            appData.installations = [];
+            document.getElementById('reset-confirm-input').value = '';
+            checkResetConfirmation();
+            toggleResetPanel();
+            updateUI();
+        }
+
+        function resetAllFactory() {
+            appData = { stock50: 0, stock80: 0, installations: [] };
+            document.getElementById('reset-confirm-input').value = '';
+            checkResetConfirmation();
+            toggleResetPanel();
+            updateUI();
+        }
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'ar' ? 'fr' : 'ar';
+            const dict = translations[currentLang];
+            
+            if(currentLang === 'ar') {
+                document.documentElement.dir = 'rtl';
+                document.documentElement.lang = 'ar';
+                document.getElementById('out-phone').classList.remove('text-left');
+                document.getElementById('out-phone').classList.add('text-right');
+            } else {
+                document.documentElement.dir = 'ltr';
+                document.documentElement.lang = 'fr';
+                document.getElementById('out-phone').classList.remove('text-right');
+                document.getElementById('out-phone').classList.add('text-left');
+            }
+
+            document.getElementById('nav-title').innerText = dict.navTitle;
+            document.getElementById('lang-btn-text').innerText = dict.langBtn;
+            document.getElementById('card-total-title').innerText = dict.cardTotal;
+            document.getElementById('card-50-title').innerText = dict.card50;
+            document.getElementById('card-80-title').innerText = dict.card80;
+            document.getElementById('unit-total').innerText = dict.unitT;
+            document.getElementById('unit-50').innerText = dict.unit50;
+            document.getElementById('unit-80').innerText = dict.unit80;
+            document.getElementById('form-in-title').innerText = dict.formIn;
+            document.getElementById('lbl-type-in').innerText = dict.lblTypeIn;
+            document.getElementById('lbl-qty-in').innerText = dict.lblQtyIn;
+            document.getElementById('btn-in-submit').querySelector('span').innerText = dict.btnIn;
+            document.getElementById('form-out-title').innerText = dict.formOut;
+            document.getElementById('lbl-cust-name').innerText = dict.lblCustName;
+            document.getElementById('lbl-cust-phone').innerText = dict.lblCustPhone;
+            document.getElementById('lbl-type-out').innerText = dict.lblTypeOut;
+            document.getElementById('btn-out-submit').querySelector('span').innerText = dict.btnOut;
+            document.getElementById('table-title').innerText = dict.tableTitle;
+            document.getElementById('btn-reset-panel').innerText = dict.btnResetP;
+            document.getElementById('th-name').innerText = dict.thName;
+            document.getElementById('th-phone').innerText = dict.thPhone;
+            document.getElementById('th-cable').innerText = dict.thCable;
+            document.getElementById('th-status').innerText = dict.thStatus;
+            document.getElementById('no-data-txt').innerText = dict.noData;
+            document.getElementById('reset-warn-text').innerHTML = dict.warnReset;
+
+            updateUI();
+        }
+
+        updateUI();
+    </script>
+</body>
+</html>
