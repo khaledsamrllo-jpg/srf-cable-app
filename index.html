@@ -2,36 +2,34 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SRF App</title>
     <style>
-        body { font-family: sans-serif; text-align: center; padding: 20px; background: #0f172a; color: white; }
-        .box { background: #1e293b; padding: 20px; border-radius: 15px; margin-top: 50px; }
-        input { padding: 10px; width: 80%; margin: 5px; border-radius: 5px; border: none; }
-        button { padding: 10px 20px; background: #0284c7; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        body { font-family: sans-serif; text-align: center; background: #0f172a; color: white; padding-top: 50px; }
+        .container { background: #1e293b; padding: 30px; border-radius: 20px; width: 90%; max-width: 400px; margin: auto; }
+        input { width: 90%; padding: 12px; margin: 10px 0; border-radius: 8px; border: none; text-align: center; }
+        button { width: 100%; padding: 12px; background: #0284c7; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div id="login-screen" class="box">
-        <h3>SRF App v1.3</h3>
-        <p id="dev-id">جاري تحميل الرمز...</p>
+    <div id="login-screen" class="container">
+        <h3>SRF App</h3>
+        <p id="dev-id">جاري التحميل...</p>
         <input type="text" id="activation-code" placeholder="أدخل كود التفعيل">
-        <br><br>
-        <button onclick="checkActivation()">تفعيل التطبيق الآن</button>
+        <button onclick="checkActivation()">تفعيل التطبيق</button>
     </div>
 
-    <div id="main-app" class="box" style="display:none;">
-        <h1>حاسبة الأمتار</h1>
-        <input type="number" id="start" placeholder="رقم البداية">
-        <input type="number" id="end" placeholder="رقم النهاية">
-        <br><br>
-        <button onclick="calculate()">احسب الأمتار</button>
-        <h2 id="result">النتيجة: 0 متر</h2>
+    <div id="main-app" class="container" style="display:none;">
+        <h1>مرحباً بك</h1>
+        <p>التطبيق مفعل بنجاح</p>
+        <input type="number" id="start" placeholder="البداية"><br>
+        <input type="number" id="end" placeholder="النهاية"><br>
+        <button onclick="calculate()">احسب</button>
+        <h2 id="result">النتيجة: 0</h2>
     </div>
 
     <script>
-        // 1. نظام الرمز الثابت
+        // تثبيت الرمز لكل جهاز
         let deviceId = localStorage.getItem('myDeviceId');
         if (!deviceId) {
             deviceId = "SRF-" + Math.floor(Math.random() * 90000000).toString(16).toUpperCase();
@@ -39,12 +37,12 @@
         }
         document.getElementById('dev-id').innerText = "رمز جهازك: " + deviceId;
 
-        // 2. دالة التحقق
+        // دالة التفعيل النهائية
         function checkActivation() {
             let input = document.getElementById('activation-code').value.trim().toUpperCase();
-            let secretMultiplier = 2026;
             let num = parseInt(deviceId.replace("SRF-", ""), 16);
-            let expectedKey = "ACT-" + Math.abs((num * secretMultiplier) % 999999);
+            let calc = (num * 2026) % 1000000;
+            let expectedKey = "ACT-" + calc.toString().padStart(6, '0');
 
             if (input === expectedKey) {
                 document.getElementById('login-screen').style.display = 'none';
@@ -55,17 +53,15 @@
             }
         }
 
-        // 3. التحقق التلقائي
+        // التحقق التلقائي
         if (localStorage.getItem('activated') === 'true') {
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('main-app').style.display = 'block';
         }
 
-        // 4. الحساب
         function calculate() {
-            let start = document.getElementById('start').value;
-            let end = document.getElementById('end').value;
-            document.getElementById('result').innerText = "النتيجة: " + Math.abs(end - start) + " متر";
+            let res = Math.abs(document.getElementById('end').value - document.getElementById('start').value);
+            document.getElementById('result').innerText = "النتيجة: " + res;
         }
     </script>
 </body>
