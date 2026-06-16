@@ -3,26 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SRF App</title>
+    <title>SRF App - حاسبة الأمتار</title>
     <style>
         body { font-family: sans-serif; text-align: center; background: #0f172a; color: white; padding: 20px; }
-        .container { background: #1e293b; padding: 30px; border-radius: 20px; max-width: 400px; margin: auto; }
-        input { width: 90%; padding: 12px; margin: 10px 0; border-radius: 8px; border: none; text-align: center; }
-        button { width: 95%; padding: 12px; background: #0284c7; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .container { background: #1e293b; padding: 30px; border-radius: 20px; max-width: 400px; margin: auto; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        input { width: 90%; padding: 15px; margin: 10px 0; border-radius: 8px; border: none; text-align: center; font-size: 16px; }
+        button { width: 95%; padding: 15px; background: #0284c7; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 10px; }
+        #result { margin-top: 20px; font-size: 24px; color: #38bdf8; font-weight: bold; }
+        .dev-info { font-size: 12px; color: #94a3b8; margin-top: 20px; }
     </style>
 </head>
 <body>
 
     <div class="container">
         <h1>حاسبة الأمتار</h1>
+        
+        <!-- مدخلات الحاسبة -->
         <input type="number" id="start" placeholder="رقم البداية">
         <input type="number" id="end" placeholder="رقم النهاية">
-        <br>
         <button onclick="calculate()">احسب الأمتار</button>
+        
         <h2 id="result">النتيجة: 0 متر</h2>
+        
+        <!-- معلومات الجهاز التقنية (مخفية أو ظاهرة حسب رغبتك) -->
+        <p id="dev-id" class="dev-info"></p>
     </div>
 
     <script>
+        // دالة توليد وعرض رمز الجهاز تلقائياً (لأغراض التتبع التقني)
+        let deviceId = localStorage.getItem('myDeviceId');
+        if (!deviceId) {
+            deviceId = "SRF-" + Math.floor(Math.random() * 90000000).toString(16).toUpperCase();
+            localStorage.setItem('myDeviceId', deviceId);
+        }
+        document.getElementById('dev-id').innerText = "رمز الجهاز: " + deviceId;
+
+        // دالة الحساب
         function calculate() {
             let start = parseFloat(document.getElementById('start').value);
             let end = parseFloat(document.getElementById('end').value);
