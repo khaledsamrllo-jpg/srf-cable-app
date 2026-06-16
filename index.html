@@ -2,329 +2,231 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SRF App - إدارة شبكات ODN والمخزون</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SRF App - أداء صاروخي فوري</title>
     <style>
-        /* تسريع استجابة النقر على الهواتف وإلغاء تأخير اللمس */
-        button, div, [onclick] { touch-action: manipulation; }
+        /* نظام تنسيق فائق السرعة مدمج كلياً بدون إنترنت */
+        :root {
+            --slate-50: #f8fafc; --slate-100: #f1f5f9; --slate-200: #e2e8f0; --slate-400: #94a3b8;
+            --slate-500: #64748b; --slate-600: #475569; --slate-700: #334155; --slate-800: #1e293b;
+            --slate-900: #0f172a; --indigo-600: #4f46e5; --indigo-900: #1e1b4b; --emerald-500: #10b981;
+            --emerald-600: #059669; --sky-100: #e0f2fe; --sky-600: #0284c7; --purple-100: #f3e8ff;
+            --purple-600: #7c3aed; --amber-100: #fef3c7; --amber-600: #d97706; --red-600: #dc2626;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+        body { bg-color: var(--slate-50); background: var(--slate-50); color: var(--slate-800); min-height: screen; display: flex; flex-col: column; flex-direction: column; }
+        header { background: linear-gradient(to right, var(--slate-800), var(--indigo-900)); color: white; padding: 12px; position: sticky; top: 0; z-index: 50; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .container { width: 100%; max-width: 1100px; margin: 0 auto; padding: 0 12px; }
+        .nav-box { display: flex; flex-direction: column; justify-content: space-between; align-items: center; gap: 10px; }
+        @media (min-width: 768px) { .nav-box { flex-direction: row; } }
+        .btn-grid { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+        button, .card-click { cursor: pointer; touch-action: manipulation; transition: all 0.15s ease; border: none; outline: none; }
+        button:active, .card-click:active { transform: scale(0.97); }
+        .nav-btn { padding: 8px 12px; rounded-radius: 10px; border-radius: 10px; font-size: 11px; font-weight: bold; color: white; display: flex; align-items: center; gap: 4px; }
+        .main-content { padding: 15px 0; flex-grow: 1; }
+        .hidden { display: none !important; }
+        .grid-3 { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 15px; }
+        @media (min-width: 640px) { .grid-3 { grid-template-columns: repeat(3, 1fr); } }
+        .card { background: white; border-radius: 16px; padding: 16px; border: 1px border var(--slate-100); box-shadow: 0 1px 3px rgba(0,0,0,0.05); position: relative; overflow: hidden; }
+        .card-dark { background: linear-gradient(135deg, var(--slate-700), var(--slate-800)); color: white; }
+        .grid-2 { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        @media (min-width: 768px) { .grid-2 { grid-template-columns: 1fr 1fr; } }
+        .form-group { margin-bottom: 12px; }
+        label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 4px; color: var(--slate-600); }
+        input, select { width: 100%; padding: 10px; border-radius: 10px; border: 1px solid var(--slate-200); background: var(--slate-50); font-size: 13px; font-weight: bold; }
+        input:focus, select:focus { border-color: var(--indigo-600); background: white; }
+        .table-resp { overflow-x: auto; margin-top: 10px; }
+        table { width: 100%; border-collapse: collapse; text-align: right; font-size: 12px; }
+        th, td { padding: 10px; border-b: 1px solid var(--slate-100); border-bottom: 1px solid var(--slate-100); }
+        th { background: var(--slate-100); color: var(--slate-600); font-weight: bold; }
+        .modal { position: fixed; inset: 0; background: rgba(15,23,42,0.6); display: flex; align-items: center; justify-content: center; padding: 15px; z-index: 100; }
+        .modal-body { background: white; border-radius: 16px; width: 100%; max-width: 450px; padding: 20px; }
+        svg { width: 16px; height: 16px; fill: currentColor; display: inline-block; vertical-align: middle; }
     </style>
 </head>
-<body class="bg-slate-50 font-sans min-h-screen text-slate-800 transition-all duration-300 flex flex-col">
+<body>
 
-    <header class="bg-gradient-to-r from-slate-800 to-indigo-900 text-white shadow-lg sticky top-0 z-50">
-        <div class="container mx-auto px-4 py-4 flex flex-col lg:flex-row justify-between items-center gap-4">
-            <div onclick="showPage('stock-page')" class="flex items-center space-x-3 space-x-reverse cursor-pointer group">
-                <div class="bg-white/20 p-2 rounded-lg text-xl group-hover:bg-white/30 transition">
-                    <i class="fa-solid fa-network-wired"></i>
-                </div>
-                <h1 id="nav-title" class="text-xl font-bold tracking-wide">نظام تتبع الكوابل وشبكات ODN التفصيلي</h1>
+    <header>
+        <div class="container nav-box">
+            <div onclick="showPage('stock-page')" style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+                <svg viewBox="0 0 24 24" style="width:22px; height:22px;"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                <h1 id="nav-title" style="font-size:15px; font-weight:bold;">SRF - تتبع شبكات ODN والمخزون</h1>
             </div>
-            
-            <div class="flex flex-wrap items-center justify-center gap-2">
-                <button onclick="showPage('stock-page')" class="bg-slate-700 hover:bg-slate-600 px-3 py-2 rounded-xl text-xs font-bold shadow transition flex items-center gap-1.5">
-                    <i class="fa-solid fa-warehouse"></i>
-                    <span id="nav-stock-btn">المخزن الرئيسي</span>
-                </button>
-                <button onclick="showPage('customers-page')" class="bg-indigo-600/50 hover:bg-indigo-600 px-3 py-2 rounded-xl text-xs font-bold shadow transition flex items-center gap-1.5">
-                    <i class="fa-solid fa-users"></i>
-                    <span id="nav-cust-btn">سجل الزبائن</span>
-                </button>
-                <button onclick="showPage('archive-page')" class="bg-amber-600/50 hover:bg-amber-600 px-3 py-2 rounded-xl text-xs font-bold shadow transition flex items-center gap-1.5">
-                    <i class="fa-solid fa-box-archive"></i>
-                    <span id="nav-arch-btn">أرشيف الشحنات</span>
-                </button>
-                <button onclick="showPage('odn-page')" class="bg-emerald-600 hover:bg-emerald-500 px-3 py-2 rounded-xl text-xs font-bold shadow transition flex items-center gap-1.5 border border-emerald-400">
-                    <i class="fa-solid fa-diagram-project"></i>
-                    <span id="nav-odn-btn" class="font-extrabold">هندسة وتوزيع ODN</span>
-                </button>
-                
-                <div class="bg-white/10 rounded-xl p-1 flex items-center gap-1 border border-white/20">
-                    <button onclick="changeLanguage('ar')" id="lang-ar-btn" class="px-2 py-1 rounded-lg text-[10px] font-bold bg-white text-indigo-900 transition shadow">العربية</button>
-                    <button onclick="changeLanguage('fr')" id="lang-fr-btn" class="px-2 py-1 rounded-lg text-[10px] font-bold text-white hover:bg-white/10 transition">Français</button>
-                    <button onclick="changeLanguage('en')" id="lang-en-btn" class="px-2 py-1 rounded-lg text-[10px] font-bold text-white hover:bg-white/10 transition">English</button>
-                </div>
+            <div class="btn-grid">
+                <button onclick="showPage('stock-page')" class="nav-btn" style="background:var(--slate-600);"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg> <span id="nav-stock-btn">المخزن</span></button>
+                <button onclick="showPage('customers-page')" class="nav-btn" style="background:var(--indigo-600);"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg> <span id="nav-cust-btn">الزبائن</span></button>
+                <button onclick="showPage('archive-page')" class="nav-btn" style="background:var(--amber-600);"><svg viewBox="0 0 24 24"><path d="M20.54 5.23l-1.39-1.68C18.88 3.21 18.47 3 18 3H6c-.47 0-.88.21-1.16.55L3.46 5.23C3.17 5.57 3 6.01 3 6.5V19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6.5c0-.49-.17-.93-.46-1.27zM12 17.5L6.5 12H10v-4h4v4h3.5L12 17.5z"/></svg> <span id="nav-arch-btn">الأرشيف</span></button>
+                <button onclick="showPage('odn-page')" class="nav-btn" style="background:var(--emerald-600); border:1px solid #a7f3d0;"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg> <span id="nav-odn-btn">هندسة ODN</span></button>
             </div>
         </div>
     </header>
 
-    <main id="stock-page" class="container mx-auto px-4 py-8 max-w-6xl flex-grow app-page">
-        <div class="flex justify-between items-center mb-4">
-            <h2 id="section-stock-title" class="text-md font-bold text-slate-500 flex items-center gap-2"><i class="fa-solid fa-chart-pie"></i> حالة المخزن الحالي</h2>
-        </div>
-        
-        <section id="dashboard-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-8">
-            <div class="bg-gradient-to-br from-slate-700 to-slate-800 text-white rounded-2xl p-6 shadow-md relative overflow-hidden col-span-1 sm:col-span-2 md:col-span-1">
-                <div class="absolute -right-6 -bottom-6 text-white/10 text-8xl"><i class="fa-solid fa-warehouse"></i></div>
-                <div class="flex justify-between items-start mb-4 relative z-10">
-                    <h3 id="card-total-title" class="text-lg font-medium opacity-90">المجموع الكلي للمخزون</h3>
-                    <span class="bg-white/20 p-2 rounded-lg"><i class="fa-solid fa-calculator text-xl"></i></span>
-                </div>
-                <p class="text-4xl font-extrabold relative z-10 flex items-baseline">
-                    <span id="total-stock">0</span>
-                    <span id="unit-total" class="text-sm font-normal mr-2 ml-2">بكرة إجمالية</span>
-                </p>
+    <main id="stock-page" class="container main-content app-page">
+        <section class="grid-3">
+            <div class="card card-dark">
+                <h3 id="card-total-title" style="font-size:13px; opacity:0.9;">المجموع الإجمالي للمخزون</h3>
+                <p style="font-size:28px; font-weight:900; margin-top:8px;"><span id="total-stock">0</span> <span id="unit-total" style="font-size:12px; font-weight:normal;">بكرة</span></p>
             </div>
-            <div id="dynamic-cards-area" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-6 col-span-1 sm:col-span-2 md:col-span-2"></div>
+            <div id="dynamic-cards-area" style="display:contents;"></div>
         </section>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
-                <div class="flex items-center space-x-3 space-x-reverse mb-6 border-b pb-4 border-slate-100">
-                    <span class="bg-emerald-100 text-emerald-600 p-3 rounded-xl"><i class="fa-solid fa-circle-arrow-down text-xl"></i></span>
-                    <h2 id="form-in-title" class="text-lg font-bold">إمداد وتغذية المخزن</h2>
-                </div>
-                <form id="form-stock-in" onsubmit="handleStockIn(event)" class="space-y-4">
-                    <div>
-                        <label id="lbl-type-in" class="block text-sm font-semibold mb-2 text-slate-600">اختر الفئة</label>
-                        <select id="in-type-select" onchange="toggleManualInputVisibility()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none focus:border-emerald-500 transition">
-                            <option value="custom">✍️ إدخال يدوي فئة جديدة...</option>
-                        </select>
+        <section class="grid-2">
+            <div class="card">
+                <h2 id="form-in-title" style="font-size:14px; font-weight:bold; margin-bottom:12px; display:flex; align-items:center; gap:6px; color:var(--emerald-600);"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg> إمداد وتغذية المخزن</h2>
+                <form id="form-stock-in" onsubmit="handleStockIn(event)">
+                    <div class="form-group">
+                        <label id="lbl-type-in">اختر الفئة</label>
+                        <select id="in-type-select" onchange="toggleManualInputVisibility()"><option value="custom">✍️ إدخال يدوي فئة جديدة...</option></select>
                     </div>
-                    <div id="manual-type-container">
-                        <label id="lbl-manual-type" class="block text-sm font-semibold mb-2 text-slate-600">اكتب طول الفئة الجديدة بالأمتار</label>
-                        <input type="number" id="in-type-manual" min="1" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none focus:border-emerald-500 transition" placeholder="مثال: 20">
+                    <div id="manual-type-container" class="form-group">
+                        <label id="lbl-manual-type">طول الفئة الجديدة بالأمتار</label>
+                        <input type="number" id="in-type-manual" min="1" placeholder="مثال: 20">
                     </div>
-                    <div>
-                        <label id="lbl-qty-in" class="block text-sm font-semibold mb-2 text-slate-600">الكمية الموردة الحالية</label>
-                        <input type="number" id="in-qty" min="1" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none focus:border-emerald-500 transition" placeholder="مثال: 200">
+                    <div class="form-group">
+                        <label id="lbl-qty-in">الكمية الموردة (بكرة)</label>
+                        <input type="number" id="in-qty" min="1" required placeholder="مثال: 50">
                     </div>
-                    <button type="submit" id="btn-in-submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl shadow transition flex justify-center items-center gap-2">
-                        <i class="fa-solid fa-clock-rotate-left"></i>
-                        <span id="btn-in-text">تأكيد الإدخال والأرشفة بالتاريخ</span>
-                    </button>
+                    <button type="submit" id="btn-in-submit" style="width:100%; background:var(--emerald-600); color:white; padding:12px; border-radius:10px; font-weight:bold;">تأكيد وحفظ التوريد</button>
                 </form>
             </div>
 
-            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
-                <div class="flex items-center space-x-3 space-x-reverse mb-6 border-b pb-4 border-slate-100">
-                    <span class="bg-sky-100 text-sky-600 p-3 rounded-xl"><i class="fa-solid fa-user-plus text-xl"></i></span>
-                    <h2 id="form-out-title" class="text-lg font-bold">تسجيل زبون وتركيب جديد</h2>
-                </div>
-                <form id="form-sale" onsubmit="handleNewInstallation(event)" class="space-y-4">
-                    <div>
-                        <label id="lbl-cust-name" class="block text-sm font-semibold mb-2 text-slate-600">اسم الزبون الكامل</label>
-                        <input type="text" id="out-name" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none focus:border-sky-500 transition" placeholder="اسم المشترك">
-                    </div>
-                    <div>
-                        <label id="lbl-cust-phone" class="block text-sm font-semibold mb-2 text-slate-600">رقم الهاتف</label>
-                        <input type="tel" id="out-phone" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none focus:border-sky-500 transition text-right" placeholder="06XXXXXXXX">
-                    </div>
-                    <div>
-                        <label id="lbl-type-out" class="block text-sm font-semibold mb-2 text-slate-600">الكابل المستخدم للتركيب</label>
-                        <select id="out-type" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none focus:border-sky-500 transition"></select>
-                    </div>
-                    <button type="submit" id="btn-out-submit" class="w-full bg-sky-600 hover:bg-sky-700 text-white font-bold py-3 rounded-xl shadow transition flex justify-center items-center gap-2">
-                        <i class="fa-solid fa-check-double"></i>
-                        <span id="btn-out-text">حفظ البيانات وخصم المخزن فورا</span>
-                    </button>
+            <div class="card">
+                <h2 id="form-out-title" style="font-size:14px; font-weight:bold; margin-bottom:12px; display:flex; align-items:center; gap:6px; color:var(--sky-600);"><svg viewBox="0 0 24 24"><path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg> تسجيل زبون وتركيب جديد</h2>
+                <form id="form-sale" onsubmit="handleNewInstallation(event)">
+                    <div class="form-group"><label id="lbl-cust-name">اسم الزبون الكامل</label><input type="text" id="out-name" required placeholder="اسم المشترك"></div>
+                    <div class="form-group"><label id="lbl-cust-phone">رقم الهاتف</label><input type="tel" id="out-phone" required placeholder="06XXXXXXXX"></div>
+                    <div class="form-group"><label id="lbl-type-out">الكابل المستخدم</label><select id="out-type"></select></div>
+                    <button type="submit" id="btn-out-submit" style="width:100%; background:var(--sky-600); color:white; padding:12px; border-radius:10px; font-weight:bold;">خصم من المخزن وتأكيد الزبون</button>
                 </form>
             </div>
+        </section>
+    </main>
+
+    <main id="customers-page" class="container main-content app-page hidden">
+        <div class="card">
+            <h2 id="table-title" style="font-size:15px; font-weight:bold; margin-bottom:12px;">سجل المشتركين والزبائن</h2>
+            <input type="text" id="customer-search-input" oninput="filterCustomers()" style="margin-bottom:12px;" placeholder="ابحث باسم الزبون أو الهاتف...">
+            <div id="customers-cards-container" style="display:grid; gap:10px;"></div>
+            <div id="no-data-msg" style="text-align:center; padding:20px; color:var(--slate-400);" class="hidden"><span id="no-cust-txt">لا يوجد زبائن</span></div>
         </div>
     </main>
 
-    <main id="customers-page" class="container mx-auto px-4 py-8 max-w-4xl flex-grow app-page hidden">
-        <section class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
-            <h2 id="table-title" class="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2"><i class="fa-solid fa-address-book text-indigo-600"></i> قاعدة بيانات وسجلات الزبائن المسجلة</h2>
-            <input type="text" id="customer-search-input" oninput="filterCustomers()" class="w-full bg-slate-50 border border-slate-200 rounded-xl pr-11 pl-4 py-3 text-sm outline-none mb-6" placeholder="ابحث هنا عن اسم الزبون...">
-            <div id="customers-cards-container" class="space-y-4"></div>
-            <div id="no-data-msg" class="text-center py-12 text-slate-400 hidden"><span id="no-cust-txt">لا توجد عمليات مسجلة حالياً</span></div>
-        </section>
+    <main id="archive-page" class="container main-content app-page hidden">
+        <div class="card">
+            <div style="display:flex; justify-content:between; justify-content: space-between; margin-bottom:15px;">
+                <h2 id="archive-title" style="font-size:15px; font-weight:bold;">أرشيف الشحنات الموردة</h2>
+                <button onclick="resetAllFactory()" style="background:#fee2e2; color:var(--red-600); padding:4px 8px; border-radius:6px; font-size:11px; font-weight:bold;">تصفير عام الكل</button>
+            </div>
+            <div id="archive-cards-container" style="display:grid; gap:8px;"></div>
+        </div>
     </main>
 
-    <main id="archive-page" class="container mx-auto px-4 py-8 max-w-4xl flex-grow app-page hidden">
-        <section class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
-            <div class="flex justify-between items-center border-b pb-4 mb-6">
-                <h2 id="archive-title" class="text-xl font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-clock-rotate-left text-amber-600"></i> أرشيف سجل التوريدات وشحنات المخزن المؤرخة</h2>
-                <button onclick="toggleResetPanel()" id="btn-factory-reset" class="text-red-500 text-xs font-bold border border-red-100 bg-red-50 px-3 py-1.5 rounded-lg">تصفير عام</button>
+    <main id="odn-page" class="container main-content app-page hidden">
+        <div class="card card-dark" style="margin-bottom:15px; background:linear-gradient(to right, var(--slate-800), var(--indigo-900)); display:flex; flex-direction:column; gap:12px; padding:15px;">
+            <div style="flex-grow:1; width:100%;">
+                <label id="lbl-district-name" style="color:white; opacity:0.8; margin-bottom:4px;">اسم الحي / المشروع الحالي 📍</label>
+                <input type="text" id="odn-district-input" oninput="updateDistrictName()" style="background:rgba(255,255,255,0.15); color:white; border:none;" placeholder="مثال: حي 500 مسكن">
             </div>
-            <div id="reset-panel" class="hidden bg-red-50 border border-red-200 rounded-xl p-4 mb-6">
-                <input type="text" id="reset-confirm-input" oninput="checkResetConfirmation()" class="bg-white border border-red-300 rounded-lg px-3 py-2 text-sm mb-3 w-full" placeholder="اكتب 'تأكيد' لمسح كل بيانات التطبيق">
-                <button id="btn-reset-all" disabled onclick="resetAllFactory()" class="bg-red-600 text-white font-bold px-4 py-2 text-xs rounded-lg disabled:opacity-50">التصفير الشامل الحذر</button>
-            </div>
-            <div id="archive-cards-container" class="space-y-4"></div>
-        </section>
-    </main>
+            <button onclick="archiveCurrentDistrict()" style="background:var(--amber-600); color:var(--slate-900); padding:12px; border-radius:10px; font-weight:900; width:100%;">حفظ وإغلاق الحي نهائياً 🔒</button>
+        </div>
 
-    <main id="odn-page" class="container mx-auto px-4 py-8 max-w-6xl flex-grow app-page hidden">
-        <section class="bg-gradient-to-r from-slate-800 to-indigo-900 text-white rounded-2xl p-6 shadow-md mb-8 flex flex-col md:flex-row justify-between items-center gap-6">
-            <div class="flex items-center gap-4 w-full md:w-auto">
-                <span class="bg-emerald-500 text-white p-3.5 rounded-xl text-xl shadow"><i class="fa-solid fa-map-location-dot"></i></span>
-                <div class="flex-grow">
-                    <label id="lbl-district-name" class="block text-xs font-bold uppercase opacity-75 mb-1">الحي الحالي قيد الإنجاز 📍</label>
-                    <input type="text" id="odn-district-input" oninput="updateDistrictName()" class="bg-white/10 text-white border border-white/20 rounded-xl px-4 py-2.5 outline-none font-bold text-lg w-full md:w-64 focus:border-emerald-400 focus:bg-white/20" placeholder="اكتب اسم الحي هنا...">
-                </div>
+        <h3 id="lbl-odn-summary-title" style="font-size:13px; font-weight:bold; color:var(--slate-500); margin-bottom:10px;">حساب أمتار المسارات للحي الحالي تلقائياً:</h3>
+        <div class="grid-3" style="margin-bottom:15px;">
+            <div class="card" style="border-left: 4px solid var(--purple-600); padding:12px;">
+                <span id="lbl-tot-facade" style="font-size:11px; color:var(--purple-600); font-weight:bold;">مسارات الواجهة</span>
+                <p style="font-size:22px; font-weight:900;"><span id="grand-facade">0</span> M</p>
             </div>
-            <button onclick="archiveCurrentDistrict()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-black px-6 py-3.5 rounded-xl text-xs md:text-sm shadow-xl transition flex items-center gap-2 w-full md:w-auto justify-center border-b-4 border-amber-700 active:border-b-0">
-                <i class="fa-solid fa-cloud-arrow-up text-base"></i>
-                <span id="btn-close-district">إغلاق الحي وحفظ المشروع نهائياً 🔒</span>
-            </button>
-        </section>
+            <div class="card" style="border-left: 4px solid var(--amber-600); padding:12px;">
+                <span id="lbl-tot-ground" style="font-size:11px; color:var(--amber-600); font-weight:bold;">مسارات الأرضي</span>
+                <p style="font-size:22px; font-weight:900;"><span id="grand-ground">0</span> M</p>
+            </div>
+            <div class="card" style="border-left: 4px solid var(--sky-600); padding:12px;">
+                <span id="lbl-tot-aerial" style="font-size:11px; color:var(--sky-600); font-weight:bold;">مسارات الهوائي</span>
+                <p style="font-size:22px; font-weight:900;"><span id="grand-aerial">0</span> M</p>
+            </div>
+        </div>
 
-        <h2 id="lbl-odn-summary-title" class="text-md font-bold mb-4 text-slate-500 flex items-center gap-2"><i class="fa-solid fa-chart-line text-emerald-600"></i> الحساب التلقائي لأمتار الحي الحالي</h2>
-        <section class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-            <div class="bg-white border-l-4 border-purple-600 rounded-2xl p-5 shadow-sm">
-                <div class="flex justify-between items-center text-purple-600 mb-2">
-                    <span id="lbl-tot-facade" class="text-xs font-bold uppercase tracking-wider">إجمالي مسارات الواجهة</span>
-                    <i class="fa-solid fa-bezier-curve text-lg"></i>
-                </div>
-                <p class="text-3xl font-black font-mono text-slate-800"><span id="grand-facade">0</span> <span class="text-xs font-normal text-slate-400">M</span></p>
-            </div>
-            <div class="bg-white border-l-4 border-amber-600 rounded-2xl p-5 shadow-sm">
-                <div class="flex justify-between items-center text-amber-600 mb-2">
-                    <span id="lbl-tot-ground" class="text-xs font-bold uppercase tracking-wider">إجمالي مسارات الأرضي</span>
-                    <i class="fa-solid fa-trowel-bricks text-lg"></i>
-                </div>
-                <p class="text-3xl font-black font-mono text-slate-800"><span id="grand-ground">0</span> <span class="text-xs font-normal text-slate-400">M</span></p>
-            </div>
-            <div class="bg-white border-l-4 border-sky-600 rounded-2xl p-5 shadow-sm">
-                <div class="flex justify-between items-center text-sky-600 mb-2">
-                    <span id="lbl-tot-aerial" class="text-xs font-bold uppercase tracking-wider">إجمالي مسارات الهوائي</span>
-                    <i class="fa-solid fa-arrow-up-from-water-pump text-lg"></i>
-                </div>
-                <p class="text-3xl font-black font-mono text-slate-800"><span id="grand-aerial">0</span> <span class="text-xs font-normal text-slate-400">M</span></p>
-            </div>
-        </section>
-
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 lg:col-span-1">
-                <div class="flex items-center gap-2 mb-6 border-b pb-4">
-                    <span class="bg-emerald-100 text-emerald-600 p-2 rounded-xl"><i class="fa-solid fa-building-flag text-lg"></i></span>
-                    <h3 id="lbl-add-b-title" class="font-bold text-base text-slate-800">تقسيم كابل بناية جديدة</h3>
-                </div>
-                <form onsubmit="handleNewOdnBuilding(event)" class="space-y-4">
-                    <div>
-                        <label id="lbl-b-num" class="block text-xs font-bold text-slate-500 mb-1">رقم أو اسم البناية 🏢</label>
-                        <input type="text" id="odn-b-name" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 outline-none font-bold text-slate-700 focus:border-emerald-500" placeholder="مثال: بناية 393">
+        <div class="grid-2">
+            <div class="card">
+                <h3 id="lbl-add-b-title" style="font-size:14px; font-weight:bold; margin-bottom:12px;">إدراج كابل بناية</h3>
+                <form onsubmit="handleNewOdnBuilding(event)">
+                    <div class="form-group"><label id="lbl-b-num">اسم/رقم البناية</label><input type="text" id="odn-b-name" required placeholder="مثال: عمارة A1"></div>
+                    <div class="form-group" style="background:var(--slate-100); padding:8px; border-radius:8px; margin-bottom:8px;">
+                        <span style="font-size:11px; font-weight:bold; color:var(--purple-600);">مسار الواجهة</span>
+                        <div style="display:flex; gap:5px; margin-top:4px;"><input type="number" id="odn-facade-start" placeholder="بداية"><input type="number" id="odn-facade-end" placeholder="نهاية"></div>
                     </div>
-                    
-                    <div class="p-3 bg-purple-50/50 border border-purple-100 rounded-xl space-y-2">
-                        <span id="lbl-f-route" class="text-xs font-extrabold text-purple-700 flex items-center gap-1"><i class="fa-solid fa-bezier-curve"></i> مسار الواجهة (متر الكابل)</span>
-                        <div class="grid grid-cols-2 gap-2">
-                            <input type="number" id="odn-facade-start" class="w-full bg-white border border-slate-200 rounded-lg p-2 text-xs font-mono text-center" placeholder="البداية">
-                            <input type="number" id="odn-facade-end" class="w-full bg-white border border-slate-200 rounded-lg p-2 text-xs font-mono text-center" placeholder="النهاية">
-                        </div>
+                    <div class="form-group" style="background:var(--slate-100); padding:8px; border-radius:8px; margin-bottom:8px;">
+                        <span style="font-size:11px; font-weight:bold; color:var(--amber-600);">مسار الأرضي</span>
+                        <div style="display:flex; gap:5px; margin-top:4px;"><input type="number" id="odn-ground-start" placeholder="بداية"><input type="number" id="odn-ground-end" placeholder="نهاية"></div>
                     </div>
-
-                    <div class="p-3 bg-amber-50/50 border border-amber-100 rounded-xl space-y-2">
-                        <span id="lbl-g-route" class="text-xs font-extrabold text-amber-700 flex items-center gap-1"><i class="fa-solid fa-trowel-bricks"></i> مسار الأرضي (متر الكابل)</span>
-                        <div class="grid grid-cols-2 gap-2">
-                            <input type="number" id="odn-ground-start" class="w-full bg-white border border-slate-200 rounded-lg p-2 text-xs font-mono text-center" placeholder="البداية">
-                            <input type="number" id="odn-ground-end" class="w-full bg-white border border-slate-200 rounded-lg p-2 text-xs font-mono text-center" placeholder="النهاية">
-                        </div>
+                    <div class="form-group" style="background:var(--slate-100); padding:8px; border-radius:8px; margin-bottom:12px;">
+                        <span style="font-size:11px; font-weight:bold; color:var(--sky-600);">مسار الهوائي</span>
+                        <div style="display:flex; gap:5px; margin-top:4px;"><input type="number" id="odn-aerial-start" placeholder="بداية"><input type="number" id="odn-aerial-end" placeholder="نهاية"></div>
                     </div>
-
-                    <div class="p-3 bg-sky-50/50 border border-sky-100 rounded-xl space-y-2">
-                        <span id="lbl-a-route" class="text-xs font-extrabold text-sky-700 flex items-center gap-1"><i class="fa-solid fa-arrow-up-from-water-pump"></i> مسار الهوائي (متر الكابل)</span>
-                        <div class="grid grid-cols-2 gap-2">
-                            <input type="number" id="odn-aerial-start" class="w-full bg-white border border-slate-200 rounded-lg p-2 text-xs font-mono text-center" placeholder="البداية">
-                            <input type="number" id="odn-aerial-end" class="w-full bg-white border border-slate-200 rounded-lg p-2 text-xs font-mono text-center" placeholder="النهاية">
-                        </div>
-                    </div>
-
-                    <button type="submit" id="btn-calc-b" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-3 rounded-xl shadow transition flex justify-center items-center gap-2">
-                        <i class="fa-solid fa-calculator"></i>
-                        <span>احسب وأدرج البناية في القائمة</span>
-                    </button>
+                    <button type="submit" style="width:100%; background:var(--slate-800); color:white; padding:10px; border-radius:8px; font-weight:bold; font-size:12px;">حساب وإدراج البناية</button>
                 </form>
             </div>
 
-            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 lg:col-span-2 flex flex-col">
-                <div class="flex justify-between items-center mb-4 border-b pb-4">
-                    <h3 id="lbl-curr-b-list" class="font-bold text-base text-slate-800 flex items-center gap-2"><i class="fa-solid fa-list-check text-indigo-600"></i> قائمة البنايات والمفاتيح الرقمية للحي الحالي</h3>
-                </div>
-
-                <div class="overflow-x-auto flex-grow">
-                    <table class="w-full text-right border-collapse">
+            <div class="card" style="display:flex; flex-direction:column;">
+                <h3 id="lbl-curr-b-list" style="font-size:14px; font-weight:bold; margin-bottom:8px;">قائمة البنايات للحي</h3>
+                <div class="table-resp" style="flex-grow:1;">
+                    <table>
                         <thead>
-                            <tr class="bg-slate-100 text-slate-600 text-xs font-bold border-b border-slate-200">
-                                <th id="th-b" class="p-3">🏢 البناية</th>
-                                <th id="th-f" class="p-3 text-purple-700">الواجهة</th>
-                                <th id="th-g" class="p-3 text-amber-700">الأرضي</th>
-                                <th id="th-a" class="p-3 text-sky-700">الهوائي</th>
-                                <th id="th-t" class="p-3 text-slate-700">الإجمالي</th>
-                                <th id="th-act" class="p-3 text-center">إجراء</th>
-                            </tr>
+                            <tr><th id="th-b">البناية</th><th id="th-f">واجهة</th><th id="th-g">أرضي</th><th id="th-a">هوائي</th><th id="th-t">المجموع</th><th>إجراء</th></tr>
                         </thead>
-                        <tbody id="odn-table-body" class="text-xs divide-y divide-slate-100 font-medium"></tbody>
+                        <tbody id="odn-table-body"></tbody>
                     </table>
-                    <div id="odn-empty-msg" class="text-center py-12 text-slate-400 font-medium">
-                        <i class="fa-solid fa-folder-minus text-2xl block mb-2 text-slate-300"></i>
-                        <span id="txt-odn-empty">لم يتم إدراج أي بناية بعد للحي الحالي.</span>
-                    </div>
+                    <div id="odn-empty-msg" style="text-align:center; padding:30px; color:var(--slate-400);" id="txt-odn-empty">لا يوجد بنايات مضافة</div>
                 </div>
             </div>
         </div>
 
-        <section class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 mt-4">
-            <div class="border-b pb-4 mb-4 flex justify-between items-center">
-                <h3 id="lbl-final-arch-title" class="font-bold text-base text-slate-900 flex items-center gap-2"><i class="fa-solid fa-box-archive text-amber-600"></i> أرشيف المشاريع والأحياء المكتملة والمغلقة نهائياً</h3>
-                <button onclick="clearFinalDistrictArchive()" id="btn-clear-dist-arch" class="text-red-500 hover:text-red-700 text-[11px] font-bold bg-red-50 border border-red-100 px-2.5 py-1 rounded-lg">مسح أرشيف الأحياء</button>
-            </div>
-            <div id="district-archive-container" class="space-y-4"></div>
-        </section>
+        <div class="card" style="margin-top:15px;">
+            <h3 id="lbl-final-arch-title" style="font-size:14px; font-weight:bold; margin-bottom:10px;">المشاريع والأحياء المغلقة والأرشيف النهائي</h3>
+            <div id="district-archive-container" style="display:grid; gap:10px;"></div>
+        </div>
     </main>
 
-    <div id="district-details-modal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4 transition-all duration-300">
-        <div class="bg-white rounded-2xl w-full max-w-2xl p-6 shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
-            <div class="flex justify-between items-center border-b pb-3 mb-4">
-                <div class="flex items-center gap-2">
-                    <span class="p-2 rounded-lg bg-indigo-100 text-indigo-700 text-sm"><i class="fa-solid fa-building"></i></span>
-                    <h3 id="details-modal-title" class="font-bold text-lg text-slate-800">تفاصيل بنايات الحي</h3>
+    <div id="quick-stock-modal" class="modal hidden">
+        <div class="modal-body">
+            <h3 id="modal-title" style="font-size:15px; font-weight:bold; margin-bottom:12px;">تحديث كمية الفئة</h3>
+            <form onsubmit="handleQuickStockSubmit(event)">
+                <input type="hidden" id="modal-category-id">
+                <div class="form-group">
+                    <label id="modal-lbl">الكمية المراد إضافتها بالبكرات:</label>
+                    <input type="number" id="modal-qty-input" min="1" required style="font-size:24px; text-align:center; font-weight:900;">
                 </div>
-                <button onclick="closeDetailsModal()" class="text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-xmark"></i></button>
+                <div style="display:flex; gap:10px; margin-top:15px;">
+                    <button type="button" onclick="closeQuickStockModal()" style="flex:1; background:var(--slate-200); padding:10px; border-radius:10px; font-weight:bold;">إلغاء</button>
+                    <button type="submit" id="modal-btn-txt" style="flex:1; background:var(--indigo-600); color:white; padding:10px; border-radius:10px; font-weight:bold;">تحديث فوري</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="district-details-modal" class="modal hidden">
+        <div class="modal-body" style="max-w: 600px; max-height:80vh; overflow-y:auto;">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-b:1px solid #eee; padding-bottom:8px; margin-bottom:12px;">
+                <h3 id="details-modal-title" style="font-weight:bold;">تفاصيل الحي</h3>
+                <button onclick="closeDetailsModal()" style="font-size:20px; color:var(--slate-400); background:none;">&times;</button>
             </div>
-            <div class="overflow-y-auto flex-grow">
-                <table class="w-full text-right border-collapse">
-                    <thead>
-                        <tr class="bg-slate-50 text-slate-500 text-[11px] font-bold border-b">
-                            <th class="p-2.5">🏢 البناية</th>
-                            <th class="p-2.5 text-purple-700">الواجهة</th>
-                            <th class="p-2.5 text-amber-700">الأرضي</th>
-                            <th class="p-2.5 text-sky-700">الهوائي</th>
-                            <th class="p-2.5 text-slate-700">المجموع</th>
-                        </tr>
-                    </thead>
-                    <tbody id="details-modal-tbody" class="text-xs font-semibold divide-y divide-slate-100"></tbody>
+            <div class="table-resp">
+                <table>
+                    <thead><tr><th>البناية</th><th>واجهة</th><th>أرضي</th><th>هوائي</th><th>المجموع</th></tr></thead>
+                    <tbody id="details-modal-tbody"></tbody>
                 </table>
             </div>
         </div>
     </div>
 
-    <div id="quick-stock-modal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4 opacity-0 transition-opacity duration-300">
-        <div class="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl transform scale-95 transition-transform duration-300">
-            <div class="flex justify-between items-center border-b pb-3 mb-4">
-                <div class="flex items-center gap-2">
-                    <span id="modal-badge-icon" class="p-2 rounded-lg text-white text-sm"><i class="fa-solid fa-box"></i></span>
-                    <h3 id="modal-title" class="font-bold text-lg text-slate-800">تحديث المخزن</h3>
-                </div>
-                <button onclick="closeQuickStockModal()" class="text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <form onsubmit="handleQuickStockSubmit(event)" class="space-y-4">
-                <input type="hidden" id="modal-category-id">
-                <div>
-                    <label id="modal-lbl" class="block text-sm font-semibold mb-2 text-slate-600">الكمية المضافة بالبكرات:</label>
-                    <input type="number" id="modal-qty-input" min="1" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-center text-2xl font-black" placeholder="0">
-                </div>
-                <button type="submit" id="modal-btn-txt" class="w-full bg-indigo-600 text-white font-bold py-3 rounded-xl shadow transition">تحديث وأرشفة</button>
-            </form>
-        </div>
-    </div>
-
-    <footer class="bg-slate-900 text-slate-400 text-center py-6 border-t border-slate-800 text-xs mt-auto">
-        <div class="container mx-auto px-4 flex flex-col sm:flex-row justify-center items-center gap-2">
-            <span id="footer-rights">© 2026 جميع الحقوق محفوظة. تم التطوير وبناء النظام بواسطة:</span>
-            <span class="text-slate-200 font-bold tracking-wide text-sm bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700">Saadeddin Khaled</span>
-            <span class="hidden sm:inline text-slate-600">|</span>
-            <a href="mailto:khaledsamrllo@gmail.com" class="text-blue-400 font-medium hover:text-blue-300 transition duration-200 flex items-center gap-1">
-                <i class="fa-regular fa-envelope text-sm"></i> khaledsamrllo@gmail.com
-            </a>
-        </div>
+    <footer style="background:var(--slate-900); color:var(--slate-400); text-align:center; padding:15px; font-size:11px; margin-top:auto;">
+        <span id="footer-rights">© 2026 نظام إدارة البنية التحتية والمخزون الميداني | المطور المعتمد:</span> 
+        <strong style="color:white; background:var(--slate-800); padding:2px 6px; border-radius:4px;">Saadeddin Khaled</strong>
     </footer>
 
     <script>
-        let appData = JSON.parse(localStorage.getItem('cableInventoryData_Dynamic_V6')) || {
+        // داتا التطبيق الأساسية
+        let appData = JSON.parse(localStorage.getItem('cableInventoryData_Offline_V7')) || {
             stocks: { "20": 0, "30": 0, "50": 0, "80": 0 },
             installations: [],
             supplyArchive: [],
@@ -333,154 +235,27 @@
             archivedDistricts: []
         };
 
-        if(!appData.archivedDistricts) appData.archivedDistricts = [];
-        if(!appData.odnBuildings) appData.odnBuildings = [];
-        if(!appData.currentDistrict) appData.currentDistrict = "";
-
-        let currentLang = 'ar';
-
-        const styleConfig = {
-            "20": { bg: "from-purple-500 to-purple-600", badge: "bg-purple-100 text-purple-800", icon: "fa-solid fa-bezier-curve" },
-            "30": { bg: "from-orange-500 to-orange-600", badge: "bg-orange-100 text-orange-800", icon: "fa-solid fa-circle-notch" },
-            "50": { bg: "from-blue-500 to-blue-600", badge: "bg-blue-100 text-blue-800", icon: "fa-solid fa-route" },
-            "80": { bg: "from-pink-600 to-pink-700", badge: "bg-pink-100 text-pink-800", icon: "fa-solid fa-scroll" },
-            "default": { bg: "from-slate-500 to-slate-600", badge: "bg-slate-100 text-slate-800", icon: "fa-solid fa-box" }
+        const cardColors = {
+            "20": "from-purple-500 to-purple-600",
+            "30": "from-orange-500 to-orange-600",
+            "50": "from-blue-500 to-blue-600",
+            "80": "from-pink-600 to-pink-700",
+            "default": "from-slate-500 to-slate-600"
         };
 
-        const translations = {
-            ar: {
-                navTitle: "نظام تتبع الكوابل وشبكات ODN التفصيلي", navStock: "المخزن الرئيسي", navCust: "سجل الزبائن", navArch: "أرشيف الشحنات", navOdn: "هندسة وتوزيع ODN",
-                sectionStock: "حالة المخزن الحالي (اضغط على أي كرت للتعديل المباشر)", cardTotal: "المجموع الكلي للمخزون", unitT: "بكرة إجمالية", unitM: "بكرة متاحة",
-                formIn: "إمداد وتغذية المخزن", lblTypeIn: "اختر الفئة", lblManualType: "اكتب طول الفئة الجديدة بالأمتار", customOpt: "✍️ إدخال يدوي فئة جديدة...",
-                lblQtyIn: "الكمية الموردة الحالية", btnIn: "تأكيد الإدخال والأرشفة بالتاريخ", formOut: "تسجيل زبون وتركيب جديد", lblCustName: "اسم الزبون الكامل",
-                lblCustPhone: "رقم الهاتف", lblTypeOut: "الكابل المستخدم للتركيب", btnOut: "حفظ البيانات وخصم المخزن فورا", tableTitle: "قاعدة بيانات وسجلات الزبائن المسجلة",
-                searchPlh: "ابحث هنا عن اسم الزبون...", noCust: "لا توجد عمليات مسجلة حالياً", archiveTitle: "أرشيف سجل التوريدات وشحنات المخزن المؤرخة",
-                btnFactory: "تصفير عام", lblDistrict: "الحي الحالي قيد الإنجاز 📍", btnCloseDist: "إغلاق الحي وحفظ المشروع نهائياً 🔒", lblOdnSum: "الحساب التلقائي لأمتار الحي الحالي",
-                totFacade: "إجمالي مسارات الواجهة", totGround: "إجمالي مسارات الأرضي", totAerial: "إجمالي مسارات الهوائي", addBTitle: "تقسيم كابل بناية جديدة",
-                bNum: "رقم أو اسم البناية 🏢", fRoute: "مسار الواجهة (متر الكابل)", gRoute: "مسار الأرضي (متر الكابل)", aRoute: "مسار الهوائي (متر الكابل)",
-                btnCalcB: "احسب وأدرج البناية في القائمة", currBList: "قائمة البنايات والمفاتيح الرقمية للحي الحالي", thB: "🏢 البناية", thF: "الواجهة", thG: "الأرضي", thA: "الهوائي",
-                thT: "الإجمالي", thAct: "إجراء", odnEmpty: "لم يتم إدراج أي بناية بعد للحي الحالي.", finalArchTitle: "أرشيف المشاريع والأحياء المكتملة والمغلقة نهائياً",
-                clearDistArch: "مسح أرشيف الأحياء", modalTitle: "إدخال وتغذية فئة", modalLbl: "الكمية المضافة بالبكرات:", modalBtn: "تحديث وأرشفة الشحنة فوراً",
-                footerRights: "© 2026 جميع الحقوق محفوظة. تم التطوير وبناء النظام بواسطة:", noStock: "المخزون غير كافٍ!", alertClose: "الرجاء كتابة اسم الحي وتأكيد وجود بنايات لإغلاقه نهائياً.",
-                bldgsCount: "عدد البنايات:", viewDetails: "عرض البنايات 👁️"
-            },
-            fr: {
-                navTitle: "Gestion Spécifique & Réseaux ODN", navStock: "Stock Principal", navCust: "Clients", navArch: "Archive Expéditions", navOdn: "Ingénierie ODN",
-                sectionStock: "État de stock actuel", cardTotal: "Total Stock Global", unitT: "Rouleaux au total", unitM: "Rouleaux Dispo",
-                formIn: "Approvisionnement du stock", lblTypeIn: "Sélectionnez la catégorie", lblManualType: "Taille de la nouvelle catégorie", customOpt: "✍️ Saisie manuelle...",
-                lblQtyIn: "Quantité livrée", btnIn: "Confirmer l'entrée", formOut: "Nouvelle Installation Client", lblCustName: "Nom complet du client",
-                lblCustPhone: "Numéro de téléphone", lblTypeOut: "Câble utilisé", btnOut: "Enregistrer et déduire", tableTitle: "Base de données des clients",
-                searchPlh: "Rechercher un client...", noCust: "Aucun client enregistré", archiveTitle: "Historique des Approvisionnements",
-                btnFactory: "Réinitialisation", lblDistrict: "Quartier Actuel en Cours 📍", btnCloseDist: "Clôturer le Quartier & Archiver 🔒", lblOdnSum: "Calcul Automatique du Quartier Actuel",
-                totFacade: "Total Façade", totGround: "Total Souterrain", totAerial: "Total Aérien", addBTitle: "Diviser le câble d'un bâtiment",
-                bNum: "Nom/Numéro du Bâtiment 🏢", fRoute: "Tracé Façade (Mètres)", gRoute: "Tracé Souterrain (Mètres)", aRoute: "Tracé Aérien (Mètres)",
-                btnCalcB: "Calculer et insérer", currBList: "Liste des bâtiments & repères de câbles", thB: "🏢 Bâtiment", thF: "Façade", thG: "Souterrain", thA: "Aérien",
-                thT: "Total", thAct: "Action", odnEmpty: "Aucun bâtiment inséré pour ce quartier.", finalArchTitle: "Archive des Quartiers Clôturés & Terminés",
-                clearDistArch: "Effacer l'archive des quartiers", modalTitle: "Approvisionner la Catégorie", modalLbl: "Quantité ajoutée en rouleaux :", modalBtn: "Mettre à jour",
-                footerRights: "© 2026 Tous droits réservés. Développé par:", noStock: "Stock insuffisant!", alertClose: "Veuillez entrer le nom du quartier et insérer des bâtiments.",
-                bldgsCount: "Bâtiments:", viewDetails: "Voir Détails 👁️"
-            },
-            en: {
-                navTitle: "Detailed Tracking & ODN Networks", navStock: "Main Stock", navCust: "Customers", navArch: "Supply Archive", navOdn: "ODN Engineering",
-                sectionStock: "Current Stock Status", cardTotal: "Total Stock Inventory", unitT: "Total Drums", unitM: "Drums Available",
-                formIn: "Stock Supply & Feeding", lblTypeIn: "Choose Category", lblManualType: "Enter length in meters", customOpt: "✍️ Manual Input...",
-                lblQtyIn: "Quantity Delivered", btnIn: "Confirm Input", formOut: "New Customer Installation", lblCustName: "Customer Full Name",
-                lblCustPhone: "Phone Number", lblTypeOut: "Cable Used", btnOut: "Save & Deduct Stock", tableTitle: "Registered Customers Database",
-                searchPlh: "Search by client name...", noCust: "No registered logs found", archiveTitle: "Historical Stock Supply Archive",
-                btnFactory: "Reset All", lblDistrict: "Current Neighborhood / District 📍", btnCloseDist: "Close Neighborhood & Final Save 🔒", lblOdnSum: "Automatic Metric Calculation for Current District",
-                totFacade: "Total Facade", totGround: "Total Underground", totAerial: "Total Aerial", addBTitle: "Divide Cable for Building",
-                bNum: "Building Name/Number 🏢", fRoute: "Facade Route (Meters)", gRoute: "Underground Route (Meters)", aRoute: "Aerial Route (Meters)",
-                btnCalcB: "Calculate & Add", currBList: "Buildings List & Cable Markings for Current District", thB: "🏢 Building", thF: "Facade", thG: "Underground", thA: "Aerial",
-                thT: "Total", thAct: "Action", odnEmpty: "No buildings added yet for this neighborhood.", finalArchTitle: "Completed Projects Archive",
-                clearDistArch: "Clear District Archive", modalTitle: "Supply Category", modalLbl: "Quantity added in drums:", modalBtn: "Update Now",
-                footerRights: "© 2026 All Rights Reserved. System Developed by:", noStock: "Insufficient stock!", alertClose: "Please enter the neighborhood name and log buildings before closing.",
-                bldgsCount: "Buildings:", viewDetails: "View Buildings 👁️"
-            }
-        };
-
-        function showPage(pageId) {
-            document.querySelectorAll('.app-page').forEach(page => page.classList.add('hidden'));
-            const p = document.getElementById(pageId);
-            if(p) p.classList.remove('hidden');
-            window.scrollTo(0,0);
-        }
-
-        // تحسين دالة تغيير اللغة لتحديث الواجهة فورياً بشكل غير متزامن لتفادي التجمد
-        function changeLanguage(lang) {
-            currentLang = lang;
-            ['ar', 'fr', 'en'].forEach(l => {
-                const btn = document.getElementById(`lang-${l}-btn`);
-                if(btn) {
-                    btn.className = (l === lang) ? "px-2 py-1 rounded-lg text-[10px] font-bold bg-white text-indigo-900 transition shadow" : "px-2 py-1 rounded-lg text-[10px] font-bold text-white hover:bg-white/10 transition";
-                }
-            });
-
-            document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
-            document.documentElement.lang = lang;
-
-            const dict = translations[lang];
-            if(!dict) return;
-
-            document.getElementById('nav-title').innerText = dict.navTitle;
-            document.getElementById('nav-stock-btn').innerText = dict.navStock;
-            document.getElementById('nav-cust-btn').innerText = dict.navCust;
-            document.getElementById('nav-arch-btn').innerText = dict.navArch;
-            document.getElementById('nav-odn-btn').innerText = dict.navOdn;
-            document.getElementById('section-stock-title').innerHTML = dict.sectionStock;
-            document.getElementById('card-total-title').innerText = dict.cardTotal;
-            document.getElementById('unit-total').innerText = dict.unitT;
-            document.getElementById('form-in-title').innerText = dict.formIn;
-            document.getElementById('lbl-type-in').innerText = dict.lblTypeIn;
-            document.getElementById('lbl-manual-type').innerText = dict.lblManualType;
-            document.getElementById('lbl-qty-in').innerText = dict.lblQtyIn;
-            document.getElementById('btn-in-submit').querySelector('span').innerText = dict.btnIn;
-            document.getElementById('form-out-title').innerText = dict.formOut;
-            document.getElementById('lbl-cust-name').innerText = dict.lblCustName;
-            document.getElementById('lbl-cust-phone').innerText = dict.lblCustPhone;
-            document.getElementById('lbl-type-out').innerText = dict.lblTypeOut;
-            document.getElementById('btn-out-submit').querySelector('span').innerText = dict.btnOut;
-            document.getElementById('table-title').innerText = dict.tableTitle;
-            document.getElementById('customer-search-input').placeholder = dict.searchPlh;
-            document.getElementById('no-cust-txt').innerText = dict.noCust;
-            document.getElementById('archive-title').innerText = dict.archiveTitle;
-            document.getElementById('btn-factory-reset').innerText = dict.btnFactory;
-            
-            document.getElementById('lbl-district-name').innerText = dict.lblDistrict;
-            document.getElementById('btn-close-district').querySelector('span').innerText = dict.btnCloseDist;
-            document.getElementById('lbl-odn-summary-title').innerText = dict.lblOdnSum;
-            document.getElementById('lbl-tot-facade').innerText = dict.totFacade;
-            document.getElementById('lbl-tot-ground').innerText = dict.totGround;
-            document.getElementById('lbl-tot-aerial').innerText = dict.totAerial;
-            document.getElementById('lbl-add-b-title').innerText = dict.addBTitle;
-            document.getElementById('lbl-b-num').innerText = dict.bNum;
-            document.getElementById('lbl-f-route').innerText = dict.fRoute;
-            document.getElementById('lbl-g-route').innerText = dict.gRoute;
-            document.getElementById('lbl-a-route').innerText = dict.aRoute;
-            document.getElementById('btn-calc-b').querySelector('span').innerText = dict.btnCalcB;
-            document.getElementById('lbl-curr-b-list').innerText = dict.currBList;
-            
-            document.getElementById('th-b').innerText = dict.thB;
-            document.getElementById('th-f').innerText = dict.thF;
-            document.getElementById('th-g').innerText = dict.thG;
-            document.getElementById('th-a').innerText = dict.thA;
-            document.getElementById('th-t').innerText = dict.thT;
-            document.getElementById('th-act').innerText = dict.thAct;
-            document.getElementById('txt-odn-empty').innerText = dict.odnEmpty;
-            document.getElementById('lbl-final-arch-title').innerText = dict.finalArchTitle;
-            document.getElementById('btn-clear-dist-arch').innerText = dict.clearDistArch;
-
-            updateUI();
+        function showPage(id) {
+            document.querySelectorAll('.app-page').forEach(p => p.classList.add('hidden'));
+            document.getElementById(id).classList.remove('hidden');
         }
 
         function updateDistrictName() {
             appData.currentDistrict = document.getElementById('odn-district-input').value.trim();
-            localStorage.setItem('cableInventoryData_Dynamic_V6', JSON.stringify(appData));
+            localStorage.setItem('cableInventoryData_Offline_V7', JSON.stringify(appData));
         }
 
         function handleNewOdnBuilding(e) {
             e.preventDefault();
             const name = document.getElementById('odn-b-name').value.trim();
-            
             const fStart = document.getElementById('odn-facade-start').value;
             const fEnd = document.getElementById('odn-facade-end').value;
             const gStart = document.getElementById('odn-ground-start').value;
@@ -488,16 +263,13 @@
             const aStart = document.getElementById('odn-aerial-start').value;
             const aEnd = document.getElementById('odn-aerial-end').value;
 
-            const calcMeters = (s, e) => (s && e) ? Math.abs(parseInt(s) - parseInt(e)) : 0;
+            const calc = (s, e) => (s && e) ? Math.abs(parseInt(s) - parseInt(e)) : 0;
 
             appData.odnBuildings.push({
-                name: name,
-                facade: calcMeters(fStart, fEnd),
-                facadeMark: (fStart && fEnd) ? `[${fStart}➔${fEnd}]` : "",
-                ground: calcMeters(gStart, gEnd),
-                groundMark: (gStart && gEnd) ? `[${gStart}➔${gEnd}]` : "",
-                aerial: calcMeters(aStart, aEnd),
-                aerialMark: (aStart && aEnd) ? `[${aStart}➔${aEnd}]` : ""
+                name,
+                facade: calc(fStart, fEnd), facadeMark: (fStart && fEnd) ? `[${fStart}-${fEnd}]` : "",
+                ground: calc(gStart, gEnd), groundMark: (gStart && gEnd) ? `[${gStart}-${gEnd}]` : "",
+                aerial: calc(aStart, aEnd), aerialMark: (aStart && aEnd) ? `[${aStart}-${aEnd}]` : ""
             });
 
             document.getElementById('odn-b-name').value = '';
@@ -508,304 +280,157 @@
             updateUI();
         }
 
-        function deleteOdnBuilding(index) {
-            appData.odnBuildings.splice(index, 1);
+        function deleteOdnBuilding(i) {
+            appData.odnBuildings.splice(i, 1);
             updateUI();
         }
 
         function archiveCurrentDistrict() {
-            const districtName = appData.currentDistrict || document.getElementById('odn-district-input').value.trim();
-            if(!districtName || appData.odnBuildings.length === 0) {
-                alert(translations[currentLang].alertClose);
-                return;
-            }
+            const dName = appData.currentDistrict || document.getElementById('odn-district-input').value.trim();
+            if(!dName || appData.odnBuildings.length === 0) { alert("أدخل اسم الحي وبناية واحدة على الأقل لإغلاق المشروع."); return; }
 
-            let totalFacade = 0, totalGround = 0, totalAerial = 0;
-            appData.odnBuildings.forEach(b => {
-                totalFacade += b.facade;
-                totalGround += b.ground;
-                totalAerial += b.aerial;
-            });
-
-            const now = new Date();
-            const formattedDate = now.toLocaleDateString('ar-DZ', { year: 'numeric', month: '2-digit', day: '2-digit' });
+            let fSum = 0, gSum = 0, aSum = 0;
+            appData.odnBuildings.forEach(b => { fSum += b.facade; gSum += b.ground; aSum += b.aerial; });
 
             appData.archivedDistricts.unshift({
-                id: Date.now(),
-                districtName: districtName,
-                date: formattedDate,
-                facadeSum: totalFacade,
-                groundSum: totalGround,
-                aerialSum: totalAerial,
-                bldgsCount: appData.odnBuildings.length,
-                details: [...appData.odnBuildings]
+                id: Date.now(), districtName: dName, date: new Date().toLocaleDateString('ar-DZ'),
+                facadeSum: fSum, groundSum: gSum, aerialSum: aSum,
+                bldgsCount: appData.odnBuildings.length, details: [...appData.odnBuildings]
             });
 
-            appData.currentDistrict = "";
-            appData.odnBuildings = [];
+            appData.currentDistrict = ""; appData.odnBuildings = [];
             document.getElementById('odn-district-input').value = "";
-
             updateUI();
         }
 
-        function openDistrictDetails(districtId) {
-            const target = appData.archivedDistricts.find(d => d.id === districtId);
-            if(!target) return;
-
-            document.getElementById('details-modal-title').innerText = target.districtName;
-            const tbody = document.getElementById('details-modal-tbody');
-            tbody.innerHTML = '';
-
-            target.details.forEach(b => {
-                const totalM = b.facade + b.ground + b.aerial;
-                const tr = document.createElement('tr');
-                tr.className = "border-b text-slate-700 hover:bg-slate-50";
-                tr.innerHTML = `
-                    <td class="p-2.5 font-bold text-slate-800">${b.name}</td>
-                    <td class="p-2.5 text-purple-700 font-mono">${b.facade} M <span class="text-[10px] text-slate-400 block">${b.facadeMark || ''}</span></td>
-                    <td class="p-2.5 text-amber-700 font-mono">${b.ground} M <span class="text-[10px] text-slate-400 block">${b.groundMark || ''}</span></td>
-                    <td class="p-2.5 text-sky-700 font-mono">${b.aerial} M <span class="text-[10px] text-slate-400 block">${b.aerialMark || ''}</span></td>
-                    <td class="p-2.5 bg-slate-50 font-black font-mono">${totalM} M</td>
-                `;
-                tbody.appendChild(tr);
+        function openDistrictDetails(id) {
+            const t = appData.archivedDistricts.find(d => d.id === id); if(!t) return;
+            document.getElementById('details-modal-title').innerText = t.districtName;
+            const tbody = document.getElementById('details-modal-tbody'); tbody.innerHTML = '';
+            t.details.forEach(b => {
+                tbody.innerHTML += `<tr><td><b>${b.name}</b></td><td>${b.facade}M</td><td>${b.ground}M</td><td>${b.aerial}M</td><td style="background:#f1f5f9; font-weight:bold;">${b.facade+b.ground+b.aerial}M</td></tr>`;
             });
-
             document.getElementById('district-details-modal').classList.remove('hidden');
         }
+        function closeDetailsModal() { document.getElementById('district-details-modal').classList.add('hidden'); }
 
-        function closeDetailsModal() {
-            document.getElementById('district-details-modal').classList.add('hidden');
-        }
-
-        function clearFinalDistrictArchive() {
-            if(confirm('هل تريد حذف تاريخ سجل أرشيف الأحياء بالكامل؟')) {
-                appData.archivedDistricts = [];
-                updateUI();
-            }
-        }
-
-        function renderOdnDashboard() {
-            const inputField = document.getElementById('odn-district-input');
-            if (inputField && document.activeElement !== inputField) {
-                inputField.value = appData.currentDistrict || "";
-            }
-            
-            const tbody = document.getElementById('odn-table-body');
-            tbody.innerHTML = '';
-
-            let totalFacade = 0, totalGround = 0, totalAerial = 0;
-
-            if(appData.odnBuildings.length === 0) {
-                document.getElementById('odn-empty-msg').classList.remove('hidden');
-            } else {
-                document.getElementById('odn-empty-msg').classList.add('hidden');
-                appData.odnBuildings.forEach((b, index) => {
-                    totalFacade += b.facade;
-                    totalGround += b.ground;
-                    totalAerial += b.aerial;
-                    const rowTotal = b.facade + b.ground + b.aerial;
-
-                    const tr = document.createElement('tr');
-                    tr.className = "hover:bg-slate-50 border-b border-slate-100 transition text-slate-700";
-                    tr.innerHTML = `
-                        <td class="p-3 font-bold text-slate-800">${b.name}</td>
-                        <td class="p-3 text-purple-600 font-mono font-bold">${b.facade} M <span class="text-[10px] text-slate-400 font-normal block">${b.facadeMark || ''}</span></td>
-                        <td class="p-3 text-amber-600 font-mono font-bold">${b.ground} M <span class="text-[10px] text-slate-400 font-normal block">${b.groundMark || ''}</span></td>
-                        <td class="p-3 text-sky-600 font-mono font-bold">${b.aerial} M <span class="text-[10px] text-slate-400 font-normal block">${b.aerialMark || ''}</span></td>
-                        <td class="p-3 text-slate-900 font-black font-mono bg-slate-50">${rowTotal} M</td>
-                        <td class="p-3 text-center">
-                            <button type="button" onclick="deleteOdnBuilding(${index})" class="text-red-400 hover:text-red-600 p-1"><i class="fa-solid fa-trash-can"></i></button>
-                        </td>
-                    `;
-                    tbody.appendChild(tr);
-                });
-            }
-
-            document.getElementById('grand-facade').innerText = totalFacade;
-            document.getElementById('grand-ground').innerText = totalGround;
-            document.getElementById('grand-aerial').innerText = totalAerial;
-
-            const archiveContainer = document.getElementById('district-archive-container');
-            archiveContainer.innerHTML = '';
-
-            appData.archivedDistricts.forEach(dist => {
-                const totalDistMeters = dist.facadeSum + dist.groundSum + dist.aerialSum;
-                const div = document.createElement('div');
-                div.className = "bg-slate-50 rounded-xl p-4 border border-slate-200 shadow-sm space-y-3";
-                div.innerHTML = `
-                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 bg-slate-100 p-3 rounded-lg">
-                        <div>
-                            <span class="text-sm font-black text-indigo-900">📍 ${dist.districtName}</span>
-                            <span class="text-[10px] text-slate-400 block sm:inline sm:mr-3 font-mono"><i class="fa-regular fa-calendar-check"></i> ${dist.date}</span>
-                        </div>
-                        <div class="flex flex-wrap items-center gap-3 text-xs font-bold text-slate-600">
-                            <span>${translations[currentLang].bldgsCount || 'عدد البنايات:'} <span class="bg-indigo-200 text-indigo-800 px-2 py-0.5 rounded font-mono">${dist.bldgsCount}</span></span>
-                            <span>📐 <span class="bg-slate-800 text-white px-2 py-0.5 rounded font-mono">${totalDistMeters} M</span></span>
-                            <button type="button" onclick="openDistrictDetails(${dist.id})" class="bg-indigo-600 hover:bg-indigo-700 text-white px-2.5 py-1 rounded text-[11px] flex items-center gap-1 shadow transition">${translations[currentLang].viewDetails || 'عرض التفاصيل'}</button>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-3 gap-2 text-center text-[11px] font-bold">
-                        <div class="p-2 bg-purple-100 text-purple-800 rounded-lg">🔲 ${translations[currentLang].thF}: ${dist.facadeSum} M</div>
-                        <div class="p-2 bg-amber-100 text-amber-800 rounded-lg">🔲 ${translations[currentLang].thG}: ${dist.groundSum} M</div>
-                        <div class="p-2 bg-sky-100 text-sky-800 rounded-lg">🔲 ${translations[currentLang].thA}: ${dist.aerialSum} M</div>
-                    </div>
-                `;
-                archiveContainer.appendChild(div);
-            });
-        }
-
-        function openQuickStockModal(category) {
-            const conf = styleConfig[category] || styleConfig["default"];
-            const bgClass = conf.bg.split(' ')[0]; 
-            document.getElementById('modal-category-id').value = category;
-            document.getElementById('modal-title').innerText = `${translations[currentLang].modalTitle} ${category} M`;
-            const badgeIcon = document.getElementById('modal-badge-icon');
-            badgeIcon.className = `p-2 rounded-lg text-white text-sm ${bgClass}`;
-            badgeIcon.innerHTML = `<i class="${conf.icon}"></i>`;
+        function openQuickStockModal(cat) {
+            document.getElementById('modal-category-id').value = cat;
+            document.getElementById('modal-title').innerText = `شحن سريع للفئة ${cat} M`;
             document.getElementById('modal-qty-input').value = '';
-            const modal = document.getElementById('quick-stock-modal');
-            modal.classList.remove('hidden');
-            setTimeout(() => { modal.classList.remove('opacity-0'); }, 10);
+            document.getElementById('quick-stock-modal').classList.remove('hidden');
         }
-
-        function closeQuickStockModal() {
-            const modal = document.getElementById('quick-stock-modal');
-            modal.classList.add('opacity-0');
-            setTimeout(() => { modal.classList.add('hidden'); }, 300);
-        }
+        function closeQuickStockModal() { document.getElementById('quick-stock-modal').classList.add('hidden'); }
 
         function handleQuickStockSubmit(e) {
             e.preventDefault();
-            const category = document.getElementById('modal-category-id').value;
+            const cat = document.getElementById('modal-category-id').value;
             const qty = parseInt(document.getElementById('modal-qty-input').value);
-            if(!category || !qty) return;
-            appData.stocks[category] = (appData.stocks[category] || 0) + qty;
-            const now = new Date();
-            const formatted = now.toLocaleDateString('ar-DZ', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
-            appData.supplyArchive.unshift({ cableType: category, quantity: qty, dateTime: formatted });
-            closeQuickStockModal();
-            updateUI();
-            showPage('archive-page');
+            if(!cat || !qty) return;
+            appData.stocks[cat] = (appData.stocks[cat] || 0) + qty;
+            appData.supplyArchive.unshift({ cableType: cat, quantity: qty, dateTime: new Date().toLocaleString('ar-DZ') });
+            closeQuickStockModal(); updateUI(); showPage('archive-page');
         }
 
         function toggleManualInputVisibility() {
-            const selectValue = document.getElementById('in-type-select').value;
-            document.getElementById('manual-type-container').style.display = (selectValue === 'custom') ? 'block' : 'none';
+            document.getElementById('manual-type-container').style.display = (document.getElementById('in-type-select').value === 'custom') ? 'block' : 'none';
         }
 
-        // تحسين دالة التحديث لتكون خفيفة ومباشرة دون استهلاك موارد المعالج
         function updateUI() {
-            localStorage.setItem('cableInventoryData_Dynamic_V6', JSON.stringify(appData));
+            localStorage.setItem('cableInventoryData_Offline_V7', JSON.stringify(appData));
+            
+            // 1. تحديث كروت المخزن
             const cardsArea = document.getElementById('dynamic-cards-area');
-            if (!cardsArea) return;
-
             cardsArea.innerHTML = '';
-            let totalSum = 0;
-            const inSelect = document.getElementById('in-type-select');
-            const outSelect = document.getElementById('out-type');
-            
-            inSelect.innerHTML = ''; outSelect.innerHTML = '';
-            const sortedCategories = Object.keys(appData.stocks).sort((a,b) => parseInt(a) - parseInt(b));
+            let total = 0;
+            const inSel = document.getElementById('in-type-select');
+            const outSel = document.getElementById('out-type');
+            inSel.innerHTML = ''; outSel.innerHTML = '';
 
-            sortedCategories.forEach(cat => {
-                const qty = appData.stocks[cat];
-                totalSum += qty;
+            Object.keys(appData.stocks).sort((a,b)=>a-b).forEach(cat => {
+                const qty = appData.stocks[cat]; total += qty;
+                inSel.innerHTML += `<option value="${cat}">كابل فئة ${cat} M</option>`;
+                if(qty > 0) outSel.innerHTML += `<option value="${cat}">${cat} M (${qty} بكرة متاحة)</option>`;
 
-                const optIn = document.createElement('option');
-                optIn.value = cat; optIn.innerText = `كابل فئة ${cat} M`;
-                inSelect.appendChild(optIn);
-
-                if(qty > 0) {
-                    const optOut = document.createElement('option');
-                    optOut.value = cat; optOut.innerText = `${cat} M (${qty} ${translations[currentLang].unitM})`;
-                    outSelect.appendChild(optOut);
-                }
-
-                const conf = styleConfig[cat] || styleConfig["default"];
-                const card = document.createElement('div');
-                card.className = `bg-gradient-to-br ${conf.bg} text-white rounded-2xl p-6 shadow-md relative overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer active:scale-95`;
-                card.setAttribute('onclick', `openQuickStockModal('${cat}')`);
-                card.innerHTML = `
-                    <div class="absolute -right-6 -bottom-6 text-white/10 text-8xl"><i class="${conf.icon}"></i></div>
-                    <div class="flex justify-between items-start mb-4 relative z-10">
-                        <h3 class="text-lg font-medium opacity-90">${cat} M</h3>
-                        <span class="bg-white/20 p-2 rounded-lg"><i class="${conf.icon} text-md"></i></span>
-                    </div>
-                    <p class="text-4xl font-extrabold relative z-10 flex items-baseline"><span>${qty}</span><span class="text-sm font-normal mr-2">${translations[currentLang].unitM}</span></p>
-                `;
-                cardsArea.appendChild(card);
+                const cls = cardColors[cat] || cardColors["default"];
+                cardsArea.innerHTML += `
+                    <div class="card card-click" onclick="openQuickStockModal('${cat}')" style="background:linear-gradient(to bottom right, var(--slate-700), var(--slate-800)); color:white;">
+                        <h3 style="font-size:13px; opacity:0.8;">فئة ${cat} M</h3>
+                        <p style="font-size:24px; font-weight:bold; margin-top:5px;">${qty} <span style="font-size:11px; font-weight:normal;">بكرة</span></p>
+                    </div>`;
             });
+            inSel.innerHTML += `<option value="custom">✍️ إدخال يدوي فئة جديدة...</option>`;
+            document.getElementById('total-stock').innerText = total;
 
-            const customOpt = document.createElement('option');
-            customOpt.value = 'custom'; customOpt.innerText = translations[currentLang].customOpt;
-            inSelect.appendChild(customOpt);
-
-            document.getElementById('total-stock').innerText = totalSum;
-            
-            renderCustomersList(appData.installations);
-            renderArchiveList();
-            renderOdnDashboard();
-            toggleManualInputVisibility();
-        }
-
-        function renderCustomersList(arr) {
-            const container = document.getElementById('customers-cards-container');
-            if (!container) return;
-            container.innerHTML = '';
-            if(arr.length === 0) {
-                document.getElementById('no-data-msg').classList.remove('hidden');
-            } else {
+            // 2. سجل الزبائن
+            const cCont = document.getElementById('customers-cards-container'); cCont.innerHTML = '';
+            if(appData.installations.length === 0) document.getElementById('no-data-msg').classList.remove('hidden');
+            else {
                 document.getElementById('no-data-msg').classList.add('hidden');
-                arr.forEach(item => {
-                    const card = document.createElement('div');
-                    card.className = "bg-slate-50 rounded-xl p-4 border border-slate-200 flex justify-between items-center";
-                    card.innerHTML = `
-                        <div>
-                            <h4 class="font-bold text-slate-800 text-sm">${item.name}</h4>
-                            <span class="text-slate-500 text-xs font-mono">${item.phone}</span>
-                        </div>
-                        <span class="bg-indigo-100 text-indigo-800 text-xs font-bold px-3 py-1 rounded-full">${item.cableType} M</span>
-                    `;
-                    container.appendChild(card);
+                appData.installations.forEach(i => {
+                    cCont.innerHTML += `<div class="card" style="display:flex; justify-content:space-between; align-items:center;"><div><b>${i.name}</b><br><small style="color:var(--slate-500);">${i.phone}</small></div><span style="background:var(--sky-100); color:var(--sky-600); padding:4px 8px; border-radius:6px; font-size:11px; font-weight:bold;">${i.cableType} M</span></div>`;
                 });
             }
-        }
 
-        function renderArchiveList() {
-            const container = document.getElementById('archive-cards-container');
-            if (!container) return;
-            container.innerHTML = '';
+            // 3. الأرشيف
+            const aCont = document.getElementById('archive-cards-container'); aCont.innerHTML = '';
             appData.supplyArchive.forEach(item => {
-                const card = document.createElement('div');
-                card.className = "bg-slate-50 rounded-xl p-4 border border-slate-200 flex justify-between items-center";
-                card.innerHTML = `
-                    <div><h4 class="font-bold text-slate-800 text-sm">${item.dateTime}</h4></div>
-                    <span class="text-emerald-600 font-bold text-sm font-mono">+${item.quantity} [f: ${item.cableType}M]</span>
-                `;
-                container.appendChild(card);
+                aCont.innerHTML += `<div class="card" style="display:flex; justify-content:space-between; align-items:center;"><div><small style="color:var(--slate-500);">${item.dateTime}</small></div><b style="color:var(--emerald-600);">+${item.quantity} [فئة ${item.cableType}M]</b></div>`;
             });
+
+            // 4. لوحة هندسة ODN
+            document.getElementById('odn-district-input').value = appData.currentDistrict || "";
+            const tbody = document.getElementById('odn-table-body'); tbody.innerHTML = '';
+            let fSum=0, gSum=0, aSum=0;
+
+            if(appData.odnBuildings.length === 0) document.getElementById('odn-empty-msg').classList.remove('hidden');
+            else {
+                document.getElementById('odn-empty-msg').classList.add('hidden');
+                appData.odnBuildings.forEach((b, idx) => {
+                    fSum+=b.facade; gSum+=b.ground; aSum+=b.aerial;
+                    tbody.innerHTML += `<tr><td><b>${b.name}</b></td><td>${b.facade}M <small style="color:var(--slate-400);">${b.facadeMark}</small></td><td>${b.ground}M <small style="color:var(--slate-400);">${b.groundMark}</small></td><td>${b.aerial}M <small style="color:var(--slate-400);">${b.aerialMark}</small></td><td style="background:#f8fafc; font-weight:black;">${b.facade+b.ground+b.aerial}M</td><td><button onclick="deleteOdnBuilding(${idx})" style="color:var(--red-600); background:none; font-weight:bold;">حذف</button></td></tr>`;
+                });
+            }
+            document.getElementById('grand-facade').innerText = fSum;
+            document.getElementById('grand-ground').innerText = gSum;
+            document.getElementById('grand-aerial').innerText = aSum;
+
+            // أرشيف الأحياء المغلقة
+            const distCont = document.getElementById('district-archive-container'); distCont.innerHTML = '';
+            appData.archivedDistricts.forEach(d => {
+                distCont.innerHTML += `
+                    <div class="card" style="background:var(--slate-100); padding:10px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <div><b>📍 ${d.districtName}</b> <small style="color:var(--slate-400); margin-right:8px;">${d.date}</small></div>
+                            <button onclick="openDistrictDetails(${d.id})" style="background:var(--indigo-600); color:white; font-size:10px; padding:4px 8px; border-radius:4px;">تفاصيل البنايات 👁️</button>
+                        </div>
+                    </div>`;
+            });
+            toggleManualInputVisibility();
         }
 
         function filterCustomers() {
             const q = document.getElementById('customer-search-input').value.toLowerCase().trim();
-            if(!q) { renderCustomersList(appData.installations); return; }
+            if(!q) { renderCustomersList_Static(appData.installations); return; }
             const f = appData.installations.filter(i => i.name.toLowerCase().includes(q) || i.phone.includes(q));
-            renderCustomersList(f);
+            renderCustomersList_Static(f);
+        }
+        function renderCustomersList_Static(arr) {
+            const cCont = document.getElementById('customers-cards-container'); cCont.innerHTML = '';
+            arr.forEach(i => {
+                cCont.innerHTML += `<div class="card" style="display:flex; justify-content:space-between; align-items:center;"><div><b>${i.name}</b><br><small style="color:var(--slate-500);">${i.phone}</small></div><span style="background:var(--sky-100); color:var(--sky-600); padding:4px 8px; border-radius:6px; font-size:11px; font-weight:bold;">${i.cableType} M</span></div>`;
+            });
         }
 
         function handleStockIn(e) {
             e.preventDefault();
-            const selectField = document.getElementById('in-type-select').value;
+            const sel = document.getElementById('in-type-select').value;
             const qty = parseInt(document.getElementById('in-qty').value);
-            let finalCategory = (selectField === 'custom') ? document.getElementById('in-type-manual').value.trim() : selectField;
-            if(!finalCategory) return;
-            appData.stocks[finalCategory] = (appData.stocks[finalCategory] || 0) + qty;
-            const now = new Date();
-            const formatted = now.toLocaleDateString('ar-DZ', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
-            appData.supplyArchive.unshift({ cableType: finalCategory, quantity: qty, dateTime: formatted });
-            document.getElementById('in-qty').value = '';
-            updateUI();
-            showPage('archive-page');
+            let cat = (sel === 'custom') ? document.getElementById('in-type-manual').value.trim() : sel;
+            if(!cat || !qty) return;
+            appData.stocks[cat] = (appData.stocks[cat] || 0) + qty;
+            appData.supplyArchive.unshift({ cableType: cat, quantity: qty, dateTime: new Date().toLocaleString('ar-DZ') });
+            document.getElementById('in-qty').value = ''; updateUI(); showPage('archive-page');
         }
 
         function handleNewInstallation(e) {
@@ -813,22 +438,17 @@
             const name = document.getElementById('out-name').value;
             const phone = document.getElementById('out-phone').value;
             const type = document.getElementById('out-type').value;
-            if(!type || !appData.stocks[type] || appData.stocks[type] < 1) { alert(translations[currentLang].noStock); return; }
+            if(!type || appData.stocks[type] < 1) { alert("المخزون غير كافٍ!"); return; }
             appData.stocks[type] -= 1;
             appData.installations.unshift({ name, phone, cableType: type });
             document.getElementById('out-name').value = ''; document.getElementById('out-phone').value = '';
-            updateUI();
-            showPage('customers-page');
+            updateUI(); showPage('customers-page');
         }
 
-        function toggleResetPanel() { document.getElementById('reset-panel').classList.toggle('hidden'); }
-        function checkResetConfirmation() { document.getElementById('btn-reset-all').disabled = (document.getElementById('reset-confirm-input').value.trim() !== 'تأكيد'); }
-        function resetAllFactory() { appData = { stocks: { "20": 0, "30": 0, "50": 0, "80": 0 }, installations: [], supplyArchive: [], currentDistrict: "", odnBuildings: [], archivedDistricts: [] }; updateUI(); showPage('stock-page'); }
+        function resetAllFactory() { if(confirm('هل تريد مسح جميع البيانات؟')) { appData={stocks:{"20":0,"30":0,"50":0,"80":0},installations:[],supplyArchive:[],currentDistrict:"",odnBuildings:[],archivedDistricts:[]}; updateUI(); } }
 
-        // تشغيل مباشر وفوري وبدون أي تأخير بمجرد قراءة ملف الـ HTML
-        (function() {
-            changeLanguage('ar');
-        })();
+        // إقلاع فوري وتلقائي ومحلي 100% بدون انتظار أي استجابة إنترنت
+        updateUI();
     </script>
 </body>
 </html>
