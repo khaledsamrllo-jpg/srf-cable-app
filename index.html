@@ -16,6 +16,46 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
         body { background: var(--slate-50); color: var(--slate-800); min-height: 100vh; display: flex; flex-direction: column; }
         
+        /* 🌟 تصفيف شاشة الواجهة الترحيبية الجديدة */
+        .splash-screen {
+            position: fixed; inset: 0; background: linear-gradient(135deg, var(--slate-900), var(--indigo-900));
+            display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999;
+            transition: opacity 0.5s ease, transform 0.5s ease; color: white; text-align: center; padding: 20px;
+        }
+        .splash-screen.fade-out { opacity: 0; transform: scale(1.05); pointer-events: none; }
+        
+        /* الأيقونة المضيئة المتغيرة الألوان تلقائياً */
+        .splash-icon-wrapper {
+            width: 130px; height: 130px; border-radius: 50%; background: rgba(255,255,255,0.05);
+            display: flex; align-items: center; justify-content: center; margin-bottom: 25px;
+            cursor: pointer; position: relative; border: 2px solid transparent;
+            animation: pulseGlow 3s infinite ease-in-out, changeBorderColor 8s infinite linear;
+            box-shadow: 0 0 20px rgba(79, 70, 229, 0.2);
+        }
+        .splash-icon-wrapper svg { width: 60px; height: 60px; color: white; }
+        
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(16, 185, 129, 0.3); }
+            50% { transform: scale(1.06); box-shadow: 0 0 40px rgba(79, 70, 229, 0.6); }
+        }
+        @keyframes changeBorderColor {
+            0% { border-color: var(--emerald-500); color: var(--emerald-500); }
+            25% { border-color: #3b82f6; color: #3b82f6; }
+            50% { border-color: #a855f7; color: #a855f7; }
+            75% { border-color: #f97316; color: #f97316; }
+            100% { border-color: var(--emerald-500); color: var(--emerald-500); }
+        }
+        
+        .splash-title { font-size: 24px; font-weight: 800; letter-spacing: 1px; margin-bottom: 8px; color: white; text-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+        .splash-subtitle { font-size: 14px; color: var(--slate-400); font-weight: 500; margin-bottom: 40px; text-transform: uppercase; letter-spacing: 2px; }
+        
+        .enter-btn { background: white; color: var(--indigo-900); padding: 12px 35px; border-radius: 30px; font-weight: bold; font-size: 14px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 8px; }
+        .enter-btn:hover { background: var(--slate-100); }
+
+        .splash-footer { position: absolute; bottom: 25px; font-size: 12px; color: var(--slate-400); line-height: 1.6; width: 100%; padding: 0 20px; }
+        .splash-footer strong { color: white; background: rgba(255,255,255,0.1); padding: 3px 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15); margin: 0 4px; }
+        .splash-footer a { color: #60a5fa; text-decoration: none; font-weight: bold; }
+
         /* الهيدر العلوي */
         header { background: linear-gradient(to right, var(--slate-800), var(--indigo-900)); color: white; padding: 15px 0; position: sticky; top: 0; z-index: 50; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
         .container { width: 100%; max-width: 1150px; margin: 0 auto; padding: 0 15px; }
@@ -83,6 +123,26 @@
     </style>
 </head>
 <body>
+
+    <!-- 🌐 🚀 شاشة الواجهة الترحيبية المضيئة والموسيقية الجديدة -->
+    <div id="splash-screen" class="splash-screen">
+        <div onclick="exitSplashScreen()" class="splash-icon-wrapper" title="اضغط للدخول">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+        </div>
+        <h1 class="splash-title">SRF App</h1>
+        <p class="splash-subtitle">Optical Network Distribution</p>
+        
+        <button onclick="exitSplashScreen()" class="enter-btn">
+            <span>دخول النظام</span>
+            <svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor; transform: scaleX(-1);"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        </button>
+
+        <div class="splash-footer">
+            <span>جميع الحقوق محفوظة © 2026 | تم التطوير بواسطة المطور:</span><br>
+            <strong>khaledsaadeddine</strong> 
+            <span>| البريد الإلكتروني:</span> <a href="mailto:khaledsamrllo@gmail.com">khaledsamrllo@gmail.com</a>
+        </div>
+    </div>
 
     <!-- 🌐 الهيدر العلوي ونظام الملاحة -->
     <header>
@@ -170,7 +230,6 @@
         <div class="card">
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--slate-100); padding-bottom:10px; margin-bottom:15px;">
                 <h2 id="archive-title" style="font-size:16px; font-weight:bold;">أرشيف سجل التوريدات وشحنات المخزن المؤرخة</h2>
-                <!-- تم استبدال الحذف التلقائي بلوحة خيارات ذكية -->
                 <button onclick="openResetControlModal()" style="background:#fee2e2; color:var(--red-600); padding:8px 16px; border-radius:10px; font-size:12px; font-weight:bold; display:flex; align-items:center; gap:4px;">
                     <svg viewBox="0 0 24 24" style="width:14px; height:14px;"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H4v2h15V4z"/></svg> لوحة التصفير والحذف
                 </button>
@@ -260,7 +319,7 @@
             
             <button onclick="triggerSecureReset('stock')" class="reset-opt-btn">📦 تصفير كميات المخزن الرئيسي فقط</button>
             <button onclick="triggerSecureReset('customers')" class="reset-opt-btn">👥 مسح سجل الزبائن والمشتركين فقط</button>
-            <button onclick="triggerSecureReset('logs')" class="reset-opt-btn">📜 مسح أرشيف شحنات التوريد فقط</button>
+            <button onclick="triggerSecureReset('logs')" class="reset-opt-btn">📜 مسح أرشيف عمليات الشحن والتوريد السابقة</button>
             <button onclick="triggerSecureReset('odn')" class="reset-opt-btn">🌐 مسح أرشيف ومشاريع أحياء ODN فقط</button>
             <button onclick="triggerSecureReset('all')" class="reset-opt-btn" style="background:#fee2e2; color:var(--red-600); border-color:#fca5a5;">🚨 تصفير ومسح شامل لكل التطبيق</button>
             
@@ -268,7 +327,7 @@
         </div>
     </div>
 
-    <!-- 📥 نافذة الشحن السريع للمخزن عند النقر على كرت المتر -->
+    <!-- ⚖️ نافذة الشحن السريع للمخزن عند النقر على كرت المتر -->
     <div id="quick-stock-modal" class="modal hidden">
         <div class="modal-body">
             <h3 id="modal-title" style="font-size:16px; font-weight:bold; margin-bottom:15px; color:var(--slate-800);">تحديث كمية الفئة</h3>
@@ -302,17 +361,26 @@
         </div>
     </div>
 
-    <!-- 🔒 شريط الحقوق البريدي المدمج بالبريد المباشر -->
+    <!-- 🔒 شريط الحقوق البريدي السفلي المحدث -->
     <footer>
         <span id="footer-rights">© 2026 جميع الحقوق محفوظة. تم التطوير وبناء النظام بواسطة:</span> 
-        <strong style="color:white; background:var(--slate-800); padding:4px 8px; border-radius:6px; font-size:13px; border:1px solid var(--slate-700);">Saadeddin Khaled</strong>
+        <strong style="color:white; background:var(--slate-800); padding:4px 8px; border-radius:6px; font-size:13px; border:1px solid var(--slate-700);">khaledsaadeddine</strong>
         <span style="margin: 0 8px; color:var(--slate-600);">|</span>
         <a href="mailto:khaledsamrllo@gmail.com">khaledsamrllo@gmail.com</a>
     </footer>
 
     <script>
-        // تغيير المعرف إلى V10 لإجبار المتصفح على تحميل الميزات الأمنية فوراً وتخطي الكاش
-        let appData = JSON.parse(localStorage.getItem('cableInventoryData_Final_V10')) || {
+        // 🚀 آلية التحديث الذكي: تدمير وحظر الكاش عبر التحقق من معلمة الرابط تلقائياً
+        const urlParams = new URLSearchParams(window.location.search);
+        if (!urlParams.has('update_version')) {
+            // توليد رمز عشوائي متغير لإجبار GitHub والمتصفح على كسر الكاش في ثانية واحدة
+            const uniqueStamp = Math.floor(Math.random() * 999999);
+            urlParams.set('update_version', 'v_auto_' + uniqueStamp);
+            window.location.search = urlParams.toString();
+        }
+
+        // قاعدة البيانات الثابتة للتطبيق
+        let appData = JSON.parse(localStorage.getItem('cableInventoryData_V12_Update')) || {
             stocks: { "20": 0, "30": 0, "50": 0, "80": 0 },
             installations: [],
             supplyArchive: [],
@@ -322,6 +390,40 @@
         };
 
         let currentLang = 'ar';
+
+        // 🎛️ دالة إنتاج الصوت التفاعلي الإلكتروني
+        function playSystemSound() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(587.33, audioCtx.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.1); 
+                
+                gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                
+                oscillator.start();
+                oscillator.stop(audioCtx.currentTime + 0.25);
+            } catch (e) {
+                console.log("AudioContext blocked.");
+            }
+        }
+
+        // 🚪 دالة الخروج من الواجهة الترحيبية
+        function exitSplashScreen() {
+            playSystemSound();
+            const splash = document.getElementById('splash-screen');
+            if (splash) {
+                splash.classList.add('fade-out');
+                setTimeout(() => splash.remove(), 500); 
+            }
+        }
 
         const styleConfig = {
             "20": { cls: "c-20", svg: `<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/>` },
@@ -348,7 +450,7 @@
             fr: {
                 navTitle: "Gestion Spécifique & Réseaux ODN", navStock: "Stock Principal", navCust: "Liste des Clients", navArch: "Archive de Stock", navOdn: "Ingénierie ODN",
                 sectionStock: "État actuel du stock (Cliquez pour modifier)", cardTotal: "Total Stock Global", unitT: "Bobines au total", unitM: "Bobines dispos",
-                formIn: "Approvisionnement du Stock", lblTypeIn: "Sélectionnez la catégorie", lblManualType: "Longueur de la catégorie (mètres)", customOpt: "✍️ Entrée manuelle fêté...",
+                formIn: "Approvisionnement du Stock", lblTypeIn: "Sélectionnez la catégorie", lblManualType: "Longueur de la catégorie (mètres)", customOpt: "✍️ Entrée manuelle...",
                 lblQtyIn: "Quantité livrée actuelle", btnIn: "Confirmer l'entrée et archiver", formOut: "Nouvelle Installation Client", lblCustName: "Nom complet du client",
                 lblCustPhone: "Numéro de téléphone", lblTypeOut: "Câble utilisé pour l'installation", btnOut: "Enregistrer et déduire le stock", tableTitle: "Base de données des clients enregistrés",
                 searchPlh: "Rechercher le nom du client ici...", noCust: "Aucune opération enregistrée actuellement", archiveTitle: "Historique des approvisionnements archivés",
@@ -437,50 +539,35 @@
             updateUI();
         }
 
-        // دالة فتح وإغلاق لوحة التحكم بالتصفير والحذف
         function openResetControlModal() { document.getElementById('reset-control-modal').classList.remove('hidden'); }
         function closeResetControlModal() { document.getElementById('reset-control-modal').classList.add('hidden'); }
 
-        // دالة التصفير الذكي والآمن الجديد حسب الاختيار
         function triggerSecureReset(mode) {
             let confirmMsg = "";
-            if (mode === 'stock') confirmMsg = "هل أنت متأكد من تصفير كميات المخزن فقط؟ (سيتم إرجاع جميع الفئات إلى 0)";
-            if (mode === 'customers') confirmMsg = "هل أنت متأكد من مسح جميع بيانات وسجلات الزبائن نهائياً؟";
-            if (mode === 'logs') confirmMsg = "هل أنت متأكد من مسح أرشيف عمليات الشحن والتوريد السابقة؟";
-            if (mode === 'odn') confirmMsg = "هل أنت متأكد من مسح كافة مشاريع الأحياء والأبنية المؤرشفة في هندسة ODN؟";
-            if (mode === 'all') confirmMsg = "⚠️ تحذير خطير: أنت تطلب تصفير التطبيق بالكامل ومسح كل شيء بدون استثناء! هل تريد المتابعة؟";
+            if (mode === 'stock') confirmMsg = "هل أنت متأكد من تصفير كميات المخزن فقط؟";
+            if (mode === 'customers') confirmMsg = "هل أنت متأكد من مسح سجل الزبائن والمشتركين؟";
+            if (mode === 'logs') confirmMsg = "هل أنت متأكد من مسح أرشيف عمليات الشحن والتوريد؟";
+            if (mode === 'odn') confirmMsg = "هل أنت متأكد من مسح مشاريع أحياء ODN؟";
+            if (mode === 'all') confirmMsg = "⚠️ تحذير: سيتم مسح كافة سجلات التطبيق وإعادته كأنه جديد! متابعة؟";
 
             if (confirm(confirmMsg)) {
-                // تأكيد إضافي في حالة المسح الشامل
-                if (mode === 'all' && !confirm("تأكيد أخير: لن تتمكن من استعادة أي بيانات بعد هذه الخطوة. هل أنت متأكد 100%؟")) {
-                    return;
-                }
+                if (mode === 'all' && !confirm("تأكيد أخير ونهائي للحذف الشامل؟")) return;
 
-                if (mode === 'stock' || mode === 'all') {
-                    appData.stocks = { "20": 0, "30": 0, "50": 0, "80": 0 };
-                }
-                if (mode === 'customers' || mode === 'all') {
-                    appData.installations = [];
-                }
-                if (mode === 'logs' || mode === 'all') {
-                    appData.supplyArchive = [];
-                }
+                if (mode === 'stock' || mode === 'all') appData.stocks = { "20": 0, "30": 0, "50": 0, "80": 0 };
+                if (mode === 'customers' || mode === 'all') appData.installations = [];
+                if (mode === 'logs' || mode === 'all') appData.supplyArchive = [];
                 if (mode === 'odn' || mode === 'all') {
-                    appData.currentDistrict = "";
-                    appData.odnBuildings = [];
-                    appData.archivedDistricts = [];
+                    appData.currentDistrict = ""; appData.odnBuildings = []; appData.archivedDistricts = [];
                 }
 
-                localStorage.setItem('cableInventoryData_Final_V10', JSON.stringify(appData));
-                updateUI();
-                closeResetControlModal();
-                alert("تم تنفيذ عملية الحذف والتحديث بنجاح. ✅");
+                localStorage.setItem('cableInventoryData_V12_Update', JSON.stringify(appData));
+                updateUI(); closeResetControlModal(); alert("تم المسح التخصصي للقسم بنجاح. ✅");
             }
         }
 
         function updateDistrictName() {
             appData.currentDistrict = document.getElementById('odn-district-input').value.trim();
-            localStorage.setItem('cableInventoryData_Final_V10', JSON.stringify(appData));
+            localStorage.setItem('cableInventoryData_V12_Update', JSON.stringify(appData));
         }
 
         function handleNewOdnBuilding(e) {
@@ -510,14 +597,11 @@
             updateUI();
         }
 
-        function deleteOdnBuilding(i) {
-            appData.odnBuildings.splice(i, 1);
-            updateUI();
-        }
+        function deleteOdnBuilding(i) { appData.odnBuildings.splice(i, 1); updateUI(); }
 
         function archiveCurrentDistrict() {
             const dName = appData.currentDistrict || document.getElementById('odn-district-input').value.trim();
-            if(!dName || appData.odnBuildings.length === 0) { alert("أدخل اسم الحي وبناية واحدة على الأقل لإغلاق المشروع."); return; }
+            if(!dName || appData.odnBuildings.length === 0) { alert("أدخل اسم الحي وبناية واحدة على الأقل."); return; }
 
             let fSum = 0, gSum = 0, aSum = 0;
             appData.odnBuildings.forEach(b => { fSum += b.facade; gSum += b.ground; aSum += b.aerial; });
@@ -567,12 +651,10 @@
         }
 
         function updateUI() {
-            localStorage.setItem('cableInventoryData_Final_V10', JSON.stringify(appData));
+            localStorage.setItem('cableInventoryData_V12_Update', JSON.stringify(appData));
             
-            const cardsArea = document.getElementById('dynamic-cards-area');
-            if(!cardsArea) return;
-            cardsArea.innerHTML = '';
-            let total = 0;
+            const cardsArea = document.getElementById('dynamic-cards-area'); if(!cardsArea) return;
+            cardsArea.innerHTML = ''; let total = 0;
             const inSel = document.getElementById('in-type-select');
             const outSel = document.getElementById('out-type');
             inSel.innerHTML = ''; outSel.innerHTML = '';
@@ -598,7 +680,7 @@
             else {
                 document.getElementById('no-data-msg').classList.add('hidden');
                 appData.installations.forEach(i => {
-                    cCont.innerHTML += `<div class="card" style="display:flex; justify-content:space-between; align-items:center;"><div><b style="color:var(--slate-800);">${i.name}</b><br><small style="color:var(--slate-500); font-weight:bold; font-mono">${i.phone}</small></div><span style="background:var(--sky-100); color:var(--sky-600); padding:5px 10px; border-radius:8px; font-size:12px; font-weight:bold;">${i.cableType} M</span></div>`;
+                    cCont.innerHTML += `<div class="card" style="display:flex; justify-content:space-between; align-items:center;"><div><b style="color:var(--slate-800);">${i.name}</b><br><small style="color:var(--slate-500); font-weight:bold;">${i.phone}</small></div><span style="background:var(--sky-100); color:var(--sky-600); padding:5px 10px; border-radius:8px; font-size:12px; font-weight:bold;">${i.cableType} M</span></div>`;
                 });
             }
 
@@ -663,13 +745,12 @@
             const phone = document.getElementById('out-phone').value;
             const type = document.getElementById('out-type').value;
             if(!type || appData.stocks[type] < 1) { alert(translations[currentLang].noStock); return; }
-            appData.stocks[type] -= 1;
-            appData.installations.unshift({ name, phone, cableType: type });
+            appData.stocks[type] -= 1; appData.installations.unshift({ name, phone, cableType: type });
             document.getElementById('out-name').value = ''; document.getElementById('out-phone').value = '';
             updateUI(); showPage('customers-page');
         }
 
-        // بدء التشغيل الفوري بالنسخة الأمنية العاشرة V10
+        // إقلاع النظام
         changeLanguage('ar');
     </script>
 </body>
