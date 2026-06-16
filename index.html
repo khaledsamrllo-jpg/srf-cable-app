@@ -2,54 +2,756 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SRF App - حاسبة الأمتار</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SRF App - نظام إدارة البنية التحتية والمخزون</title>
     <style>
-        body { font-family: sans-serif; text-align: center; background: #0f172a; color: white; padding: 20px; }
-        .container { background: #1e293b; padding: 30px; border-radius: 20px; max-width: 400px; margin: auto; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-        input { width: 90%; padding: 15px; margin: 10px 0; border-radius: 8px; border: none; text-align: center; font-size: 16px; }
-        button { width: 95%; padding: 15px; background: #0284c7; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 10px; }
-        #result { margin-top: 20px; font-size: 24px; color: #38bdf8; font-weight: bold; }
-        .dev-info { font-size: 12px; color: #94a3b8; margin-top: 20px; }
+        /* نظام الألوان الكامل والمتناسق للتطبيق */
+        :root {
+            --slate-50: #f8fafc; --slate-100: #f1f5f9; --slate-200: #e2e8f0; --slate-400: #94a3b8;
+            --slate-500: #64748b; --slate-600: #475569; --slate-700: #334155; --slate-800: #1e293b;
+            --slate-900: #0f172a; --indigo-600: #4f46e5; --indigo-700: #4338ca; --indigo-900: #1e1b4b; 
+            --emerald-500: #10b981; --emerald-600: #059669; --sky-100: #e0f2fe; --sky-600: #0284c7; 
+            --purple-100: #f3e8ff; --purple-600: #7c3aed; --amber-100: #fef3c7; --amber-600: #d97706; --red-600: #dc2626;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+        body { background: var(--slate-50); color: var(--slate-800); min-height: 100vh; display: flex; flex-direction: column; }
+        
+        /* 🌟 تصفيف شاشة الواجهة الترحيبية الجديدة */
+        .splash-screen {
+            position: fixed; inset: 0; background: linear-gradient(135deg, var(--slate-900), var(--indigo-900));
+            display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999;
+            transition: opacity 0.5s ease, transform 0.5s ease; color: white; text-align: center; padding: 20px;
+        }
+        .splash-screen.fade-out { opacity: 0; transform: scale(1.05); pointer-events: none; }
+        
+        /* الأيقونة المضيئة المتغيرة الألوان تلقائياً */
+        .splash-icon-wrapper {
+            width: 130px; height: 130px; border-radius: 50%; background: rgba(255,255,255,0.05);
+            display: flex; align-items: center; justify-content: center; margin-bottom: 25px;
+            cursor: pointer; position: relative; border: 2px solid transparent;
+            animation: pulseGlow 3s infinite ease-in-out, changeBorderColor 8s infinite linear;
+            box-shadow: 0 0 20px rgba(79, 70, 229, 0.2);
+        }
+        .splash-icon-wrapper svg { width: 60px; height: 60px; color: white; }
+        
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(16, 185, 129, 0.3); }
+            50% { transform: scale(1.06); box-shadow: 0 0 40px rgba(79, 70, 229, 0.6); }
+        }
+        @keyframes changeBorderColor {
+            0% { border-color: var(--emerald-500); color: var(--emerald-500); }
+            25% { border-color: #3b82f6; color: #3b82f6; }
+            50% { border-color: #a855f7; color: #a855f7; }
+            75% { border-color: #f97316; color: #f97316; }
+            100% { border-color: var(--emerald-500); color: var(--emerald-500); }
+        }
+        
+        .splash-title { font-size: 24px; font-weight: 800; letter-spacing: 1px; margin-bottom: 8px; color: white; text-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+        .splash-subtitle { font-size: 14px; color: var(--slate-400); font-weight: 500; margin-bottom: 40px; text-transform: uppercase; letter-spacing: 2px; }
+        
+        .enter-btn { background: white; color: var(--indigo-900); padding: 12px 35px; border-radius: 30px; font-weight: bold; font-size: 14px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 8px; }
+        .enter-btn:hover { background: var(--slate-100); }
+
+        .splash-footer { position: absolute; bottom: 25px; font-size: 12px; color: var(--slate-400); line-height: 1.6; width: 100%; padding: 0 20px; }
+        .splash-footer strong { color: white; background: rgba(255,255,255,0.1); padding: 3px 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15); margin: 0 4px; }
+        .splash-footer a { color: #60a5fa; text-decoration: none; font-weight: bold; }
+
+        /* الهيدر العلوي */
+        header { background: linear-gradient(to right, var(--slate-800), var(--indigo-900)); color: white; padding: 15px 0; position: sticky; top: 0; z-index: 50; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .container { width: 100%; max-width: 1150px; margin: 0 auto; padding: 0 15px; }
+        .nav-box { display: flex; flex-direction: column; justify-content: space-between; align-items: center; gap: 12px; }
+        @media (min-width: 1024px) { .nav-box { flex-direction: row; } }
+        
+        /* الأزرار ونظام التنقل */
+        .btn-grid { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: center; }
+        button, .card-click { cursor: pointer; touch-action: manipulation; transition: all 0.15s ease; border: none; outline: none; }
+        button:active, .card-click:active { transform: scale(0.96); }
+        
+        .nav-btn { padding: 10px 14px; border-radius: 12px; font-size: 12px; font-weight: bold; color: white; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        
+        /* نظام اللغات الأنيق */
+        .lang-switcher { background: rgba(255,255,255,0.1); padding: 4px; border-radius: 12px; display: flex; gap: 4px; border: 1px solid rgba(255,255,255,0.15); }
+        .lang-btn { padding: 4px 8px; border-radius: 8px; font-size: 11px; font-weight: bold; color: white; background: transparent; }
+        .lang-btn.active { background: white; color: var(--indigo-900); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        
+        /* المحتوى والكروت */
+        .main-content { padding: 25px 0; flex-grow: 1; }
+        .hidden { display: none !important; }
+        .grid-3 { display: grid; grid-template-columns: 1fr; gap: 16px; margin-bottom: 20px; }
+        @media (min-width: 640px) { .grid-3 { grid-template-columns: repeat(2, 1fr); } @media (min-width: 1024px) { .grid-3 { grid-template-columns: 1fr repeat(2, 1fr); } } }
+        .card { background: white; border-radius: 20px; padding: 20px; border: 1px solid var(--slate-100); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); position: relative; overflow: hidden; }
+        .card-dark { background: linear-gradient(135deg, var(--slate-700), var(--slate-800)); color: white; }
+        
+        /* الألوان المخصصة لكروت الفئات */
+        .c-20 { background: linear-gradient(135deg, #a855f7, #7c3aed) !important; color: white; }
+        .c-30 { background: linear-gradient(135deg, #f97316, #ea580c) !important; color: white; }
+        .c-50 { background: linear-gradient(135deg, #3b82f6, #2563eb) !important; color: white; }
+        .c-80 { background: linear-gradient(135deg, #ec4899, #db2777) !important; color: white; }
+        .c-default { background: linear-gradient(135deg, #64748b, #475569) !important; color: white; }
+        
+        .card-icon-bg { position: absolute; right: -15px; bottom: -15px; opacity: 0.15; transform: scale(4); width: 24px; height: 24px; color: white; }
+        
+        .grid-2 { display: grid; grid-template-columns: 1fr; gap: 20px; margin-bottom: 20px; }
+        @media (min-width: 1024px) { .grid-2 { grid-template-columns: 1fr 1fr; } }
+        
+        /* النماذج وحقول الإدخال */
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-size: 13px; font-weight: bold; margin-bottom: 6px; color: var(--slate-600); }
+        input, select { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--slate-200); background: var(--slate-50); font-size: 14px; font-weight: bold; transition: all 0.2s; }
+        input:focus, select:focus { border-color: var(--indigo-600); background: white; outline: none; box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); }
+        
+        /* الجداول */
+        .table-resp { overflow-x: auto; margin-top: 15px; border-radius: 12px; border: 1px solid var(--slate-100); }
+        table { width: 100%; border-collapse: collapse; text-align: right; font-size: 13px; }
+        th, td { padding: 12px; border-bottom: 1px solid var(--slate-100); }
+        th { background: var(--slate-100); color: var(--slate-600); font-weight: bold; }
+        
+        /* النوافذ المنبثقة */
+        .modal { position: fixed; inset: 0; background: rgba(15,23,42,0.6); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 100; }
+        .modal-body { background: white; border-radius: 20px; width: 100%; max-width: 460px; padding: 24px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
+        
+        /* أزرار لوحة التصفير الذكية */
+        .reset-opt-btn { width: 100%; text-align: right; padding: 12px; margin-bottom: 8px; border-radius: 10px; background: var(--slate-50); border: 1px solid var(--slate-200); font-weight: bold; color: var(--slate-800); display: flex; align-items: center; gap: 8px; }
+        .reset-opt-btn:hover { background: #fef2f2; border-color: #fca5a5; color: var(--red-600); }
+
+        /* الفوتر وشريط الحقوق */
+        footer { background: var(--slate-900); color: var(--slate-400); text-align: center; padding: 20px; font-size: 12px; border-top: 1px solid var(--slate-800); margin-top: auto; }
+        footer a { color: #60a5fa; text-decoration: none; font-weight: bold; margin-left: 5px; }
+        footer a:hover { text-decoration: underline; }
+        
+        svg { width: 16px; height: 16px; fill: currentColor; display: inline-block; vertical-align: middle; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>حاسبة الأمتار</h1>
+    <!-- 🌐 🚀 شاشة الواجهة الترحيبية المضيئة والموسيقية الجديدة -->
+    <div id="splash-screen" class="splash-screen">
+        <div onclick="exitSplashScreen()" class="splash-icon-wrapper" title="اضغط للدخول">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+        </div>
+        <h1 class="splash-title">SRF App</h1>
+        <p class="splash-subtitle">Optical Network Distribution</p>
         
-        <!-- مدخلات الحاسبة -->
-        <input type="number" id="start" placeholder="رقم البداية">
-        <input type="number" id="end" placeholder="رقم النهاية">
-        <button onclick="calculate()">احسب الأمتار</button>
-        
-        <h2 id="result">النتيجة: 0 متر</h2>
-        
-        <!-- معلومات الجهاز التقنية (مخفية أو ظاهرة حسب رغبتك) -->
-        <p id="dev-id" class="dev-info"></p>
+        <button onclick="exitSplashScreen()" class="enter-btn">
+            <span>دخول النظام</span>
+            <svg viewBox="0 0 24 24" style="width:16px; height:16px; fill:currentColor; transform: scaleX(-1);"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        </button>
+
+        <div class="splash-footer">
+            <span>جميع الحقوق محفوظة © 2026 | تم التطوير بواسطة المطور:</span><br>
+            <strong>khaledsaadeddine</strong> 
+            <span>| البريد الإلكتروني:</span> <a href="mailto:khaledsamrllo@gmail.com">khaledsamrllo@gmail.com</a>
+        </div>
     </div>
 
-    <script>
-        // دالة توليد وعرض رمز الجهاز تلقائياً (لأغراض التتبع التقني)
-        let deviceId = localStorage.getItem('myDeviceId');
-        if (!deviceId) {
-            deviceId = "SRF-" + Math.floor(Math.random() * 90000000).toString(16).toUpperCase();
-            localStorage.setItem('myDeviceId', deviceId);
-        }
-        document.getElementById('dev-id').innerText = "رمز الجهاز: " + deviceId;
-
-        // دالة الحساب
-        function calculate() {
-            let start = parseFloat(document.getElementById('start').value);
-            let end = parseFloat(document.getElementById('end').value);
+    <!-- 🌐 الهيدر العلوي ونظام الملاحة -->
+    <header>
+        <div class="container nav-box">
+            <div onclick="showPage('stock-page')" style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+                <svg viewBox="0 0 24 24" style="width:24px; height:24px;"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                <h1 id="nav-title" style="font-size:16px; font-weight:bold;">نظام تتبع الكوابل وشبكات ODN التفصيلي</h1>
+            </div>
             
-            if (isNaN(start) || isNaN(end)) {
-                document.getElementById('result').innerText = "يرجى إدخال أرقام صحيحة";
-            } else {
-                let res = Math.abs(end - start);
-                document.getElementById('result').innerText = "النتيجة: " + res + " متر";
+            <div class="btn-grid">
+                <button onclick="showPage('stock-page')" class="nav-btn" style="background:var(--slate-600);"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg> <span id="nav-stock-btn">المخزن الرئيسي</span></button>
+                <button onclick="showPage('customers-page')" class="nav-btn" style="background:var(--indigo-600);"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg> <span id="nav-cust-btn">سجل الزبائن</span></button>
+                <button onclick="showPage('archive-page')" class="nav-btn" style="background:var(--amber-600);"><svg viewBox="0 0 24 24"><path d="M20.54 5.23l-1.39-1.68C18.88 3.21 18.47 3 18 3H6c-.47 0-.88.21-1.16.55L3.46 5.23C3.17 5.57 3 6.01 3 6.5V19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6.5c0-.49-.17-.93-.46-1.27zM12 17.5L6.5 12H10v-4h4v4h3.5L12 17.5z"/></svg> <span id="nav-arch-btn">أرشيف الشحنات</span></button>
+                <button onclick="showPage('odn-page')" class="nav-btn" style="background:var(--emerald-600); border:1px solid #a7f3d0;"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg> <span id="nav-odn-btn">هندسة وتوزيع ODN</span></button>
+                
+                <!-- لوحة تحويل اللغات الثلاث -->
+                <div class="lang-switcher">
+                    <button onclick="changeLanguage('ar')" id="lang-ar-btn" class="lang-btn active">العربية</button>
+                    <button onclick="changeLanguage('fr')" id="lang-fr-btn" class="lang-btn">Français</button>
+                    <button onclick="changeLanguage('en')" id="lang-en-btn" class="lang-btn">English</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 📱 الشاشة الأولى: المخزن الرئيسي والعمليات الميدانية -->
+    <main id="stock-page" class="container main-content app-page">
+        <h2 id="section-stock-title" style="font-size:14px; font-weight:bold; color:var(--slate-500); margin-bottom:12px;">حالة المخزن الحالي (اضغط على أي كرت للتعديل المباشر)</h2>
+        
+        <section class="grid-3">
+            <div class="card card-dark">
+                <div class="card-icon-bg"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg></div>
+                <h3 id="card-total-title" style="font-size:13px; opacity:0.9;">المجموع الكلي للمخزون</h3>
+                <p style="font-size:32px; font-weight:900; margin-top:8px;"><span id="total-stock">0</span> <span id="unit-total" style="font-size:13px; font-weight:normal; margin-right:4px; margin-left:4px;">بكرة إجمالية</span></p>
+            </div>
+            <div id="dynamic-cards-area" style="display:contents;"></div>
+        </section>
+
+        <div class="grid-2">
+            <!-- نموذج التوريد والإدخل للمخزن -->
+            <div class="card">
+                <h2 id="form-in-title" style="font-size:15px; font-weight:bold; margin-bottom:15px; display:flex; align-items:center; gap:6px; color:var(--emerald-600); border-bottom:1px solid var(--slate-100); padding-bottom:10px;"><svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9h-4v4h-2v-4H9V9h4V5h2v4h4v2z"/></svg> إمداد وتغذية المخزن</h2>
+                <form id="form-stock-in" onsubmit="handleStockIn(event)">
+                    <div class="form-group">
+                        <label id="lbl-type-in">اختر الفئة</label>
+                        <select id="in-type-select" onchange="toggleManualInputVisibility()"><option value="custom">✍️ إدخال يدوي فئة جديدة...</option></select>
+                    </div>
+                    <div id="manual-type-container" class="form-group">
+                        <label id="lbl-manual-type">اكتب طول الفئة الجديدة بالأمتار</label>
+                        <input type="number" id="in-type-manual" min="1" placeholder="مثال: 20">
+                    </div>
+                    <div class="form-group">
+                        <label id="lbl-qty-in">الكمية الموردة الحالية</label>
+                        <input type="number" id="in-qty" min="1" required placeholder="مثال: 100">
+                    </div>
+                    <button type="submit" id="btn-in-submit" style="width:100%; background:var(--emerald-600); color:white; padding:12px; border-radius:12px; font-weight:bold; font-size:13px;">تأكيد الإدخال والأرشفة بالتاريخ</button>
+                </form>
+            </div>
+
+            <!-- نموذج خصم وتركيب للمشتركين والزبائن -->
+            <div class="card">
+                <h2 id="form-out-title" style="font-size:15px; font-weight:bold; margin-bottom:15px; display:flex; align-items:center; gap:6px; color:var(--sky-600); border-bottom:1px solid var(--slate-100); padding-bottom:10px;"><svg viewBox="0 0 24 24"><path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg> تسجيل زبون وتركيب جديد</h2>
+                <form id="form-sale" onsubmit="handleNewInstallation(event)">
+                    <div class="form-group"><label id="lbl-cust-name">اسم الزبون الكامل</label><input type="text" id="out-name" required placeholder="اسم المشترك"></div>
+                    <div class="form-group"><label id="lbl-cust-phone">رقم الهاتف</label><input type="tel" id="out-phone" required placeholder="06XXXXXXXX"></div>
+                    <div class="form-group"><label id="lbl-type-out">الكابل المستخدم للتركيب</label><select id="out-type"></select></div>
+                    <button type="submit" id="btn-out-submit" style="width:100%; background:var(--sky-600); color:white; padding:12px; border-radius:12px; font-weight:bold; font-size:13px;">حفظ البيانات وخصم المخزن فورا</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- 👥 الشاشة الثانية: سجل الزبائن والمشتركين المسجلين -->
+    <main id="customers-page" class="container main-content app-page hidden">
+        <div class="card">
+            <h2 id="table-title" style="font-size:16px; font-weight:bold; margin-bottom:15px; color:var(--slate-800);">قاعدة بيانات وسجلات الزبائن المسجلة</h2>
+            <input type="text" id="customer-search-input" oninput="filterCustomers()" style="margin-bottom:15px;" placeholder="ابحث هنا عن اسم الزبون...">
+            <div id="customers-cards-container" style="display:grid; gap:12px;"></div>
+            <div id="no-data-msg" style="text-align:center; padding:30px; color:var(--slate-400);" class="hidden"><span id="no-cust-txt">لا توجد عمليات مسجلة حالياً</span></div>
+        </div>
+    </main>
+
+    <!-- 📜 الشاشة الثالثة: أرشيف الشحنات الموردة المؤرخة -->
+    <main id="archive-page" class="container main-content app-page hidden">
+        <div class="card">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--slate-100); padding-bottom:10px; margin-bottom:15px;">
+                <h2 id="archive-title" style="font-size:16px; font-weight:bold;">أرشيف سجل التوريدات وشحنات المخزن المؤرخة</h2>
+                <button onclick="openResetControlModal()" style="background:#fee2e2; color:var(--red-600); padding:8px 16px; border-radius:10px; font-size:12px; font-weight:bold; display:flex; align-items:center; gap:4px;">
+                    <svg viewBox="0 0 24 24" style="width:14px; height:14px;"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H4v2h15V4z"/></svg> لوحة التصفير والحذف
+                </button>
+            </div>
+            <div id="archive-cards-container" style="display:grid; gap:10px;"></div>
+        </div>
+    </main>
+
+    <!-- 🌐 الشاشة الرابعة: هندسة وحساب مسارات شبكات ODN واستهلاك الكوابل -->
+    <main id="odn-page" class="container main-content app-page hidden">
+        <div class="card card-dark" style="margin-bottom:20px; background:linear-gradient(to right, var(--slate-800), var(--indigo-900)); display:flex; flex-direction:column; gap:15px;">
+            <div style="width:100%;">
+                <label id="lbl-district-name" style="color:white; opacity:0.8; margin-bottom:5px;">الحي الحالي قيد الإنجاز 📍</label>
+                <input type="text" id="odn-district-input" oninput="updateDistrictName()" style="background:rgba(255,255,255,0.15); color:white; border:none; padding:12px;" placeholder="اكتب اسم الحي هنا...">
+            </div>
+            <button onclick="archiveCurrentDistrict()" style="background:var(--amber-600); color:var(--slate-900); padding:14px; border-radius:12px; font-weight:900; font-size:13px;">إغلاق الحي وحفظ المشروع نهائياً 🔒</button>
+        </div>
+
+        <h3 id="lbl-odn-summary-title" style="font-size:14px; font-weight:bold; color:var(--slate-500); margin-bottom:12px;">الحساب التلقائي لأمتار الحي الحالي</h3>
+        <div class="grid-3" style="margin-bottom:20px;">
+            <div class="card" style="border-left: 5px solid var(--purple-600); padding:15px;">
+                <span id="lbl-tot-facade" style="font-size:12px; color:var(--purple-600); font-weight:bold;">إجمالي مسارات الواجهة</span>
+                <p style="font-size:26px; font-weight:900; margin-top:5px;"><span id="grand-facade">0</span> M</p>
+            </div>
+            <div class="card" style="border-left: 5px solid var(--amber-600); padding:15px;">
+                <span id="lbl-tot-ground" style="font-size:12px; color:var(--amber-600); font-weight:bold;">إجمالي مسارات الأرضي</span>
+                <p style="font-size:26px; font-weight:900; margin-top:5px;"><span id="grand-ground">0</span> M</p>
+            </div>
+            <div class="card" style="border-left: 5px solid var(--sky-600); padding:15px;">
+                <span id="lbl-tot-aerial" style="font-size:12px; color:var(--sky-600); font-weight:bold;">إجمالي مسارات الهوائي</span>
+                <p style="font-size:26px; font-weight:900; margin-top:5px;"><span id="grand-aerial">0</span> M</p>
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <!-- تقسيم كابل عمارة أو بناية جديدة -->
+            <div class="card">
+                <h3 id="lbl-add-b-title" style="font-size:15px; font-weight:bold; margin-bottom:15px; color:var(--slate-800);">تقسيم كابل بناية جديدة</h3>
+                <form onsubmit="handleNewOdnBuilding(event)">
+                    <div class="form-group"><label id="lbl-b-num">رقم أو اسم البناية 🏢</label><input type="text" id="odn-b-name" required placeholder="مثال: بناية 393"></div>
+                    <div class="form-group" style="background:#f5f3ff; padding:10px; border-radius:12px; margin-bottom:10px; border:1px solid #ede9fe;">
+                        <span id="lbl-f-route" style="font-size:12px; font-weight:bold; color:var(--purple-600);">مسار الواجهة (متر الكابل)</span>
+                        <div style="display:flex; gap:8px; margin-top:6px;"><input type="number" id="odn-facade-start" placeholder="البداية"><input type="number" id="odn-facade-end" placeholder="النهاية"></div>
+                    </div>
+                    <div class="form-group" style="background:#fffbeb; padding:10px; border-radius:12px; margin-bottom:10px; border:1px solid #fef3c7;">
+                        <span id="lbl-g-route" style="font-size:12px; font-weight:bold; color:var(--amber-600);">مسار الأرضي (متر الكابل)</span>
+                        <div style="display:flex; gap:8px; margin-top:6px;"><input type="number" id="odn-ground-start" placeholder="البداية"><input type="number" id="odn-ground-end" placeholder="النهاية"></div>
+                    </div>
+                    <div class="form-group" style="background:#f0f9ff; padding:10px; border-radius:12px; margin-bottom:15px; border:1px solid #e0f2fe;">
+                        <span id="lbl-a-route" style="font-size:12px; font-weight:bold; color:var(--sky-600);">مسار الهوائي (متر الكابل)</span>
+                        <div style="display:flex; gap:8px; margin-top:6px;"><input type="number" id="odn-aerial-start" placeholder="البداية"><input type="number" id="odn-aerial-end" placeholder="النهاية"></div>
+                    </div>
+                    <button type="submit" id="btn-calc-b" style="width:100%; background:var(--slate-800); color:white; padding:12px; border-radius:12px; font-weight:bold; font-size:13px;">احسب وأدرج البناية في القائمة</button>
+                </form>
+            </div>
+
+            <!-- قائمة الحسابات والنتائج للحي قيد العمل -->
+            <div class="card" style="display:flex; flex-direction:column;">
+                <h3 id="lbl-curr-b-list" style="font-size:15px; font-weight:bold; margin-bottom:10px;">قائمة البنايات والمفاتيح الرقمية للحي الحالي</h3>
+                <div class="table-resp" style="flex-grow:1;">
+                    <table>
+                        <thead>
+                            <tr><th id="th-b">🏢 البناية</th><th id="th-f" style="color:var(--purple-600);">الواجهة</th><th id="th-g" style="color:var(--amber-600);">الأرضي</th><th id="th-a" style="color:var(--sky-600);">الهوائي</th><th id="th-t">الإجمالي</th><th>إجراء</th></tr>
+                        </thead>
+                        <tbody id="odn-table-body"></tbody>
+                    </table>
+                    <div id="odn-empty-msg" style="text-align:center; padding:40px; color:var(--slate-400); font-weight:bold;">لم يتم إدراج أي بناية بعد للحي الحالي.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- أرشيف الأحياء الكاملة والمغلقة نهائياً -->
+        <div class="card" style="margin-top:20px;">
+            <h3 id="lbl-final-arch-title" style="font-size:15px; font-weight:bold; margin-bottom:12px; color:var(--slate-900);">أرشيف المشاريع والأحياء المكتملة والمغلقة نهائياً</h3>
+            <div id="district-archive-container" style="display:grid; gap:12px;"></div>
+        </div>
+    </main>
+
+    <!-- ⚠️ نافذة التحكم بالتصفير والحذف الاختياري والآمن الجديد -->
+    <div id="reset-control-modal" class="modal hidden">
+        <div class="modal-body">
+            <h3 style="font-size:16px; font-weight:bold; margin-bottom:6px; color:var(--red-600); display:flex; align-items:center; gap:6px;">
+                <svg viewBox="0 0 24 24" style="width:20px; height:20px;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                لوحة التحكم في حذف البيانات
+            </h3>
+            <p style="font-size:12px; color:var(--slate-500); margin-bottom:15px;">برجاء اختيار القسم الذي تود مسحه بدقة. الحذف نهائي ولا يمكن التراجع عنه:</p>
+            
+            <button onclick="triggerSecureReset('stock')" class="reset-opt-btn">📦 تصفير كميات المخزن الرئيسي فقط</button>
+            <button onclick="triggerSecureReset('customers')" class="reset-opt-btn">👥 مسح سجل الزبائن والمشتركين فقط</button>
+            <button onclick="triggerSecureReset('logs')" class="reset-opt-btn">📜 مسح أرشيف عمليات الشحن والتوريد السابقة</button>
+            <button onclick="triggerSecureReset('odn')" class="reset-opt-btn">🌐 مسح أرشيف ومشاريع أحياء ODN فقط</button>
+            <button onclick="triggerSecureReset('all')" class="reset-opt-btn" style="background:#fee2e2; color:var(--red-600); border-color:#fca5a5;">🚨 تصفير ومسح شامل لكل التطبيق</button>
+            
+            <button onclick="closeResetControlModal()" style="width:100%; background:var(--slate-200); padding:10px; border-radius:12px; font-weight:bold; font-size:13px; margin-top:12px;">إلغاء وإغلاق النافذة</button>
+        </div>
+    </div>
+
+    <!-- ⚖️ نافذة الشحن السريع للمخزن عند النقر على كرت المتر -->
+    <div id="quick-stock-modal" class="modal hidden">
+        <div class="modal-body">
+            <h3 id="modal-title" style="font-size:16px; font-weight:bold; margin-bottom:15px; color:var(--slate-800);">تحديث كمية الفئة</h3>
+            <form onsubmit="handleQuickStockSubmit(event)">
+                <input type="hidden" id="modal-category-id">
+                <div class="form-group">
+                    <label id="modal-lbl">الكمية المضافة بالبكرات:</label>
+                    <input type="number" id="modal-qty-input" min="1" required style="font-size:28px; text-align:center; font-weight:900; border-color:var(--indigo-600);">
+                </div>
+                <div style="display:flex; gap:12px; margin-top:20px;">
+                    <button type="button" onclick="closeQuickStockModal()" style="flex:1; background:var(--slate-200); padding:12px; border-radius:12px; font-weight:bold; font-size:13px;">إلغاء</button>
+                    <button type="submit" id="modal-btn-txt" style="flex:1; background:var(--indigo-600); color:white; padding:12px; border-radius:12px; font-weight:bold; font-size:13px;">تحديث وأرشفة</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 👁️ نافذة عرض تفاصيل البنايات للأحياء المغلقة -->
+    <div id="district-details-modal" class="modal hidden">
+        <div class="modal-body" style="max-width: 650px; max-height:85vh; overflow-y:auto;">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--slate-100); padding-bottom:10px; margin-bottom:15px;">
+                <h3 id="details-modal-title" style="font-weight:bold; font-size:16px; color:var(--indigo-900);">تفاصيل البنايات</h3>
+                <button onclick="closeDetailsModal()" style="font-size:24px; color:var(--slate-400); background:none; border:none; outline:none;">&times;</button>
+            </div>
+            <div class="table-resp">
+                <table>
+                    <thead><tr><th>🏢 البناية</th><th style="color:var(--purple-600);">الواجهة</th><th style="color:var(--amber-600);">الأرضي</th><th style="color:var(--sky-600);">الهوائي</th><th>المجموع</th></tr></thead>
+                    <tbody id="details-modal-tbody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🔒 شريط الحقوق البريدي السفلي المحدث -->
+    <footer>
+        <span id="footer-rights">© 2026 جميع الحقوق محفوظة. تم التطوير وبناء النظام بواسطة:</span> 
+        <strong style="color:white; background:var(--slate-800); padding:4px 8px; border-radius:6px; font-size:13px; border:1px solid var(--slate-700);">khaledsaadeddine</strong>
+        <span style="margin: 0 8px; color:var(--slate-600);">|</span>
+        <a href="mailto:khaledsamrllo@gmail.com">khaledsamrllo@gmail.com</a>
+    </footer>
+
+    <script>
+        // 🚀 آلية التحديث الذكي: تدمير وحظر الكاش عبر التحقق من معلمة الرابط تلقائياً
+        const urlParams = new URLSearchParams(window.location.search);
+        if (!urlParams.has('update_version')) {
+            // توليد رمز عشوائي متغير لإجبار GitHub والمتصفح على كسر الكاش في ثانية واحدة
+            const uniqueStamp = Math.floor(Math.random() * 999999);
+            urlParams.set('update_version', 'v_auto_' + uniqueStamp);
+            window.location.search = urlParams.toString();
+        }
+
+        // قاعدة البيانات الثابتة للتطبيق
+        let appData = JSON.parse(localStorage.getItem('cableInventoryData_V12_Update')) || {
+            stocks: { "20": 0, "30": 0, "50": 0, "80": 0 },
+            installations: [],
+            supplyArchive: [],
+            currentDistrict: "",
+            odnBuildings: [],
+            archivedDistricts: []
+        };
+
+        let currentLang = 'ar';
+
+        // 🎛️ دالة إنتاج الصوت التفاعلي الإلكتروني
+        function playSystemSound() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(587.33, audioCtx.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.1); 
+                
+                gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                
+                oscillator.start();
+                oscillator.stop(audioCtx.currentTime + 0.25);
+            } catch (e) {
+                console.log("AudioContext blocked.");
             }
         }
+
+        // 🚪 دالة الخروج من الواجهة الترحيبية
+        function exitSplashScreen() {
+            playSystemSound();
+            const splash = document.getElementById('splash-screen');
+            if (splash) {
+                splash.classList.add('fade-out');
+                setTimeout(() => splash.remove(), 500); 
+            }
+        }
+
+        const styleConfig = {
+            "20": { cls: "c-20", svg: `<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/>` },
+            "30": { cls: "c-30", svg: `<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/>` },
+            "50": { cls: "c-50", svg: `<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.53c-.26-.81-1-1.4-1.9-1.4h-1v-3c0-.55-.45-1-1-1h-6v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>` },
+            "80": { cls: "c-80", svg: `<path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 16H7v-2h10v2zm-1.14-4H8.14L6.2 9h11.6l-1.94 5z"/>` }
+        };
+
+        const translations = {
+            ar: {
+                navTitle: "نظام تتبع الكوابل وشبكات ODN التفصيلي", navStock: "المخزن الرئيسي", navCust: "سجل الزبائن", navArch: "أرشيف الشحنات", navOdn: "هندسة وتوزيع ODN",
+                sectionStock: "حالة المخزن الحالي (اضغط على أي كرت للتعديل المباشر)", cardTotal: "المجموع الكلي للمخزون", unitT: "بكرة إجمالية", unitM: "بكرة متاحة",
+                formIn: "إمداد وتغذية المخزن", lblTypeIn: "اختر الفئة", lblManualType: "اكتب طول الفئة الجديدة بالأمتار", customOpt: "✍️ إدخال يدوي فئة جديدة...",
+                lblQtyIn: "الكمية الموردة الحالية", btnIn: "تأكيد الإدخال والأرشفة بالتاريخ", formOut: "تسجيل زبون وتركيب جديد", lblCustName: "اسم الزبون الكامل",
+                lblCustPhone: "رقم الهاتف", lblTypeOut: "الكابل المستخدم للتركيب", btnOut: "حفظ البيانات وخصم المخزن فورا", tableTitle: "قاعدة بيانات وسجلات الزبائن المسجلة",
+                searchPlh: "ابحث هنا عن اسم الزبون...", noCust: "لا توجد عمليات مسجلة حالياً", archiveTitle: "أرشيف سجل التوريدات وشحنات المخزن المؤرخة",
+                lblDistrict: "الحي الحالي قيد الإنجاز 📍", btnCloseDist: "إغلاق الحي وحفظ المشروع نهائياً 🔒", lblOdnSum: "الحساب التلقائي لأمتار الحي الحالي",
+                totFacade: "إجمالي مسارات الواجهة", totGround: "إجمالي مسارات الأرضي", totAerial: "إجمالي مسارات الهوائي", addBTitle: "تقسيم كابل بناية جديدة",
+                bNum: "رقم أو اسم البناية 🏢", fRoute: "مسار الواجهة (متر الكابل)", gRoute: "مسار الأرضي (متر الكابل)", aRoute: "مسار الهوائي (متر الكابل)",
+                btnCalcB: "احسب وأدرج البناية في القائمة", currBList: "قائمة البنايات والمفاتيح الرقمية للحي الحالي", thB: "🏢 البناية", thF: "الواجهة", thG: "الأرضي", thA: "الهوائي",
+                thT: "الإجمالي", odnEmpty: "لم يتم إدراج أي بناية بعد للحي الحالي.", finalArchTitle: "أرشيف المشاريع والأحياء المكتملة والمغلقة نهائياً",
+                modalTitle: "تحديث المخزن فئة", modalLbl: "الكمية المضافة بالبكرات:", modalBtn: "تحديث وأرشفة", footerRights: "© 2026 جميع الحقوق محفوظة. تم التطوير وبناء النظام بواسطة:", noStock: "المخزون غير كافٍ!", viewDetails: "عرض تفاصيل البنايات 👁️"
+            },
+            fr: {
+                navTitle: "Gestion Spécifique & Réseaux ODN", navStock: "Stock Principal", navCust: "Liste des Clients", navArch: "Archive de Stock", navOdn: "Ingénierie ODN",
+                sectionStock: "État actuel du stock (Cliquez pour modifier)", cardTotal: "Total Stock Global", unitT: "Bobines au total", unitM: "Bobines dispos",
+                formIn: "Approvisionnement du Stock", lblTypeIn: "Sélectionnez la catégorie", lblManualType: "Longueur de la catégorie (mètres)", customOpt: "✍️ Entrée manuelle...",
+                lblQtyIn: "Quantité livrée actuelle", btnIn: "Confirmer l'entrée et archiver", formOut: "Nouvelle Installation Client", lblCustName: "Nom complet du client",
+                lblCustPhone: "Numéro de téléphone", lblTypeOut: "Câble utilisé pour l'installation", btnOut: "Enregistrer et déduire le stock", tableTitle: "Base de données des clients enregistrés",
+                searchPlh: "Rechercher le nom du client ici...", noCust: "Aucune opération enregistrée actuellement", archiveTitle: "Historique des approvisionnements archivés",
+                lblDistrict: "Quartier en cours d'exécution 📍", btnCloseDist: "Clôturer le quartier et sauvegarder 🔒", lblOdnSum: "Calcul métrique automatique du quartier",
+                totFacade: "Total Tracé Façade", totGround: "Total Tracé Souterrain", totAerial: "Total Tracé Aérien", addBTitle: "Diviser le câble d'un nouveau bâtiment",
+                bNum: "Numéro ou nom du bâtiment 🏢", fRoute: "Tracé Façade (Mètres)", gRoute: "Tracé Souterrain (Mètres)", aRoute: "Tracé Aérien (Mètres)",
+                btnCalcB: "Calculer et insérer dans la liste", currBList: "Liste des bâtiments & repères numériques du quartier", thB: "🏢 Bâtiment", thF: "Façade", thG: "Souterrain", thA: "Aérien",
+                thT: "Total global", odnEmpty: "Aucun bâtiment inséré pour le moment.", finalArchTitle: "Archive des projets et quartiers clôturés",
+                modalTitle: "Mise à jour de la catégorie", modalLbl: "Quantité ajoutée en bobines :", modalBtn: "Mettre à jour", footerRights: "© 2026 Tous droits réservés. Développé par:", noStock: "Stock insuffisant!", viewDetails: "Voir Détails 👁️"
+            },
+            en: {
+                navTitle: "Detailed Tracking & ODN Networks", navStock: "Main Stock Inventory", navCust: "Customers Database", navArch: "Supply Logs", navOdn: "ODN Engineering Tools",
+                sectionStock: "Current Stock Status (Click any card for instant edit)", cardTotal: "Total Combined Stock", unitT: "Total Drums", unitM: "Drums Available",
+                formIn: "Stock Supply & Feeding", lblTypeIn: "Choose Category", lblManualType: "Enter new category length in meters", customOpt: "✍️ Manual Entry...",
+                lblQtyIn: "Quantity Delivered Currently", btnIn: "Confirm Input & Log with Date", formOut: "New Customer Installation", lblCustName: "Customer Full Name",
+                lblCustPhone: "Active Phone Number", lblTypeOut: "Cable Used for Installation", btnOut: "Save Data & Deduct Stock Instantly", tableTitle: "Registered Customers Database System",
+                searchPlh: "Search customer name or phone...", noCust: "No registered operations found at the moment", archiveTitle: "Historical Dated Stock Supply Archive",
+                lblDistrict: "Current Neighborhood under construction 📍", btnCloseDist: "Close Neighborhood & Save Project 🔒", lblOdnSum: "Automatic Distance Calculation for Current District",
+                totFacade: "Total Facade Route", totGround: "Total Underground Route", totAerial: "Total Aerial Route", addBTitle: "Divide Cable for New Building",
+                bNum: "Building Name/Number 🏢", fRoute: "Facade Route (Cable Meters)", gRoute: "Underground Route (Cable Meters)", aRoute: "Aerial Route (Cable Meters)",
+                btnCalcB: "Calculate & Add Building", currBList: "Buildings List & Digital Cable Markings", thB: "🏢 Building", thF: "Facade", thG: "Underground", thA: "Aerial",
+                thT: "Total Sum", odnEmpty: "No buildings added yet for this current district.", finalArchTitle: "Completed Projects & Closed Districts Archive",
+                modalTitle: "Update Category Stock", modalLbl: "Quantity added in drums:", modalBtn: "Update & Log", footerRights: "© 2026 All Rights Reserved. System Built by:", noStock: "Insufficient stock available!", viewDetails: "View Details 👁️"
+            }
+        };
+
+        function showPage(pageId) {
+            document.querySelectorAll('.app-page').forEach(p => p.classList.add('hidden'));
+            document.getElementById(pageId).classList.remove('hidden');
+            window.scrollTo(0,0);
+        }
+
+        function changeLanguage(lang) {
+            currentLang = lang;
+            ['ar', 'fr', 'en'].forEach(l => {
+                const btn = document.getElementById(`lang-${l}-btn`);
+                if(btn) btn.className = (l === lang) ? "lang-btn active" : "lang-btn";
+            });
+            document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
+            document.documentElement.lang = lang;
+            const dict = translations[lang]; if(!dict) return;
+
+            document.getElementById('nav-title').innerText = dict.navTitle;
+            document.getElementById('nav-stock-btn').innerText = dict.navStock;
+            document.getElementById('nav-cust-btn').innerText = dict.navCust;
+            document.getElementById('nav-arch-btn').innerText = dict.navArch;
+            document.getElementById('nav-odn-btn').innerText = dict.navOdn;
+            document.getElementById('section-stock-title').innerText = dict.sectionStock;
+            document.getElementById('card-total-title').innerText = dict.cardTotal;
+            document.getElementById('unit-total').innerText = dict.unitT;
+            document.getElementById('form-in-title').innerText = dict.formIn;
+            document.getElementById('lbl-type-in').innerText = dict.lblTypeIn;
+            document.getElementById('lbl-manual-type').innerText = dict.lblManualType;
+            document.getElementById('lbl-qty-in').innerText = dict.lblQtyIn;
+            document.getElementById('btn-in-submit').innerText = dict.btnIn;
+            document.getElementById('form-out-title').innerText = dict.formOut;
+            document.getElementById('lbl-cust-name').innerText = dict.lblCustName;
+            document.getElementById('lbl-cust-phone').innerText = dict.lblCustPhone;
+            document.getElementById('lbl-type-out').innerText = dict.lblTypeOut;
+            document.getElementById('btn-out-submit').innerText = dict.btnOut;
+            document.getElementById('table-title').innerText = dict.tableTitle;
+            document.getElementById('customer-search-input').placeholder = dict.searchPlh;
+            document.getElementById('no-cust-txt').innerText = dict.noCust;
+            document.getElementById('archive-title').innerText = dict.archiveTitle;
+            document.getElementById('lbl-district-name').innerText = dict.lblDistrict;
+            document.getElementById('lbl-odn-summary-title').innerText = dict.lblOdnSum;
+            document.getElementById('lbl-tot-facade').innerText = dict.totFacade;
+            document.getElementById('lbl-tot-ground').innerText = dict.totGround;
+            document.getElementById('lbl-tot-aerial').innerText = dict.totAerial;
+            document.getElementById('lbl-add-b-title').innerText = dict.addBTitle;
+            document.getElementById('lbl-b-num').innerText = dict.bNum;
+            document.getElementById('lbl-f-route').innerText = dict.fRoute;
+            document.getElementById('lbl-g-route').innerText = dict.gRoute;
+            document.getElementById('lbl-a-route').innerText = dict.aRoute;
+            document.getElementById('btn-calc-b').innerText = dict.btnCalcB;
+            document.getElementById('lbl-curr-b-list').innerText = dict.currBList;
+            document.getElementById('th-b').innerText = dict.thB;
+            document.getElementById('th-f').innerText = dict.thF;
+            document.getElementById('th-g').innerText = dict.thG;
+            document.getElementById('th-a').innerText = dict.thA;
+            document.getElementById('th-t').innerText = dict.thT;
+            document.getElementById('odn-empty-msg').innerText = dict.odnEmpty;
+            document.getElementById('lbl-final-arch-title').innerText = dict.finalArchTitle;
+            document.getElementById('footer-rights').innerText = dict.footerRights;
+
+            updateUI();
+        }
+
+        function openResetControlModal() { document.getElementById('reset-control-modal').classList.remove('hidden'); }
+        function closeResetControlModal() { document.getElementById('reset-control-modal').classList.add('hidden'); }
+
+        function triggerSecureReset(mode) {
+            let confirmMsg = "";
+            if (mode === 'stock') confirmMsg = "هل أنت متأكد من تصفير كميات المخزن فقط؟";
+            if (mode === 'customers') confirmMsg = "هل أنت متأكد من مسح سجل الزبائن والمشتركين؟";
+            if (mode === 'logs') confirmMsg = "هل أنت متأكد من مسح أرشيف عمليات الشحن والتوريد؟";
+            if (mode === 'odn') confirmMsg = "هل أنت متأكد من مسح مشاريع أحياء ODN؟";
+            if (mode === 'all') confirmMsg = "⚠️ تحذير: سيتم مسح كافة سجلات التطبيق وإعادته كأنه جديد! متابعة؟";
+
+            if (confirm(confirmMsg)) {
+                if (mode === 'all' && !confirm("تأكيد أخير ونهائي للحذف الشامل؟")) return;
+
+                if (mode === 'stock' || mode === 'all') appData.stocks = { "20": 0, "30": 0, "50": 0, "80": 0 };
+                if (mode === 'customers' || mode === 'all') appData.installations = [];
+                if (mode === 'logs' || mode === 'all') appData.supplyArchive = [];
+                if (mode === 'odn' || mode === 'all') {
+                    appData.currentDistrict = ""; appData.odnBuildings = []; appData.archivedDistricts = [];
+                }
+
+                localStorage.setItem('cableInventoryData_V12_Update', JSON.stringify(appData));
+                updateUI(); closeResetControlModal(); alert("تم المسح التخصصي للقسم بنجاح. ✅");
+            }
+        }
+
+        function updateDistrictName() {
+            appData.currentDistrict = document.getElementById('odn-district-input').value.trim();
+            localStorage.setItem('cableInventoryData_V12_Update', JSON.stringify(appData));
+        }
+
+        function handleNewOdnBuilding(e) {
+            e.preventDefault();
+            const name = document.getElementById('odn-b-name').value.trim();
+            const fStart = document.getElementById('odn-facade-start').value;
+            const fEnd = document.getElementById('odn-facade-end').value;
+            const gStart = document.getElementById('odn-ground-start').value;
+            const gEnd = document.getElementById('odn-ground-end').value;
+            const aStart = document.getElementById('odn-aerial-start').value;
+            const aEnd = document.getElementById('odn-aerial-end').value;
+
+            const calc = (s, e) => (s && e) ? Math.abs(parseInt(s) - parseInt(e)) : 0;
+
+            appData.odnBuildings.push({
+                name,
+                facade: calc(fStart, fEnd), facadeMark: (fStart && fEnd) ? `[${fStart}-${fEnd}]` : "",
+                ground: calc(gStart, gEnd), groundMark: (gStart && gEnd) ? `[${gStart}-${gEnd}]` : "",
+                aerial: calc(aStart, aEnd), aerialMark: (aStart && aEnd) ? `[${aStart}-${aEnd}]` : ""
+            });
+
+            document.getElementById('odn-b-name').value = '';
+            document.getElementById('odn-facade-start').value = ''; document.getElementById('odn-facade-end').value = '';
+            document.getElementById('odn-ground-start').value = ''; document.getElementById('odn-ground-end').value = '';
+            document.getElementById('odn-aerial-start').value = ''; document.getElementById('odn-aerial-end').value = '';
+
+            updateUI();
+        }
+
+        function deleteOdnBuilding(i) { appData.odnBuildings.splice(i, 1); updateUI(); }
+
+        function archiveCurrentDistrict() {
+            const dName = appData.currentDistrict || document.getElementById('odn-district-input').value.trim();
+            if(!dName || appData.odnBuildings.length === 0) { alert("أدخل اسم الحي وبناية واحدة على الأقل."); return; }
+
+            let fSum = 0, gSum = 0, aSum = 0;
+            appData.odnBuildings.forEach(b => { fSum += b.facade; gSum += b.ground; aSum += b.aerial; });
+
+            appData.archivedDistricts.unshift({
+                id: Date.now(), districtName: dName, date: new Date().toLocaleDateString('ar-DZ'),
+                facadeSum: fSum, groundSum: gSum, aerialSum: aSum,
+                bldgsCount: appData.odnBuildings.length, details: [...appData.odnBuildings]
+            });
+
+            appData.currentDistrict = ""; appData.odnBuildings = [];
+            document.getElementById('odn-district-input').value = "";
+            updateUI();
+        }
+
+        function openDistrictDetails(id) {
+            const t = appData.archivedDistricts.find(d => d.id === id); if(!t) return;
+            document.getElementById('details-modal-title').innerText = t.districtName;
+            const tbody = document.getElementById('details-modal-tbody'); tbody.innerHTML = '';
+            t.details.forEach(b => {
+                tbody.innerHTML += `<tr><td><b>${b.name}</b></td><td style="color:var(--purple-600); font-weight:bold;">${b.facade}M</td><td style="color:var(--amber-600); font-weight:bold;">${b.ground}M</td><td style="color:var(--sky-600); font-weight:bold;">${b.aerial}M</td><td style="background:var(--slate-50); font-weight:black;">${b.facade+b.ground+b.aerial}M</td></tr>`;
+            });
+            document.getElementById('district-details-modal').classList.remove('hidden');
+        }
+        function closeDetailsModal() { document.getElementById('district-details-modal').classList.add('hidden'); }
+
+        function openQuickStockModal(cat) {
+            document.getElementById('modal-category-id').value = cat;
+            document.getElementById('modal-title').innerText = `${translations[currentLang].modalTitle} ${cat} M`;
+            document.getElementById('modal-qty-input').value = '';
+            document.getElementById('quick-stock-modal').classList.remove('hidden');
+        }
+        function closeQuickStockModal() { document.getElementById('quick-stock-modal').classList.add('hidden'); }
+
+        function handleQuickStockSubmit(e) {
+            e.preventDefault();
+            const cat = document.getElementById('modal-category-id').value;
+            const qty = parseInt(document.getElementById('modal-qty-input').value);
+            if(!cat || !qty) return;
+            appData.stocks[cat] = (appData.stocks[cat] || 0) + qty;
+            appData.supplyArchive.unshift({ cableType: cat, quantity: qty, dateTime: new Date().toLocaleString('ar-DZ') });
+            closeQuickStockModal(); updateUI(); showPage('archive-page');
+        }
+
+        function toggleManualInputVisibility() {
+            document.getElementById('manual-type-container').style.display = (document.getElementById('in-type-select').value === 'custom') ? 'block' : 'none';
+        }
+
+        function updateUI() {
+            localStorage.setItem('cableInventoryData_V12_Update', JSON.stringify(appData));
+            
+            const cardsArea = document.getElementById('dynamic-cards-area'); if(!cardsArea) return;
+            cardsArea.innerHTML = ''; let total = 0;
+            const inSel = document.getElementById('in-type-select');
+            const outSel = document.getElementById('out-type');
+            inSel.innerHTML = ''; outSel.innerHTML = '';
+
+            Object.keys(appData.stocks).sort((a,b)=>a-b).forEach(cat => {
+                const qty = appData.stocks[cat]; total += qty;
+                inSel.innerHTML += `<option value="${cat}">كابل فئة ${cat} M</option>`;
+                if(qty > 0) outSel.innerHTML += `<option value="${cat}">${cat} M (${qty} ${translations[currentLang].unitM})</option>`;
+
+                const conf = styleConfig[cat] || styleConfig["default"];
+                cardsArea.innerHTML += `
+                    <div class="card card-click ${conf.cls}" onclick="openQuickStockModal('${cat}')">
+                        <div class="card-icon-bg"><svg viewBox="0 0 24 24">${conf.svg}</svg></div>
+                        <h3 style="font-size:14px; font-weight:bold; opacity:0.9;">فئة ${cat} M</h3>
+                        <p style="font-size:26px; font-weight:900; margin-top:6px;">${qty} <span style="font-size:12px; font-weight:normal;">${translations[currentLang].unitM}</span></p>
+                    </div>`;
+            });
+            inSel.innerHTML += `<option value="custom">${translations[currentLang].customOpt}</option>`;
+            document.getElementById('total-stock').innerText = total;
+
+            const cCont = document.getElementById('customers-cards-container'); cCont.innerHTML = '';
+            if(appData.installations.length === 0) document.getElementById('no-data-msg').classList.remove('hidden');
+            else {
+                document.getElementById('no-data-msg').classList.add('hidden');
+                appData.installations.forEach(i => {
+                    cCont.innerHTML += `<div class="card" style="display:flex; justify-content:space-between; align-items:center;"><div><b style="color:var(--slate-800);">${i.name}</b><br><small style="color:var(--slate-500); font-weight:bold;">${i.phone}</small></div><span style="background:var(--sky-100); color:var(--sky-600); padding:5px 10px; border-radius:8px; font-size:12px; font-weight:bold;">${i.cableType} M</span></div>`;
+                });
+            }
+
+            const aCont = document.getElementById('archive-cards-container'); aCont.innerHTML = '';
+            appData.supplyArchive.forEach(item => {
+                aCont.innerHTML += `<div class="card" style="display:flex; justify-content:space-between; align-items:center;"><div><small style="color:var(--slate-500); font-weight:bold;">${item.dateTime}</small></div><b style="color:var(--emerald-600);">+${item.quantity} [فئة ${item.cableType}M]</b></div>`;
+            });
+
+            document.getElementById('odn-district-input').value = appData.currentDistrict || "";
+            const tbody = document.getElementById('odn-table-body'); tbody.innerHTML = '';
+            let fSum=0, gSum=0, aSum=0;
+
+            if(appData.odnBuildings.length === 0) document.getElementById('odn-empty-msg').style.display = 'block';
+            else {
+                document.getElementById('odn-empty-msg').style.display = 'none';
+                appData.odnBuildings.forEach((b, idx) => {
+                    fSum+=b.facade; gSum+=b.ground; aSum+=b.aerial;
+                    tbody.innerHTML += `<tr><td><b>${b.name}</b></td><td style="color:var(--purple-600); font-weight:bold;">${b.facade}M <small style="color:var(--slate-400);">${b.facadeMark}</small></td><td style="color:var(--amber-600); font-weight:bold;">${b.ground}M <small style="color:var(--slate-400);">${b.groundMark}</small></td><td style="color:var(--sky-600); font-weight:bold;">${b.aerial}M <small style="color:var(--slate-400);">${b.aerialMark}</small></td><td style="background:var(--slate-50); font-weight:900;">${b.facade+b.ground+b.aerial}M</td><td><button onclick="deleteOdnBuilding(${idx})" style="color:var(--red-600); font-weight:bold; background:none;">حذف</button></td></tr>`;
+                });
+            }
+            document.getElementById('grand-facade').innerText = fSum;
+            document.getElementById('grand-ground').innerText = gSum;
+            document.getElementById('grand-aerial').innerText = aSum;
+
+            const distCont = document.getElementById('district-archive-container'); distCont.innerHTML = '';
+            appData.archivedDistricts.forEach(d => {
+                distCont.innerHTML += `
+                    <div class="card" style="background:var(--slate-50); border:1px solid var(--slate-200);">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <div><b style="color:var(--indigo-900);">📍 ${d.districtName}</b> <small style="color:var(--slate-400); font-weight:bold; margin-right:6px; margin-left:6px;">${d.date}</small></div>
+                            <button onclick="openDistrictDetails(${d.id})" style="background:var(--indigo-600); color:white; font-size:11px; padding:6px 12px; border-radius:8px; font-weight:bold;">${translations[currentLang].viewDetails}</button>
+                        </div>
+                    </div>`;
+            });
+            toggleManualInputVisibility();
+        }
+
+        function filterCustomers() {
+            const q = document.getElementById('customer-search-input').value.toLowerCase().trim();
+            if(!q) { updateUI(); return; }
+            const f = appData.installations.filter(i => i.name.toLowerCase().includes(q) || i.phone.includes(q));
+            const cCont = document.getElementById('customers-cards-container'); cCont.innerHTML = '';
+            f.forEach(i => {
+                cCont.innerHTML += `<div class="card" style="display:flex; justify-content:space-between; align-items:center;"><div><b>${i.name}</b><br><small style="color:var(--slate-500);">${i.phone}</small></div><span style="background:var(--sky-100); color:var(--sky-600); padding:5px 10px; border-radius:8px; font-size:12px; font-weight:bold;">${i.cableType} M</span></div>`;
+            });
+        }
+
+        function handleStockIn(e) {
+            e.preventDefault();
+            const sel = document.getElementById('in-type-select').value;
+            const qty = parseInt(document.getElementById('in-qty').value);
+            let cat = (sel === 'custom') ? document.getElementById('in-type-manual').value.trim() : sel;
+            if(!cat || !qty) return;
+            appData.stocks[cat] = (appData.stocks[cat] || 0) + qty;
+            appData.supplyArchive.unshift({ cableType: cat, quantity: qty, dateTime: new Date().toLocaleString('ar-DZ') });
+            document.getElementById('in-qty').value = ''; updateUI(); showPage('archive-page');
+        }
+
+        function handleNewInstallation(e) {
+            e.preventDefault();
+            const name = document.getElementById('out-name').value;
+            const phone = document.getElementById('out-phone').value;
+            const type = document.getElementById('out-type').value;
+            if(!type || appData.stocks[type] < 1) { alert(translations[currentLang].noStock); return; }
+            appData.stocks[type] -= 1; appData.installations.unshift({ name, phone, cableType: type });
+            document.getElementById('out-name').value = ''; document.getElementById('out-phone').value = '';
+            updateUI(); showPage('customers-page');
+        }
+
+        // إقلاع النظام
+        changeLanguage('ar');
     </script>
 </body>
 </html>
