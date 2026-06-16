@@ -13,16 +13,14 @@
 </head>
 <body>
 
-    <!-- شاشة القفل -->
     <div id="login-screen" class="box">
-        <h3>SRF App v1.2</h3>
+        <h3>SRF App v1.3</h3>
         <p id="dev-id">جاري تحميل الرمز...</p>
         <input type="text" id="activation-code" placeholder="أدخل كود التفعيل">
         <br><br>
         <button onclick="checkActivation()">تفعيل التطبيق الآن</button>
     </div>
 
-    <!-- واجهة الحاسبة (مخفية في البداية) -->
     <div id="main-app" class="box" style="display:none;">
         <h1>حاسبة الأمتار</h1>
         <input type="number" id="start" placeholder="رقم البداية">
@@ -33,12 +31,17 @@
     </div>
 
     <script>
-        // نظام التفعيل
-        let deviceId = "SRF-" + Math.floor(Math.random() * 90000000).toString(16).toUpperCase();
+        // 1. نظام الرمز الثابت
+        let deviceId = localStorage.getItem('myDeviceId');
+        if (!deviceId) {
+            deviceId = "SRF-" + Math.floor(Math.random() * 90000000).toString(16).toUpperCase();
+            localStorage.setItem('myDeviceId', deviceId);
+        }
         document.getElementById('dev-id').innerText = "رمز جهازك: " + deviceId;
 
+        // 2. دالة التحقق
         function checkActivation() {
-            let input = document.getElementById('activation-code').value;
+            let input = document.getElementById('activation-code').value.trim().toUpperCase();
             let secretMultiplier = 2026;
             let num = parseInt(deviceId.replace("SRF-", ""), 16);
             let expectedKey = "ACT-" + Math.abs((num * secretMultiplier) % 999999);
@@ -52,18 +55,17 @@
             }
         }
 
-        // منطق الحساب
-        function calculate() {
-            let start = document.getElementById('start').value;
-            let end = document.getElementById('end').value;
-            let result = Math.abs(end - start);
-            document.getElementById('result').innerText = "النتيجة: " + result + " متر";
-        }
-
-        // فحص التفعيل السابق
+        // 3. التحقق التلقائي
         if (localStorage.getItem('activated') === 'true') {
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('main-app').style.display = 'block';
+        }
+
+        // 4. الحساب
+        function calculate() {
+            let start = document.getElementById('start').value;
+            let end = document.getElementById('end').value;
+            document.getElementById('result').innerText = "النتيجة: " + Math.abs(end - start) + " متر";
         }
     </script>
 </body>
