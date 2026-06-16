@@ -3,44 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SRF App - أداء صاروخي فوري</title>
+    <title>SRF App - نظام إدارة البنية التحتية والمخزون</title>
     <style>
-        /* نظام تنسيق فائق السرعة مدمج كلياً بدون إنترنت */
+        /* نظام الألوان الكامل والمتناسق للتطبيق */
         :root {
             --slate-50: #f8fafc; --slate-100: #f1f5f9; --slate-200: #e2e8f0; --slate-400: #94a3b8;
             --slate-500: #64748b; --slate-600: #475569; --slate-700: #334155; --slate-800: #1e293b;
-            --slate-900: #0f172a; --indigo-600: #4f46e5; --indigo-900: #1e1b4b; --emerald-500: #10b981;
-            --emerald-600: #059669; --sky-100: #e0f2fe; --sky-600: #0284c7; --purple-100: #f3e8ff;
-            --purple-600: #7c3aed; --amber-100: #fef3c7; --amber-600: #d97706; --red-600: #dc2626;
+            --slate-900: #0f172a; --indigo-600: #4f46e5; --indigo-700: #4338ca; --indigo-900: #1e1b4b; 
+            --emerald-500: #10b981; --emerald-600: #059669; --sky-100: #e0f2fe; --sky-600: #0284c7; 
+            --purple-100: #f3e8ff; --purple-600: #7c3aed; --amber-100: #fef3c7; --amber-600: #d97706; --red-600: #dc2626;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
-        body { bg-color: var(--slate-50); background: var(--slate-50); color: var(--slate-800); min-height: screen; display: flex; flex-col: column; flex-direction: column; }
-        header { background: linear-gradient(to right, var(--slate-800), var(--indigo-900)); color: white; padding: 12px; position: sticky; top: 0; z-index: 50; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-        .container { width: 100%; max-width: 1100px; margin: 0 auto; padding: 0 12px; }
-        .nav-box { display: flex; flex-direction: column; justify-content: space-between; align-items: center; gap: 10px; }
-        @media (min-width: 768px) { .nav-box { flex-direction: row; } }
-        .btn-grid { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+        body { background: var(--slate-50); color: var(--slate-800); min-height: 100vh; display: flex; flex-direction: column; }
+        
+        /* الهيدر العلوي */
+        header { background: linear-gradient(to right, var(--slate-800), var(--indigo-900)); color: white; padding: 15px 0; position: sticky; top: 0; z-index: 50; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .container { width: 100%; max-width: 1150px; margin: 0 auto; padding: 0 15px; }
+        .nav-box { display: flex; flex-direction: column; justify-content: space-between; align-items: center; gap: 12px; }
+        @media (min-width: 1024px) { .nav-box { flex-direction: row; } }
+        
+        /* الأزرار ونظام التنقل */
+        .btn-grid { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: center; }
         button, .card-click { cursor: pointer; touch-action: manipulation; transition: all 0.15s ease; border: none; outline: none; }
-        button:active, .card-click:active { transform: scale(0.97); }
-        .nav-btn { padding: 8px 12px; rounded-radius: 10px; border-radius: 10px; font-size: 11px; font-weight: bold; color: white; display: flex; align-items: center; gap: 4px; }
-        .main-content { padding: 15px 0; flex-grow: 1; }
+        button:active, .card-click:active { transform: scale(0.96); }
+        
+        .nav-btn { padding: 10px 14px; border-radius: 12px; font-size: 12px; font-weight: bold; color: white; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        
+        /* نظام اللغات الأنيق */
+        .lang-switcher { background: rgba(255,255,255,0.1); padding: 4px; border-radius: 12px; display: flex; gap: 4px; border: 1px solid rgba(255,255,255,0.15); }
+        .lang-btn { padding: 4px 8px; border-radius: 8px; font-size: 11px; font-weight: bold; color: white; background: transparent; }
+        .lang-btn.active { background: white; color: var(--indigo-900); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        
+        /* المحتوى والكروت */
+        .main-content { padding: 25px 0; flex-grow: 1; }
         .hidden { display: none !important; }
-        .grid-3 { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 15px; }
-        @media (min-width: 640px) { .grid-3 { grid-template-columns: repeat(3, 1fr); } }
-        .card { background: white; border-radius: 16px; padding: 16px; border: 1px border var(--slate-100); box-shadow: 0 1px 3px rgba(0,0,0,0.05); position: relative; overflow: hidden; }
+        .grid-3 { display: grid; grid-template-columns: 1fr; gap: 16px; margin-bottom: 20px; }
+        @media (min-width: 640px) { .grid-3 { grid-template-columns: repeat(2, 1fr); } @media (min-width: 1024px) { .grid-3 { grid-template-columns: 1fr repeat(2, 1fr); } } }
+        .card { background: white; border-radius: 20px; padding: 20px; border: 1px solid var(--slate-100); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); position: relative; overflow: hidden; }
         .card-dark { background: linear-gradient(135deg, var(--slate-700), var(--slate-800)); color: white; }
-        .grid-2 { display: grid; grid-template-columns: 1fr; gap: 15px; }
-        @media (min-width: 768px) { .grid-2 { grid-template-columns: 1fr 1fr; } }
-        .form-group { margin-bottom: 12px; }
-        label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 4px; color: var(--slate-600); }
-        input, select { width: 100%; padding: 10px; border-radius: 10px; border: 1px solid var(--slate-200); background: var(--slate-50); font-size: 13px; font-weight: bold; }
-        input:focus, select:focus { border-color: var(--indigo-600); background: white; }
-        .table-resp { overflow-x: auto; margin-top: 10px; }
-        table { width: 100%; border-collapse: collapse; text-align: right; font-size: 12px; }
-        th, td { padding: 10px; border-b: 1px solid var(--slate-100); border-bottom: 1px solid var(--slate-100); }
+        
+        /* الألوان المخصصة لكروت الفئات */
+        .c-20 { background: linear-gradient(135deg, #a855f7, #7c3aed) !important; color: white; }
+        .c-30 { background: linear-gradient(135deg, #f97316, #ea580c) !important; color: white; }
+        .c-50 { background: linear-gradient(135deg, #3b82f6, #2563eb) !important; color: white; }
+        .c-80 { background: linear-gradient(135deg, #ec4899, #db2777) !important; color: white; }
+        .c-default { background: linear-gradient(135deg, #64748b, #475569) !important; color: white; }
+        
+        .card-icon-bg { position: absolute; right: -15px; bottom: -15px; opacity: 0.15; transform: scale(4); width: 24px; height: 24px; color: white; }
+        
+        .grid-2 { display: grid; grid-template-columns: 1fr; gap: 20px; margin-bottom: 20px; }
+        @media (min-width: 1024px) { .grid-2 { grid-template-columns: 1fr 1fr; } }
+        
+        /* النماذج وحقول الإدخال */
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-size: 13px; font-weight: bold; margin-bottom: 6px; color: var(--slate-600); }
+        input, select { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--slate-200); background: var(--slate-50); font-size: 14px; font-weight: bold; transition: all 0.2s; }
+        input:focus, select:focus { border-color: var(--indigo-600); background: white; outline: none; box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); }
+        
+        /* الجداول */
+        .table-resp { overflow-x: auto; margin-top: 15px; border-radius: 12px; border: 1px solid var(--slate-100); }
+        table { width: 100%; border-collapse: collapse; text-align: right; font-size: 13px; }
+        th, td { padding: 12px; border-bottom: 1px solid var(--slate-100); }
         th { background: var(--slate-100); color: var(--slate-600); font-weight: bold; }
-        .modal { position: fixed; inset: 0; background: rgba(15,23,42,0.6); display: flex; align-items: center; justify-content: center; padding: 15px; z-index: 100; }
-        .modal-body { background: white; border-radius: 16px; width: 100%; max-width: 450px; padding: 20px; }
+        
+        /* النوافذ المنبثقة */
+        .modal { position: fixed; inset: 0; background: rgba(15,23,42,0.6); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 100; }
+        .modal-body { background: white; border-radius: 20px; width: 100%; max-width: 460px; padding: 24px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
+        
+        /* الفوتر وشريط الحقوق */
+        footer { background: var(--slate-900); color: var(--slate-400); text-align: center; padding: 20px; font-size: 12px; border-top: 1px solid var(--slate-800); margin-top: auto; }
+        footer a { color: #60a5fa; text-decoration: none; font-weight: bold; margin-left: 5px; }
+        footer a:hover { text-decoration: underline; }
+        
         svg { width: 16px; height: 16px; fill: currentColor; display: inline-block; vertical-align: middle; }
     </style>
 </head>
@@ -48,185 +82,197 @@
 
     <header>
         <div class="container nav-box">
-            <div onclick="showPage('stock-page')" style="display:flex; align-items:center; gap:8px; cursor:pointer;">
-                <svg viewBox="0 0 24 24" style="width:22px; height:22px;"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-                <h1 id="nav-title" style="font-size:15px; font-weight:bold;">SRF - تتبع شبكات ODN والمخزون</h1>
+            <div onclick="showPage('stock-page')" style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+                <svg viewBox="0 0 24 24" style="width:24px; height:24px;"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                <h1 id="nav-title" style="font-size:16px; font-weight:bold;">نظام تتبع الكوابل وشبكات ODN التفصيلي</h1>
             </div>
+            
             <div class="btn-grid">
-                <button onclick="showPage('stock-page')" class="nav-btn" style="background:var(--slate-600);"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg> <span id="nav-stock-btn">المخزن</span></button>
-                <button onclick="showPage('customers-page')" class="nav-btn" style="background:var(--indigo-600);"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg> <span id="nav-cust-btn">الزبائن</span></button>
-                <button onclick="showPage('archive-page')" class="nav-btn" style="background:var(--amber-600);"><svg viewBox="0 0 24 24"><path d="M20.54 5.23l-1.39-1.68C18.88 3.21 18.47 3 18 3H6c-.47 0-.88.21-1.16.55L3.46 5.23C3.17 5.57 3 6.01 3 6.5V19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6.5c0-.49-.17-.93-.46-1.27zM12 17.5L6.5 12H10v-4h4v4h3.5L12 17.5z"/></svg> <span id="nav-arch-btn">الأرشيف</span></button>
-                <button onclick="showPage('odn-page')" class="nav-btn" style="background:var(--emerald-600); border:1px solid #a7f3d0;"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg> <span id="nav-odn-btn">هندسة ODN</span></button>
+                <button onclick="showPage('stock-page')" class="nav-btn" style="background:var(--slate-600);"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg> <span id="nav-stock-btn">المخزن الرئيسي</span></button>
+                <button onclick="showPage('customers-page')" class="nav-btn" style="background:var(--indigo-600);"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg> <span id="nav-cust-btn">سجل الزبائن</span></button>
+                <button onclick="showPage('archive-page')" class="nav-btn" style="background:var(--amber-600);"><svg viewBox="0 0 24 24"><path d="M20.54 5.23l-1.39-1.68C18.88 3.21 18.47 3 18 3H6c-.47 0-.88.21-1.16.55L3.46 5.23C3.17 5.57 3 6.01 3 6.5V19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6.5c0-.49-.17-.93-.46-1.27zM12 17.5L6.5 12H10v-4h4v4h3.5L12 17.5z"/></svg> <span id="nav-arch-btn">أرشيف الشحنات</span></button>
+                <button onclick="showPage('odn-page')" class="nav-btn" style="background:var(--emerald-600); border:1px solid #a7f3d0;"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg> <span id="nav-odn-btn">هندسة وتوزيع ODN</span></button>
+                
+                <div class="lang-switcher">
+                    <button onclick="changeLanguage('ar')" id="lang-ar-btn" class="lang-btn active">العربية</button>
+                    <button onclick="changeLanguage('fr')" id="lang-fr-btn" class="lang-btn">Français</button>
+                    <button onclick="changeLanguage('en')" id="lang-en-btn" class="lang-btn">English</button>
+                </div>
             </div>
         </div>
     </header>
 
     <main id="stock-page" class="container main-content app-page">
+        <h2 id="section-stock-title" style="font-size:14px; font-weight:bold; color:var(--slate-500); margin-bottom:12px;">حالة المخزن الحالي (اضغط على أي كرت للتعديل المباشر)</h2>
+        
         <section class="grid-3">
             <div class="card card-dark">
-                <h3 id="card-total-title" style="font-size:13px; opacity:0.9;">المجموع الإجمالي للمخزون</h3>
-                <p style="font-size:28px; font-weight:900; margin-top:8px;"><span id="total-stock">0</span> <span id="unit-total" style="font-size:12px; font-weight:normal;">بكرة</span></p>
+                <div class="card-icon-bg"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg></div>
+                <h3 id="card-total-title" style="font-size:13px; opacity:0.9;">المجموع الكلي للمخزون</h3>
+                <p style="font-size:32px; font-weight:900; margin-top:8px;"><span id="total-stock">0</span> <span id="unit-total" style="font-size:13px; font-weight:normal; margin-right:4px; margin-left:4px;">بكرة إجمالية</span></p>
             </div>
             <div id="dynamic-cards-area" style="display:contents;"></div>
         </section>
 
-        <section class="grid-2">
+        <div class="grid-2">
             <div class="card">
-                <h2 id="form-in-title" style="font-size:14px; font-weight:bold; margin-bottom:12px; display:flex; align-items:center; gap:6px; color:var(--emerald-600);"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg> إمداد وتغذية المخزن</h2>
+                <h2 id="form-in-title" style="font-size:15px; font-weight:bold; margin-bottom:15px; display:flex; align-items:center; gap:6px; color:var(--emerald-600); border-bottom:1px solid var(--slate-100); padding-bottom:10px;"><svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9h-4v4h-2v-4H9V9h4V5h2v4h4v2z"/></svg> إمداد وتغذية المخزن</h2>
                 <form id="form-stock-in" onsubmit="handleStockIn(event)">
                     <div class="form-group">
                         <label id="lbl-type-in">اختر الفئة</label>
                         <select id="in-type-select" onchange="toggleManualInputVisibility()"><option value="custom">✍️ إدخال يدوي فئة جديدة...</option></select>
                     </div>
                     <div id="manual-type-container" class="form-group">
-                        <label id="lbl-manual-type">طول الفئة الجديدة بالأمتار</label>
+                        <label id="lbl-manual-type">اكتب طول الفئة الجديدة بالأمتار</label>
                         <input type="number" id="in-type-manual" min="1" placeholder="مثال: 20">
                     </div>
                     <div class="form-group">
-                        <label id="lbl-qty-in">الكمية الموردة (بكرة)</label>
-                        <input type="number" id="in-qty" min="1" required placeholder="مثال: 50">
+                        <label id="lbl-qty-in">الكمية الموردة الحالية</label>
+                        <input type="number" id="in-qty" min="1" required placeholder="مثال: 100">
                     </div>
-                    <button type="submit" id="btn-in-submit" style="width:100%; background:var(--emerald-600); color:white; padding:12px; border-radius:10px; font-weight:bold;">تأكيد وحفظ التوريد</button>
+                    <button type="submit" id="btn-in-submit" style="width:100%; background:var(--emerald-600); color:white; padding:12px; border-radius:12px; font-weight:bold; font-size:13px;">تأكيد الإدخال والأرشفة بالتاريخ</button>
                 </form>
             </div>
 
             <div class="card">
-                <h2 id="form-out-title" style="font-size:14px; font-weight:bold; margin-bottom:12px; display:flex; align-items:center; gap:6px; color:var(--sky-600);"><svg viewBox="0 0 24 24"><path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg> تسجيل زبون وتركيب جديد</h2>
+                <h2 id="form-out-title" style="font-size:15px; font-weight:bold; margin-bottom:15px; display:flex; align-items:center; gap:6px; color:var(--sky-600); border-bottom:1px solid var(--slate-100); padding-bottom:10px;"><svg viewBox="0 0 24 24"><path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg> تسجيل زبون وتركيب جديد</h2>
                 <form id="form-sale" onsubmit="handleNewInstallation(event)">
                     <div class="form-group"><label id="lbl-cust-name">اسم الزبون الكامل</label><input type="text" id="out-name" required placeholder="اسم المشترك"></div>
                     <div class="form-group"><label id="lbl-cust-phone">رقم الهاتف</label><input type="tel" id="out-phone" required placeholder="06XXXXXXXX"></div>
-                    <div class="form-group"><label id="lbl-type-out">الكابل المستخدم</label><select id="out-type"></select></div>
-                    <button type="submit" id="btn-out-submit" style="width:100%; background:var(--sky-600); color:white; padding:12px; border-radius:10px; font-weight:bold;">خصم من المخزن وتأكيد الزبون</button>
+                    <div class="form-group"><label id="lbl-type-out">الكابل المستخدم للتركيب</label><select id="out-type"></select></div>
+                    <button type="submit" id="btn-out-submit" style="width:100%; background:var(--sky-600); color:white; padding:12px; border-radius:12px; font-weight:bold; font-size:13px;">حفظ البيانات وخصم المخزن فورا</button>
                 </form>
             </div>
-        </section>
+        </div>
     </main>
 
     <main id="customers-page" class="container main-content app-page hidden">
         <div class="card">
-            <h2 id="table-title" style="font-size:15px; font-weight:bold; margin-bottom:12px;">سجل المشتركين والزبائن</h2>
-            <input type="text" id="customer-search-input" oninput="filterCustomers()" style="margin-bottom:12px;" placeholder="ابحث باسم الزبون أو الهاتف...">
-            <div id="customers-cards-container" style="display:grid; gap:10px;"></div>
-            <div id="no-data-msg" style="text-align:center; padding:20px; color:var(--slate-400);" class="hidden"><span id="no-cust-txt">لا يوجد زبائن</span></div>
+            <h2 id="table-title" style="font-size:16px; font-weight:bold; margin-bottom:15px; color:var(--slate-800);">قاعدة بيانات وسجلات الزبائن المسجلة</h2>
+            <input type="text" id="customer-search-input" oninput="filterCustomers()" style="margin-bottom:15px;" placeholder="ابحث هنا عن اسم الزبون...">
+            <div id="customers-cards-container" style="display:grid; gap:12px;"></div>
+            <div id="no-data-msg" style="text-align:center; padding:30px; color:var(--slate-400);" class="hidden"><span id="no-cust-txt">لا توجد عمليات مسجلة حالياً</span></div>
         </div>
     </main>
 
     <main id="archive-page" class="container main-content app-page hidden">
         <div class="card">
-            <div style="display:flex; justify-content:between; justify-content: space-between; margin-bottom:15px;">
-                <h2 id="archive-title" style="font-size:15px; font-weight:bold;">أرشيف الشحنات الموردة</h2>
-                <button onclick="resetAllFactory()" style="background:#fee2e2; color:var(--red-600); padding:4px 8px; border-radius:6px; font-size:11px; font-weight:bold;">تصفير عام الكل</button>
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--slate-100); padding-bottom:10px; margin-bottom:15px;">
+                <h2 id="archive-title" style="font-size:16px; font-weight:bold;">أرشيف سجل التوريدات وشحنات المخزن المؤرخة</h2>
+                <button onclick="resetAllFactory()" style="background:#fee2e2; color:var(--red-600); padding:6px 12px; border-radius:8px; font-size:11px; font-weight:bold;">تصفير عام</button>
             </div>
-            <div id="archive-cards-container" style="display:grid; gap:8px;"></div>
+            <div id="archive-cards-container" style="display:grid; gap:10px;"></div>
         </div>
     </main>
 
     <main id="odn-page" class="container main-content app-page hidden">
-        <div class="card card-dark" style="margin-bottom:15px; background:linear-gradient(to right, var(--slate-800), var(--indigo-900)); display:flex; flex-direction:column; gap:12px; padding:15px;">
-            <div style="flex-grow:1; width:100%;">
-                <label id="lbl-district-name" style="color:white; opacity:0.8; margin-bottom:4px;">اسم الحي / المشروع الحالي 📍</label>
-                <input type="text" id="odn-district-input" oninput="updateDistrictName()" style="background:rgba(255,255,255,0.15); color:white; border:none;" placeholder="مثال: حي 500 مسكن">
+        <div class="card card-dark" style="margin-bottom:20px; background:linear-gradient(to right, var(--slate-800), var(--indigo-900)); display:flex; flex-direction:column; gap:15px;">
+            <div style="width:100%;">
+                <label id="lbl-district-name" style="color:white; opacity:0.8; margin-bottom:5px;">الحي الحالي قيد الإنجاز 📍</label>
+                <input type="text" id="odn-district-input" oninput="updateDistrictName()" style="background:rgba(255,255,255,0.15); color:white; border:none; padding:12px;" placeholder="اكتب اسم الحي هنا...">
             </div>
-            <button onclick="archiveCurrentDistrict()" style="background:var(--amber-600); color:var(--slate-900); padding:12px; border-radius:10px; font-weight:900; width:100%;">حفظ وإغلاق الحي نهائياً 🔒</button>
+            <button onclick="archiveCurrentDistrict()" style="background:var(--amber-600); color:var(--slate-900); padding:14px; border-radius:12px; font-weight:900; font-size:13px;">إغلاق الحي وحفظ المشروع نهائياً 🔒</button>
         </div>
 
-        <h3 id="lbl-odn-summary-title" style="font-size:13px; font-weight:bold; color:var(--slate-500); margin-bottom:10px;">حساب أمتار المسارات للحي الحالي تلقائياً:</h3>
-        <div class="grid-3" style="margin-bottom:15px;">
-            <div class="card" style="border-left: 4px solid var(--purple-600); padding:12px;">
-                <span id="lbl-tot-facade" style="font-size:11px; color:var(--purple-600); font-weight:bold;">مسارات الواجهة</span>
-                <p style="font-size:22px; font-weight:900;"><span id="grand-facade">0</span> M</p>
+        <h3 id="lbl-odn-summary-title" style="font-size:14px; font-weight:bold; color:var(--slate-500); margin-bottom:12px;">الحساب التلقائي لأمتار الحي الحالي</h3>
+        <div class="grid-3" style="margin-bottom:20px;">
+            <div class="card" style="border-left: 5px solid var(--purple-600); padding:15px;">
+                <span id="lbl-tot-facade" style="font-size:12px; color:var(--purple-600); font-weight:bold;">إجمالي مسارات الواجهة</span>
+                <p style="font-size:26px; font-weight:900; margin-top:5px;"><span id="grand-facade">0</span> M</p>
             </div>
-            <div class="card" style="border-left: 4px solid var(--amber-600); padding:12px;">
-                <span id="lbl-tot-ground" style="font-size:11px; color:var(--amber-600); font-weight:bold;">مسارات الأرضي</span>
-                <p style="font-size:22px; font-weight:900;"><span id="grand-ground">0</span> M</p>
+            <div class="card" style="border-left: 5px solid var(--amber-600); padding:15px;">
+                <span id="lbl-tot-ground" style="font-size:12px; color:var(--amber-600); font-weight:bold;">إجمالي مسارات الأرضي</span>
+                <p style="font-size:26px; font-weight:900; margin-top:5px;"><span id="grand-ground">0</span> M</p>
             </div>
-            <div class="card" style="border-left: 4px solid var(--sky-600); padding:12px;">
-                <span id="lbl-tot-aerial" style="font-size:11px; color:var(--sky-600); font-weight:bold;">مسارات الهوائي</span>
-                <p style="font-size:22px; font-weight:900;"><span id="grand-aerial">0</span> M</p>
+            <div class="card" style="border-left: 5px solid var(--sky-600); padding:15px;">
+                <span id="lbl-tot-aerial" style="font-size:12px; color:var(--sky-600); font-weight:bold;">إجمالي مسارات الهوائي</span>
+                <p style="font-size:26px; font-weight:900; margin-top:5px;"><span id="grand-aerial">0</span> M</p>
             </div>
         </div>
 
         <div class="grid-2">
             <div class="card">
-                <h3 id="lbl-add-b-title" style="font-size:14px; font-weight:bold; margin-bottom:12px;">إدراج كابل بناية</h3>
+                <h3 id="lbl-add-b-title" style="font-size:15px; font-weight:bold; margin-bottom:15px; color:var(--slate-800);">تقسيم كابل بناية جديدة</h3>
                 <form onsubmit="handleNewOdnBuilding(event)">
-                    <div class="form-group"><label id="lbl-b-num">اسم/رقم البناية</label><input type="text" id="odn-b-name" required placeholder="مثال: عمارة A1"></div>
-                    <div class="form-group" style="background:var(--slate-100); padding:8px; border-radius:8px; margin-bottom:8px;">
-                        <span style="font-size:11px; font-weight:bold; color:var(--purple-600);">مسار الواجهة</span>
-                        <div style="display:flex; gap:5px; margin-top:4px;"><input type="number" id="odn-facade-start" placeholder="بداية"><input type="number" id="odn-facade-end" placeholder="نهاية"></div>
+                    <div class="form-group"><label id="lbl-b-num">رقم أو اسم البناية 🏢</label><input type="text" id="odn-b-name" required placeholder="مثال: بناية 393"></div>
+                    <div class="form-group" style="background:#f5f3ff; padding:10px; border-radius:12px; margin-bottom:10px; border:1px solid #ede9fe;">
+                        <span id="lbl-f-route" style="font-size:12px; font-weight:bold; color:var(--purple-600);">مسار الواجهة (متر الكابل)</span>
+                        <div style="display:flex; gap:8px; margin-top:6px;"><input type="number" id="odn-facade-start" placeholder="البداية"><input type="number" id="odn-facade-end" placeholder="النهاية"></div>
                     </div>
-                    <div class="form-group" style="background:var(--slate-100); padding:8px; border-radius:8px; margin-bottom:8px;">
-                        <span style="font-size:11px; font-weight:bold; color:var(--amber-600);">مسار الأرضي</span>
-                        <div style="display:flex; gap:5px; margin-top:4px;"><input type="number" id="odn-ground-start" placeholder="بداية"><input type="number" id="odn-ground-end" placeholder="نهاية"></div>
+                    <div class="form-group" style="background:#fffbeb; padding:10px; border-radius:12px; margin-bottom:10px; border:1px solid #fef3c7;">
+                        <span id="lbl-g-route" style="font-size:12px; font-weight:bold; color:var(--amber-600);">مسار الأرضي (متر الكابل)</span>
+                        <div style="display:flex; gap:8px; margin-top:6px;"><input type="number" id="odn-ground-start" placeholder="البداية"><input type="number" id="odn-ground-end" placeholder="النهاية"></div>
                     </div>
-                    <div class="form-group" style="background:var(--slate-100); padding:8px; border-radius:8px; margin-bottom:12px;">
-                        <span style="font-size:11px; font-weight:bold; color:var(--sky-600);">مسار الهوائي</span>
-                        <div style="display:flex; gap:5px; margin-top:4px;"><input type="number" id="odn-aerial-start" placeholder="بداية"><input type="number" id="odn-aerial-end" placeholder="نهاية"></div>
+                    <div class="form-group" style="background:#f0f9ff; padding:10px; border-radius:12px; margin-bottom:15px; border:1px solid #e0f2fe;">
+                        <span id="lbl-a-route" style="font-size:12px; font-weight:bold; color:var(--sky-600);">مسار الهوائي (متر الكابل)</span>
+                        <div style="display:flex; gap:8px; margin-top:6px;"><input type="number" id="odn-aerial-start" placeholder="البداية"><input type="number" id="odn-aerial-end" placeholder="النهاية"></div>
                     </div>
-                    <button type="submit" style="width:100%; background:var(--slate-800); color:white; padding:10px; border-radius:8px; font-weight:bold; font-size:12px;">حساب وإدراج البناية</button>
+                    <button type="submit" id="btn-calc-b" style="width:100%; background:var(--slate-800); color:white; padding:12px; border-radius:12px; font-weight:bold; font-size:13px;">احسب وأدرج البناية في القائمة</button>
                 </form>
             </div>
 
             <div class="card" style="display:flex; flex-direction:column;">
-                <h3 id="lbl-curr-b-list" style="font-size:14px; font-weight:bold; margin-bottom:8px;">قائمة البنايات للحي</h3>
+                <h3 id="lbl-curr-b-list" style="font-size:15px; font-weight:bold; margin-bottom:10px;">قائمة البنايات والمفاتيح الرقمية للحي الحالي</h3>
                 <div class="table-resp" style="flex-grow:1;">
                     <table>
                         <thead>
-                            <tr><th id="th-b">البناية</th><th id="th-f">واجهة</th><th id="th-g">أرضي</th><th id="th-a">هوائي</th><th id="th-t">المجموع</th><th>إجراء</th></tr>
+                            <tr><th id="th-b">🏢 البناية</th><th id="th-f" style="color:var(--purple-600);">الواجهة</th><th id="th-g" style="color:var(--amber-600);">الأرضي</th><th id="th-a" style="color:var(--sky-600);">الهوائي</th><th id="th-t">الإجمالي</th><th>إجراء</th></tr>
                         </thead>
                         <tbody id="odn-table-body"></tbody>
                     </table>
-                    <div id="odn-empty-msg" style="text-align:center; padding:30px; color:var(--slate-400);" id="txt-odn-empty">لا يوجد بنايات مضافة</div>
+                    <div id="odn-empty-msg" style="text-align:center; padding:40px; color:var(--slate-400); font-weight:bold;">لم يتم إدراج أي بناية بعد للحي الحالي.</div>
                 </div>
             </div>
         </div>
 
-        <div class="card" style="margin-top:15px;">
-            <h3 id="lbl-final-arch-title" style="font-size:14px; font-weight:bold; margin-bottom:10px;">المشاريع والأحياء المغلقة والأرشيف النهائي</h3>
-            <div id="district-archive-container" style="display:grid; gap:10px;"></div>
+        <div class="card" style="margin-top:20px;">
+            <h3 id="lbl-final-arch-title" style="font-size:15px; font-weight:bold; margin-bottom:12px; color:var(--slate-900);">أرشيف المشاريع والأحياء المكتملة والمغلقة نهائياً</h3>
+            <div id="district-archive-container" style="display:grid; gap:12px;"></div>
         </div>
     </main>
 
     <div id="quick-stock-modal" class="modal hidden">
         <div class="modal-body">
-            <h3 id="modal-title" style="font-size:15px; font-weight:bold; margin-bottom:12px;">تحديث كمية الفئة</h3>
+            <h3 id="modal-title" style="font-size:16px; font-weight:bold; margin-bottom:15px; color:var(--slate-800);">تحديث كمية الفئة</h3>
             <form onsubmit="handleQuickStockSubmit(event)">
                 <input type="hidden" id="modal-category-id">
                 <div class="form-group">
-                    <label id="modal-lbl">الكمية المراد إضافتها بالبكرات:</label>
-                    <input type="number" id="modal-qty-input" min="1" required style="font-size:24px; text-align:center; font-weight:900;">
+                    <label id="modal-lbl">الكمية المضافة بالبكرات:</label>
+                    <input type="number" id="modal-qty-input" min="1" required style="font-size:28px; text-align:center; font-weight:900; border-color:var(--indigo-600);">
                 </div>
-                <div style="display:flex; gap:10px; margin-top:15px;">
-                    <button type="button" onclick="closeQuickStockModal()" style="flex:1; background:var(--slate-200); padding:10px; border-radius:10px; font-weight:bold;">إلغاء</button>
-                    <button type="submit" id="modal-btn-txt" style="flex:1; background:var(--indigo-600); color:white; padding:10px; border-radius:10px; font-weight:bold;">تحديث فوري</button>
+                <div style="display:flex; gap:12px; margin-top:20px;">
+                    <button type="button" onclick="closeQuickStockModal()" style="flex:1; background:var(--slate-200); padding:12px; border-radius:12px; font-weight:bold; font-size:13px;">إلغاء</button>
+                    <button type="submit" id="modal-btn-txt" style="flex:1; background:var(--indigo-600); color:white; padding:12px; border-radius:12px; font-weight:bold; font-size:13px;">تحديث وأرشفة</button>
                 </div>
             </form>
         </div>
     </div>
 
     <div id="district-details-modal" class="modal hidden">
-        <div class="modal-body" style="max-w: 600px; max-height:80vh; overflow-y:auto;">
-            <div style="display:flex; justify-content:space-between; align-items:center; border-b:1px solid #eee; padding-bottom:8px; margin-bottom:12px;">
-                <h3 id="details-modal-title" style="font-weight:bold;">تفاصيل الحي</h3>
-                <button onclick="closeDetailsModal()" style="font-size:20px; color:var(--slate-400); background:none;">&times;</button>
+        <div class="modal-body" style="max-width: 650px; max-height:85vh; overflow-y:auto;">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--slate-100); padding-bottom:10px; margin-bottom:15px;">
+                <h3 id="details-modal-title" style="font-weight:bold; font-size:16px; color:var(--indigo-900);">تفاصيل البنايات</h3>
+                <button onclick="closeDetailsModal()" style="font-size:24px; color:var(--slate-400); background:none; border:none; outline:none;">&times;</button>
             </div>
             <div class="table-resp">
                 <table>
-                    <thead><tr><th>البناية</th><th>واجهة</th><th>أرضي</th><th>هوائي</th><th>المجموع</th></tr></thead>
+                    <thead><tr><th>🏢 البناية</th><th style="color:var(--purple-600);">الواجهة</th><th style="color:var(--amber-600);">الأرضي</th><th style="color:var(--sky-600);">الهوائي</th><th>المجموع</th></tr></thead>
                     <tbody id="details-modal-tbody"></tbody>
                 </table>
             </div>
         </div>
     </div>
 
-    <footer style="background:var(--slate-900); color:var(--slate-400); text-align:center; padding:15px; font-size:11px; margin-top:auto;">
-        <span id="footer-rights">© 2026 نظام إدارة البنية التحتية والمخزون الميداني | المطور المعتمد:</span> 
-        <strong style="color:white; background:var(--slate-800); padding:2px 6px; border-radius:4px;">Saadeddin Khaled</strong>
+    <footer>
+        <span id="footer-rights">© 2026 جميع الحقوق محفوظة. تم التطوير وبناء النظام بواسطة:</span> 
+        <strong style="color:white; background:var(--slate-800); padding:4px 8px; border-radius:6px; font-size:13px; border:1px solid var(--slate-700);">Saadeddin Khaled</strong>
+        <span style="margin: 0 8px; color:var(--slate-600);">|</span>
+        <a href="mailto:khaledsamrllo@gmail.com">khaledsamrllo@gmail.com</a>
     </footer>
 
     <script>
-        // داتا التطبيق الأساسية
-        let appData = JSON.parse(localStorage.getItem('cableInventoryData_Offline_V7')) || {
+        // تغيير المفتاح هنا إلى V9 يجبر المتصفح على تحميل الملف الجديد فورا من GitHub وتخطي الكاش القديم
+        let appData = JSON.parse(localStorage.getItem('cableInventoryData_Final_V9')) || {
             stocks: { "20": 0, "30": 0, "50": 0, "80": 0 },
             installations: [],
             supplyArchive: [],
@@ -235,22 +281,132 @@
             archivedDistricts: []
         };
 
-        const cardColors = {
-            "20": "from-purple-500 to-purple-600",
-            "30": "from-orange-500 to-orange-600",
-            "50": "from-blue-500 to-blue-600",
-            "80": "from-pink-600 to-pink-700",
-            "default": "from-slate-500 to-slate-600"
+        let currentLang = 'ar';
+
+        // خريطة كود الـ SVG المدمجة للحفاظ على السرعة مع تلوين الكروت بدقة
+        const styleConfig = {
+            "20": { cls: "c-20", svg: `<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/>` },
+            "30": { cls: "c-30", svg: `<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/>` },
+            "50": { cls: "c-50", svg: `<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.53c-.26-.81-1-1.4-1.9-1.4h-1v-3c0-.55-.45-1-1-1h-6v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>` },
+            "80": { cls: "c-80", svg: `<path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 16H7v-2h10v2zm-1.14-4H8.14L6.2 9h11.6l-1.94 5z"/>` }
         };
 
-        function showPage(id) {
+        // قاموس الترجمات للغات الثلاث كاملاً
+        const translations = {
+            ar: {
+                navTitle: "نظام تتبع الكوابل وشبكات ODN التفصيلي", navStock: "المخزن الرئيسي", navCust: "سجل الزبائن", navArch: "أرشيف الشحنات", navOdn: "هندسة وتوزيع ODN",
+                sectionStock: "حالة المخزن الحالي (اضغط على أي كرت للتعديل المباشر)", cardTotal: "المجموع الكلي للمخزون", unitT: "بكرة إجمالية", unitM: "بكرة متاحة",
+                formIn: "إمداد وتغذية المخزن", lblTypeIn: "اختر الفئة", lblManualType: "اكتب طول الفئة الجديدة بالأمتار", customOpt: "✍️ إدخال يدوي فئة جديدة...",
+                lblQtyIn: "الكمية الموردة الحالية", btnIn: "تأكيد الإدخال والأرشفة بالتاريخ", formOut: "تسجيل زبون وتركيب جديد", lblCustName: "اسم الزبون الكامل",
+                lblCustPhone: "رقم الهاتف", lblTypeOut: "الكابل المستخدم للتركيب", btnOut: "حفظ البيانات وخصم المخزن فورا", tableTitle: "قاعدة بيانات وسجلات الزبائن المسجلة",
+                searchPlh: "ابحث هنا عن اسم الزبون...", noCust: "لا توجد عمليات مسجلة حالياً", archiveTitle: "أرشيف سجل التوريدات وشحنات المخزن المؤرخة",
+                lblDistrict: "الحي الحالي قيد الإنجاز 📍", btnCloseDist: "إغلاق الحي وحفظ المشروع نهائياً 🔒", lblOdnSum: "الحساب التلقائي لأمتار الحي الحالي",
+                totFacade: "إجمالي مسارات الواجهة", totGround: "إجمالي مسارات الأرضي", totAerial: "إجمالي مسارات الهوائي", addBTitle: "تقسيم كابل بناية جديدة",
+                bNum: "رقم أو اسم البناية 🏢", fRoute: "مسار الواجهة (متر الكابل)", gRoute: "مسار الأرضي (متر الكابل)", aRoute: "مسار الهوائي (متر الكابل)",
+                btnCalcB: "احسب وأدرج البناية في القائمة", currBList: "قائمة البنايات والمفاتيح الرقمية للحي الحالي", thB: "🏢 البناية", thF: "الواجهة", thG: "الأرضي", thA: "الهوائي",
+                thT: "الإجمالي", odnEmpty: "لم يتم إدراج أي بناية بعد للحي الحالي.", finalArchTitle: "أرشيف المشاريع والأحياء المكتملة والمغلقة نهائياً",
+                modalTitle: "تحديث المخزن فئة", modalLbl: "الكمية المضافة بالبكرات:", modalBtn: "تحديث وأرشفة", footerRights: "© 2026 جميع الحقوق محفوظة. تم التطوير وبناء النظام بواسطة:", noStock: "المخزون غير كافٍ!", viewDetails: "عرض تفاصيل البنايات 👁️"
+            },
+            fr: {
+                navTitle: "Gestion Spécifique & Réseaux ODN", navStock: "Stock Principal", navCust: "Liste des Clients", navArch: "Archive de Stock", navOdn: "Ingénierie ODN",
+                sectionStock: "État actuel du stock (Cliquez pour modifier)", cardTotal: "Total Stock Global", unitT: "Bobines au total", unitM: "Bobines dispos",
+                formIn: "Approvisionnement du Stock", lblTypeIn: "Sélectionnez la catégorie", lblManualType: "Longueur de la catégorie (mètres)", customOpt: "✍️ Entrée manuelle fêté...",
+                lblQtyIn: "Quantité livrée actuelle", btnIn: "Confirmer l'entrée et archiver", formOut: "Nouvelle Installation Client", lblCustName: "Nom complet du client",
+                lblCustPhone: "Numéro de téléphone", lblTypeOut: "Câble utilisé pour l'installation", btnOut: "Enregistrer et déduire le stock", tableTitle: "Base de données des clients enregistrés",
+                searchPlh: "Rechercher le nom du client ici...", noCust: "Aucune opération enregistrée actuellement", archiveTitle: "Historique des approvisionnements archivés",
+                lblDistrict: "Quartier en cours d'exécution 📍", btnCloseDist: "Clôturer le quartier et sauvegarder 🔒", lblOdnSum: "Calcul métrique automatique du quartier",
+                totFacade: "Total Tracé Façade", totGround: "Total Tracé Souterrain", totAerial: "Total Tracé Aérien", addBTitle: "Diviser le câble d'un nouveau bâtiment",
+                bNum: "Numéro ou nom du bâtiment 🏢", fRoute: "Tracé Façade (Mètres)", gRoute: "Tracé Souterrain (Mètres)", aRoute: "Tracé Aérien (Mètres)",
+                btnCalcB: "Calculer et insérer dans la liste", currBList: "Liste des bâtiments & repères numériques du quartier", thB: "🏢 Bâtiment", thF: "Façade", thG: "Souterrain", thA: "Aérien",
+                thT: "Total global", odnEmpty: "Aucun bâtiment inséré pour le moment.", finalArchTitle: "Archive des projets et quartiers clôturés",
+                modalTitle: "Mise à jour de la catégorie", modalLbl: "Quantité ajoutée en bobines :", modalBtn: "Mettre à jour", footerRights: "© 2026 Tous droits réservés. Développé par:", noStock: "Stock insuffisant!", viewDetails: "Voir Détails 👁️"
+            },
+            en: {
+                navTitle: "Detailed Tracking & ODN Networks", navStock: "Main Stock Inventory", navCust: "Customers Database", navArch: "Supply Logs", navOdn: "ODN Engineering Tools",
+                sectionStock: "Current Stock Status (Click any card for instant edit)", cardTotal: "Total Combined Stock", unitT: "Total Drums", unitM: "Drums Available",
+                formIn: "Stock Supply & Feeding", lblTypeIn: "Choose Category", lblManualType: "Enter new category length in meters", customOpt: "✍️ Manual Entry...",
+                lblQtyIn: "Quantity Delivered Currently", btnIn: "Confirm Input & Log with Date", formOut: "New Customer Installation", lblCustName: "Customer Full Name",
+                lblCustPhone: "Active Phone Number", lblTypeOut: "Cable Used for Installation", btnOut: "Save Data & Deduct Stock Instantly", tableTitle: "Registered Customers Database System",
+                searchPlh: "Search customer name or phone...", noCust: "No registered operations found at the moment", archiveTitle: "Historical Dated Stock Supply Archive",
+                lblDistrict: "Current Neighborhood under construction 📍", btnCloseDist: "Close Neighborhood & Save Project 🔒", lblOdnSum: "Automatic Distance Calculation for Current District",
+                totFacade: "Total Facade Route", totGround: "Total Underground Route", totAerial: "Total Aerial Route", addBTitle: "Divide Cable for New Building",
+                bNum: "Building Name/Number 🏢", fRoute: "Facade Route (Cable Meters)", gRoute: "Underground Route (Cable Meters)", aRoute: "Aerial Route (Cable Meters)",
+                btnCalcB: "Calculate & Add Building", currBList: "Buildings List & Digital Cable Markings", thB: "🏢 Building", thF: "Facade", thG: "Underground", thA: "Aerial",
+                thT: "Total Sum", odnEmpty: "No buildings added yet for this current district.", finalArchTitle: "Completed Projects & Closed Districts Archive",
+                modalTitle: "Update Category Stock", modalLbl: "Quantity added in drums:", modalBtn: "Update & Log", footerRights: "© 2026 All Rights Reserved. System Built by:", noStock: "Insufficient stock available!", viewDetails: "View Details 👁️"
+            }
+        };
+
+        function showPage(pageId) {
             document.querySelectorAll('.app-page').forEach(p => p.classList.add('hidden'));
-            document.getElementById(id).classList.remove('hidden');
+            document.getElementById(pageId).classList.remove('hidden');
+            window.scrollTo(0,0);
+        }
+
+        // نظام تبديل اللغات الفوري والمثالي
+        function changeLanguage(lang) {
+            currentLang = lang;
+            ['ar', 'fr', 'en'].forEach(l => {
+                const btn = document.getElementById(`lang-${l}-btn`);
+                if(btn) btn.className = (l === lang) ? "lang-btn active" : "lang-btn";
+            });
+
+            document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
+            document.documentElement.lang = lang;
+
+            const dict = translations[lang];
+            if(!dict) return;
+
+            // تحديث نصوص الواجهة
+            document.getElementById('nav-title').innerText = dict.navTitle;
+            document.getElementById('nav-stock-btn').innerText = dict.navStock;
+            document.getElementById('nav-cust-btn').innerText = dict.navCust;
+            document.getElementById('nav-arch-btn').innerText = dict.navArch;
+            document.getElementById('nav-odn-btn').innerText = dict.navOdn;
+            document.getElementById('section-stock-title').innerText = dict.sectionStock;
+            document.getElementById('card-total-title').innerText = dict.cardTotal;
+            document.getElementById('unit-total').innerText = dict.unitT;
+            document.getElementById('form-in-title').innerText = dict.formIn;
+            document.getElementById('lbl-type-in').innerText = dict.lblTypeIn;
+            document.getElementById('lbl-manual-type').innerText = dict.lblManualType;
+            document.getElementById('lbl-qty-in').innerText = dict.lblQtyIn;
+            document.getElementById('btn-in-submit').innerText = dict.btnIn;
+            document.getElementById('form-out-title').innerText = dict.formOut;
+            document.getElementById('lbl-cust-name').innerText = dict.lblCustName;
+            document.getElementById('lbl-cust-phone').innerText = dict.lblCustPhone;
+            document.getElementById('lbl-type-out').innerText = dict.lblTypeOut;
+            document.getElementById('btn-out-submit').innerText = dict.btnOut;
+            document.getElementById('table-title').innerText = dict.tableTitle;
+            document.getElementById('customer-search-input').placeholder = dict.searchPlh;
+            document.getElementById('no-cust-txt').innerText = dict.noCust;
+            document.getElementById('archive-title').innerText = dict.archiveTitle;
+            document.getElementById('lbl-district-name').innerText = dict.lblDistrict;
+            document.getElementById('lbl-odn-summary-title').innerText = dict.lblOdnSum;
+            document.getElementById('lbl-tot-facade').innerText = dict.totFacade;
+            document.getElementById('lbl-tot-ground').innerText = dict.totGround;
+            document.getElementById('lbl-tot-aerial').innerText = dict.totAerial;
+            document.getElementById('lbl-add-b-title').innerText = dict.addBTitle;
+            document.getElementById('lbl-b-num').innerText = dict.bNum;
+            document.getElementById('lbl-f-route').innerText = dict.fRoute;
+            document.getElementById('lbl-g-route').innerText = dict.gRoute;
+            document.getElementById('lbl-a-route').innerText = dict.aRoute;
+            document.getElementById('btn-calc-b').innerText = dict.btnCalcB;
+            document.getElementById('lbl-curr-b-list').innerText = dict.currBList;
+            document.getElementById('th-b').innerText = dict.thB;
+            document.getElementById('th-f').innerText = dict.thF;
+            document.getElementById('th-g').innerText = dict.thG;
+            document.getElementById('th-a').innerText = dict.thA;
+            document.getElementById('th-t').innerText = dict.thT;
+            document.getElementById('odn-empty-msg').innerText = dict.odnEmpty;
+            document.getElementById('lbl-final-arch-title').innerText = dict.finalArchTitle;
+            document.getElementById('footer-rights').innerText = dict.footerRights;
+
+            updateUI();
         }
 
         function updateDistrictName() {
             appData.currentDistrict = document.getElementById('odn-district-input').value.trim();
-            localStorage.setItem('cableInventoryData_Offline_V7', JSON.stringify(appData));
+            localStorage.setItem('cableInventoryData_Final_V9', JSON.stringify(appData));
         }
 
         function handleNewOdnBuilding(e) {
@@ -308,7 +464,7 @@
             document.getElementById('details-modal-title').innerText = t.districtName;
             const tbody = document.getElementById('details-modal-tbody'); tbody.innerHTML = '';
             t.details.forEach(b => {
-                tbody.innerHTML += `<tr><td><b>${b.name}</b></td><td>${b.facade}M</td><td>${b.ground}M</td><td>${b.aerial}M</td><td style="background:#f1f5f9; font-weight:bold;">${b.facade+b.ground+b.aerial}M</td></tr>`;
+                tbody.innerHTML += `<tr><td><b>${b.name}</b></td><td style="color:var(--purple-600); font-weight:bold;">${b.facade}M</td><td style="color:var(--amber-600); font-weight:bold;">${b.ground}M</td><td style="color:var(--sky-600); font-weight:bold;">${b.aerial}M</td><td style="background:var(--slate-50); font-weight:black;">${b.facade+b.ground+b.aerial}M</td></tr>`;
             });
             document.getElementById('district-details-modal').classList.remove('hidden');
         }
@@ -316,7 +472,7 @@
 
         function openQuickStockModal(cat) {
             document.getElementById('modal-category-id').value = cat;
-            document.getElementById('modal-title').innerText = `شحن سريع للفئة ${cat} M`;
+            document.getElementById('modal-title').innerText = `${translations[currentLang].modalTitle} ${cat} M`;
             document.getElementById('modal-qty-input').value = '';
             document.getElementById('quick-stock-modal').classList.remove('hidden');
         }
@@ -337,10 +493,11 @@
         }
 
         function updateUI() {
-            localStorage.setItem('cableInventoryData_Offline_V7', JSON.stringify(appData));
+            localStorage.setItem('cableInventoryData_Final_V9', JSON.stringify(appData));
             
-            // 1. تحديث كروت المخزن
+            // تحديث كروت المخزن بالألوان الفردية والأيقونات المدمجة
             const cardsArea = document.getElementById('dynamic-cards-area');
+            if(!cardsArea) return;
             cardsArea.innerHTML = '';
             let total = 0;
             const inSel = document.getElementById('in-type-select');
@@ -350,59 +507,60 @@
             Object.keys(appData.stocks).sort((a,b)=>a-b).forEach(cat => {
                 const qty = appData.stocks[cat]; total += qty;
                 inSel.innerHTML += `<option value="${cat}">كابل فئة ${cat} M</option>`;
-                if(qty > 0) outSel.innerHTML += `<option value="${cat}">${cat} M (${qty} بكرة متاحة)</option>`;
+                if(qty > 0) outSel.innerHTML += `<option value="${cat}">${cat} M (${qty} ${translations[currentLang].unitM})</option>`;
 
-                const cls = cardColors[cat] || cardColors["default"];
+                const conf = styleConfig[cat] || styleConfig["default"];
                 cardsArea.innerHTML += `
-                    <div class="card card-click" onclick="openQuickStockModal('${cat}')" style="background:linear-gradient(to bottom right, var(--slate-700), var(--slate-800)); color:white;">
-                        <h3 style="font-size:13px; opacity:0.8;">فئة ${cat} M</h3>
-                        <p style="font-size:24px; font-weight:bold; margin-top:5px;">${qty} <span style="font-size:11px; font-weight:normal;">بكرة</span></p>
+                    <div class="card card-click ${conf.cls}" onclick="openQuickStockModal('${cat}')">
+                        <div class="card-icon-bg"><svg viewBox="0 0 24 24">${conf.svg}</svg></div>
+                        <h3 style="font-size:14px; font-weight:bold; opacity:0.9;">فئة ${cat} M</h3>
+                        <p style="font-size:26px; font-weight:900; margin-top:6px;">${qty} <span style="font-size:12px; font-weight:normal;">${translations[currentLang].unitM}</span></p>
                     </div>`;
             });
-            inSel.innerHTML += `<option value="custom">✍️ إدخال يدوي فئة جديدة...</option>`;
+            inSel.innerHTML += `<option value="custom">${translations[currentLang].customOpt}</option>`;
             document.getElementById('total-stock').innerText = total;
 
-            // 2. سجل الزبائن
+            // الزبائن
             const cCont = document.getElementById('customers-cards-container'); cCont.innerHTML = '';
             if(appData.installations.length === 0) document.getElementById('no-data-msg').classList.remove('hidden');
             else {
                 document.getElementById('no-data-msg').classList.add('hidden');
                 appData.installations.forEach(i => {
-                    cCont.innerHTML += `<div class="card" style="display:flex; justify-content:space-between; align-items:center;"><div><b>${i.name}</b><br><small style="color:var(--slate-500);">${i.phone}</small></div><span style="background:var(--sky-100); color:var(--sky-600); padding:4px 8px; border-radius:6px; font-size:11px; font-weight:bold;">${i.cableType} M</span></div>`;
+                    cCont.innerHTML += `<div class="card" style="display:flex; justify-content:space-between; align-items:center;"><div><b style="color:var(--slate-800);">${i.name}</b><br><small style="color:var(--slate-500); font-weight:bold; font-mono">${i.phone}</small></div><span style="background:var(--sky-100); color:var(--sky-600); padding:5px 10px; border-radius:8px; font-size:12px; font-weight:bold;">${i.cableType} M</span></div>`;
                 });
             }
 
-            // 3. الأرشيف
+            // الأرشيف
             const aCont = document.getElementById('archive-cards-container'); aCont.innerHTML = '';
             appData.supplyArchive.forEach(item => {
-                aCont.innerHTML += `<div class="card" style="display:flex; justify-content:space-between; align-items:center;"><div><small style="color:var(--slate-500);">${item.dateTime}</small></div><b style="color:var(--emerald-600);">+${item.quantity} [فئة ${item.cableType}M]</b></div>`;
+                aCont.innerHTML += `<div class="card" style="display:flex; justify-content:space-between; align-items:center;"><div><small style="color:var(--slate-500); font-weight:bold;">${item.dateTime}</small></div><b style="color:var(--emerald-600);">+${item.quantity} [فئة ${item.cableType}M]</b></div>`;
             });
 
-            // 4. لوحة هندسة ODN
+            // هندسة ODN
             document.getElementById('odn-district-input').value = appData.currentDistrict || "";
             const tbody = document.getElementById('odn-table-body'); tbody.innerHTML = '';
             let fSum=0, gSum=0, aSum=0;
 
-            if(appData.odnBuildings.length === 0) document.getElementById('odn-empty-msg').classList.remove('hidden');
+            if(appData.odnBuildings.length === 0) document.getElementById('odn-empty-msg').style.display = 'block';
             else {
-                document.getElementById('odn-empty-msg').classList.add('hidden');
+                document.getElementById('odn-empty-msg').style.display = 'none';
                 appData.odnBuildings.forEach((b, idx) => {
                     fSum+=b.facade; gSum+=b.ground; aSum+=b.aerial;
-                    tbody.innerHTML += `<tr><td><b>${b.name}</b></td><td>${b.facade}M <small style="color:var(--slate-400);">${b.facadeMark}</small></td><td>${b.ground}M <small style="color:var(--slate-400);">${b.groundMark}</small></td><td>${b.aerial}M <small style="color:var(--slate-400);">${b.aerialMark}</small></td><td style="background:#f8fafc; font-weight:black;">${b.facade+b.ground+b.aerial}M</td><td><button onclick="deleteOdnBuilding(${idx})" style="color:var(--red-600); background:none; font-weight:bold;">حذف</button></td></tr>`;
+                    tbody.innerHTML += `<tr><td><b>${b.name}</b></td><td style="color:var(--purple-600); font-weight:bold;">${b.facade}M <small style="color:var(--slate-400);">${b.facadeMark}</small></td><td style="color:var(--amber-600); font-weight:bold;">${b.ground}M <small style="color:var(--slate-400);">${b.groundMark}</small></td><td style="color:var(--sky-600); font-weight:bold;">${b.aerial}M <small style="color:var(--slate-400);">${b.aerialMark}</small></td><td style="background:var(--slate-50); font-weight:900;">${b.facade+b.ground+b.aerial}M</td><td><button onclick="deleteOdnBuilding(${idx})" style="color:var(--red-600); font-weight:bold; background:none;">حذف</button></td></tr>`;
                 });
             }
             document.getElementById('grand-facade').innerText = fSum;
             document.getElementById('grand-ground').innerText = gSum;
             document.getElementById('grand-aerial').innerText = aSum;
 
-            // أرشيف الأحياء المغلقة
+            // الأحياء المؤرشفة
             const distCont = document.getElementById('district-archive-container'); distCont.innerHTML = '';
             appData.archivedDistricts.forEach(d => {
                 distCont.innerHTML += `
-                    <div class="card" style="background:var(--slate-100); padding:10px;">
+                    <div class="card" style="background:var(--slate-50); border:1px solid var(--slate-200);">
                         <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <div><b>📍 ${d.districtName}</b> <small style="color:var(--slate-400); margin-right:8px;">${d.date}</small></div>
-                            <button onclick="openDistrictDetails(${d.id})" style="background:var(--indigo-600); color:white; font-size:10px; padding:4px 8px; border-radius:4px;">تفاصيل البنايات 👁️</button>
+                            <div><b style="color:var(--indigo-900);">📍 ${d.districtName}</b> <small style="color:var(--slate-400); font-weight:bold; margin-right:6px; margin-left:6px;">${d.date}</small></div>
+                            <button onclick="openDistrictDetails(${d.id})" style="background:var(--indigo-600); color:white; font-size:11px; padding:6px 12px; border-radius:8px; font-weight:bold;">${translations[currentLang].viewDetails}</button>
                         </div>
                     </div>`;
             });
@@ -411,14 +569,11 @@
 
         function filterCustomers() {
             const q = document.getElementById('customer-search-input').value.toLowerCase().trim();
-            if(!q) { renderCustomersList_Static(appData.installations); return; }
+            if(!q) { updateUI(); return; }
             const f = appData.installations.filter(i => i.name.toLowerCase().includes(q) || i.phone.includes(q));
-            renderCustomersList_Static(f);
-        }
-        function renderCustomersList_Static(arr) {
             const cCont = document.getElementById('customers-cards-container'); cCont.innerHTML = '';
-            arr.forEach(i => {
-                cCont.innerHTML += `<div class="card" style="display:flex; justify-content:space-between; align-items:center;"><div><b>${i.name}</b><br><small style="color:var(--slate-500);">${i.phone}</small></div><span style="background:var(--sky-100); color:var(--sky-600); padding:4px 8px; border-radius:6px; font-size:11px; font-weight:bold;">${i.cableType} M</span></div>`;
+            f.forEach(i => {
+                cCont.innerHTML += `<div class="card" style="display:flex; justify-content:space-between; align-items:center;"><div><b>${i.name}</b><br><small style="color:var(--slate-500);">${i.phone}</small></div><span style="background:var(--sky-100); color:var(--sky-600); padding:5px 10px; border-radius:8px; font-size:12px; font-weight:bold;">${i.cableType} M</span></div>`;
             });
         }
 
@@ -438,7 +593,7 @@
             const name = document.getElementById('out-name').value;
             const phone = document.getElementById('out-phone').value;
             const type = document.getElementById('out-type').value;
-            if(!type || appData.stocks[type] < 1) { alert("المخزون غير كافٍ!"); return; }
+            if(!type || appData.stocks[type] < 1) { alert(translations[currentLang].noStock); return; }
             appData.stocks[type] -= 1;
             appData.installations.unshift({ name, phone, cableType: type });
             document.getElementById('out-name').value = ''; document.getElementById('out-phone').value = '';
@@ -447,8 +602,8 @@
 
         function resetAllFactory() { if(confirm('هل تريد مسح جميع البيانات؟')) { appData={stocks:{"20":0,"30":0,"50":0,"80":0},installations:[],supplyArchive:[],currentDistrict:"",odnBuildings:[],archivedDistricts:[]}; updateUI(); } }
 
-        // إقلاع فوري وتلقائي ومحلي 100% بدون انتظار أي استجابة إنترنت
-        updateUI();
+        // بدء التشغيل الفوري واللغة الافتراضية
+        changeLanguage('ar');
     </script>
 </body>
 </html>
