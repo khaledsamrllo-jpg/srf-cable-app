@@ -70,6 +70,10 @@
         .modal { position: fixed; inset: 0; background: rgba(15,23,42,0.6); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 100; }
         .modal-body { background: white; border-radius: 20px; width: 100%; max-width: 460px; padding: 24px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
         
+        /* أزرار لوحة التصفير الذكية */
+        .reset-opt-btn { width: 100%; text-align: right; padding: 12px; margin-bottom: 8px; border-radius: 10px; background: var(--slate-50); border: 1px solid var(--slate-200); font-weight: bold; color: var(--slate-800); display: flex; align-items: center; gap: 8px; }
+        .reset-opt-btn:hover { background: #fef2f2; border-color: #fca5a5; color: var(--red-600); }
+
         /* الفوتر وشريط الحقوق */
         footer { background: var(--slate-900); color: var(--slate-400); text-align: center; padding: 20px; font-size: 12px; border-top: 1px solid var(--slate-800); margin-top: auto; }
         footer a { color: #60a5fa; text-decoration: none; font-weight: bold; margin-left: 5px; }
@@ -80,6 +84,7 @@
 </head>
 <body>
 
+    <!-- 🌐 الهيدر العلوي ونظام الملاحة -->
     <header>
         <div class="container nav-box">
             <div onclick="showPage('stock-page')" style="display:flex; align-items:center; gap:10px; cursor:pointer;">
@@ -93,6 +98,7 @@
                 <button onclick="showPage('archive-page')" class="nav-btn" style="background:var(--amber-600);"><svg viewBox="0 0 24 24"><path d="M20.54 5.23l-1.39-1.68C18.88 3.21 18.47 3 18 3H6c-.47 0-.88.21-1.16.55L3.46 5.23C3.17 5.57 3 6.01 3 6.5V19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6.5c0-.49-.17-.93-.46-1.27zM12 17.5L6.5 12H10v-4h4v4h3.5L12 17.5z"/></svg> <span id="nav-arch-btn">أرشيف الشحنات</span></button>
                 <button onclick="showPage('odn-page')" class="nav-btn" style="background:var(--emerald-600); border:1px solid #a7f3d0;"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg> <span id="nav-odn-btn">هندسة وتوزيع ODN</span></button>
                 
+                <!-- لوحة تحويل اللغات الثلاث -->
                 <div class="lang-switcher">
                     <button onclick="changeLanguage('ar')" id="lang-ar-btn" class="lang-btn active">العربية</button>
                     <button onclick="changeLanguage('fr')" id="lang-fr-btn" class="lang-btn">Français</button>
@@ -102,6 +108,7 @@
         </div>
     </header>
 
+    <!-- 📱 الشاشة الأولى: المخزن الرئيسي والعمليات الميدانية -->
     <main id="stock-page" class="container main-content app-page">
         <h2 id="section-stock-title" style="font-size:14px; font-weight:bold; color:var(--slate-500); margin-bottom:12px;">حالة المخزن الحالي (اضغط على أي كرت للتعديل المباشر)</h2>
         
@@ -115,6 +122,7 @@
         </section>
 
         <div class="grid-2">
+            <!-- نموذج التوريد والإدخل للمخزن -->
             <div class="card">
                 <h2 id="form-in-title" style="font-size:15px; font-weight:bold; margin-bottom:15px; display:flex; align-items:center; gap:6px; color:var(--emerald-600); border-bottom:1px solid var(--slate-100); padding-bottom:10px;"><svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9h-4v4h-2v-4H9V9h4V5h2v4h4v2z"/></svg> إمداد وتغذية المخزن</h2>
                 <form id="form-stock-in" onsubmit="handleStockIn(event)">
@@ -134,6 +142,7 @@
                 </form>
             </div>
 
+            <!-- نموذج خصم وتركيب للمشتركين والزبائن -->
             <div class="card">
                 <h2 id="form-out-title" style="font-size:15px; font-weight:bold; margin-bottom:15px; display:flex; align-items:center; gap:6px; color:var(--sky-600); border-bottom:1px solid var(--slate-100); padding-bottom:10px;"><svg viewBox="0 0 24 24"><path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg> تسجيل زبون وتركيب جديد</h2>
                 <form id="form-sale" onsubmit="handleNewInstallation(event)">
@@ -146,6 +155,7 @@
         </div>
     </main>
 
+    <!-- 👥 الشاشة الثانية: سجل الزبائن والمشتركين المسجلين -->
     <main id="customers-page" class="container main-content app-page hidden">
         <div class="card">
             <h2 id="table-title" style="font-size:16px; font-weight:bold; margin-bottom:15px; color:var(--slate-800);">قاعدة بيانات وسجلات الزبائن المسجلة</h2>
@@ -155,16 +165,21 @@
         </div>
     </main>
 
+    <!-- 📜 الشاشة الثالثة: أرشيف الشحنات الموردة المؤرخة -->
     <main id="archive-page" class="container main-content app-page hidden">
         <div class="card">
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--slate-100); padding-bottom:10px; margin-bottom:15px;">
                 <h2 id="archive-title" style="font-size:16px; font-weight:bold;">أرشيف سجل التوريدات وشحنات المخزن المؤرخة</h2>
-                <button onclick="resetAllFactory()" style="background:#fee2e2; color:var(--red-600); padding:6px 12px; border-radius:8px; font-size:11px; font-weight:bold;">تصفير عام</button>
+                <!-- تم استبدال الحذف التلقائي بلوحة خيارات ذكية -->
+                <button onclick="openResetControlModal()" style="background:#fee2e2; color:var(--red-600); padding:8px 16px; border-radius:10px; font-size:12px; font-weight:bold; display:flex; align-items:center; gap:4px;">
+                    <svg viewBox="0 0 24 24" style="width:14px; height:14px;"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H4v2h15V4z"/></svg> لوحة التصفير والحذف
+                </button>
             </div>
             <div id="archive-cards-container" style="display:grid; gap:10px;"></div>
         </div>
     </main>
 
+    <!-- 🌐 الشاشة الرابعة: هندسة وحساب مسارات شبكات ODN واستهلاك الكوابل -->
     <main id="odn-page" class="container main-content app-page hidden">
         <div class="card card-dark" style="margin-bottom:20px; background:linear-gradient(to right, var(--slate-800), var(--indigo-900)); display:flex; flex-direction:column; gap:15px;">
             <div style="width:100%;">
@@ -191,6 +206,7 @@
         </div>
 
         <div class="grid-2">
+            <!-- تقسيم كابل عمارة أو بناية جديدة -->
             <div class="card">
                 <h3 id="lbl-add-b-title" style="font-size:15px; font-weight:bold; margin-bottom:15px; color:var(--slate-800);">تقسيم كابل بناية جديدة</h3>
                 <form onsubmit="handleNewOdnBuilding(event)">
@@ -211,6 +227,7 @@
                 </form>
             </div>
 
+            <!-- قائمة الحسابات والنتائج للحي قيد العمل -->
             <div class="card" style="display:flex; flex-direction:column;">
                 <h3 id="lbl-curr-b-list" style="font-size:15px; font-weight:bold; margin-bottom:10px;">قائمة البنايات والمفاتيح الرقمية للحي الحالي</h3>
                 <div class="table-resp" style="flex-grow:1;">
@@ -225,12 +242,33 @@
             </div>
         </div>
 
+        <!-- أرشيف الأحياء الكاملة والمغلقة نهائياً -->
         <div class="card" style="margin-top:20px;">
             <h3 id="lbl-final-arch-title" style="font-size:15px; font-weight:bold; margin-bottom:12px; color:var(--slate-900);">أرشيف المشاريع والأحياء المكتملة والمغلقة نهائياً</h3>
             <div id="district-archive-container" style="display:grid; gap:12px;"></div>
         </div>
     </main>
 
+    <!-- ⚠️ نافذة التحكم بالتصفير والحذف الاختياري والآمن الجديد -->
+    <div id="reset-control-modal" class="modal hidden">
+        <div class="modal-body">
+            <h3 style="font-size:16px; font-weight:bold; margin-bottom:6px; color:var(--red-600); display:flex; align-items:center; gap:6px;">
+                <svg viewBox="0 0 24 24" style="width:20px; height:20px;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                لوحة التحكم في حذف البيانات
+            </h3>
+            <p style="font-size:12px; color:var(--slate-500); margin-bottom:15px;">برجاء اختيار القسم الذي تود مسحه بدقة. الحذف نهائي ولا يمكن التراجع عنه:</p>
+            
+            <button onclick="triggerSecureReset('stock')" class="reset-opt-btn">📦 تصفير كميات المخزن الرئيسي فقط</button>
+            <button onclick="triggerSecureReset('customers')" class="reset-opt-btn">👥 مسح سجل الزبائن والمشتركين فقط</button>
+            <button onclick="triggerSecureReset('logs')" class="reset-opt-btn">📜 مسح أرشيف شحنات التوريد فقط</button>
+            <button onclick="triggerSecureReset('odn')" class="reset-opt-btn">🌐 مسح أرشيف ومشاريع أحياء ODN فقط</button>
+            <button onclick="triggerSecureReset('all')" class="reset-opt-btn" style="background:#fee2e2; color:var(--red-600); border-color:#fca5a5;">🚨 تصفير ومسح شامل لكل التطبيق</button>
+            
+            <button onclick="closeResetControlModal()" style="width:100%; background:var(--slate-200); padding:10px; border-radius:12px; font-weight:bold; font-size:13px; margin-top:12px;">إلغاء وإغلاق النافذة</button>
+        </div>
+    </div>
+
+    <!-- 📥 نافذة الشحن السريع للمخزن عند النقر على كرت المتر -->
     <div id="quick-stock-modal" class="modal hidden">
         <div class="modal-body">
             <h3 id="modal-title" style="font-size:16px; font-weight:bold; margin-bottom:15px; color:var(--slate-800);">تحديث كمية الفئة</h3>
@@ -248,6 +286,7 @@
         </div>
     </div>
 
+    <!-- 👁️ نافذة عرض تفاصيل البنايات للأحياء المغلقة -->
     <div id="district-details-modal" class="modal hidden">
         <div class="modal-body" style="max-width: 650px; max-height:85vh; overflow-y:auto;">
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--slate-100); padding-bottom:10px; margin-bottom:15px;">
@@ -263,6 +302,7 @@
         </div>
     </div>
 
+    <!-- 🔒 شريط الحقوق البريدي المدمج بالبريد المباشر -->
     <footer>
         <span id="footer-rights">© 2026 جميع الحقوق محفوظة. تم التطوير وبناء النظام بواسطة:</span> 
         <strong style="color:white; background:var(--slate-800); padding:4px 8px; border-radius:6px; font-size:13px; border:1px solid var(--slate-700);">Saadeddin Khaled</strong>
@@ -271,8 +311,8 @@
     </footer>
 
     <script>
-        // تغيير المفتاح هنا إلى V9 يجبر المتصفح على تحميل الملف الجديد فورا من GitHub وتخطي الكاش القديم
-        let appData = JSON.parse(localStorage.getItem('cableInventoryData_Final_V9')) || {
+        // تغيير المعرف إلى V10 لإجبار المتصفح على تحميل الميزات الأمنية فوراً وتخطي الكاش
+        let appData = JSON.parse(localStorage.getItem('cableInventoryData_Final_V10')) || {
             stocks: { "20": 0, "30": 0, "50": 0, "80": 0 },
             installations: [],
             supplyArchive: [],
@@ -283,7 +323,6 @@
 
         let currentLang = 'ar';
 
-        // خريطة كود الـ SVG المدمجة للحفاظ على السرعة مع تلوين الكروت بدقة
         const styleConfig = {
             "20": { cls: "c-20", svg: `<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/>` },
             "30": { cls: "c-30", svg: `<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/>` },
@@ -291,7 +330,6 @@
             "80": { cls: "c-80", svg: `<path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 16H7v-2h10v2zm-1.14-4H8.14L6.2 9h11.6l-1.94 5z"/>` }
         };
 
-        // قاموس الترجمات للغات الثلاث كاملاً
         const translations = {
             ar: {
                 navTitle: "نظام تتبع الكوابل وشبكات ODN التفصيلي", navStock: "المخزن الرئيسي", navCust: "سجل الزبائن", navArch: "أرشيف الشحنات", navOdn: "هندسة وتوزيع ODN",
@@ -343,21 +381,16 @@
             window.scrollTo(0,0);
         }
 
-        // نظام تبديل اللغات الفوري والمثالي
         function changeLanguage(lang) {
             currentLang = lang;
             ['ar', 'fr', 'en'].forEach(l => {
                 const btn = document.getElementById(`lang-${l}-btn`);
                 if(btn) btn.className = (l === lang) ? "lang-btn active" : "lang-btn";
             });
-
             document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
             document.documentElement.lang = lang;
+            const dict = translations[lang]; if(!dict) return;
 
-            const dict = translations[lang];
-            if(!dict) return;
-
-            // تحديث نصوص الواجهة
             document.getElementById('nav-title').innerText = dict.navTitle;
             document.getElementById('nav-stock-btn').innerText = dict.navStock;
             document.getElementById('nav-cust-btn').innerText = dict.navCust;
@@ -404,9 +437,50 @@
             updateUI();
         }
 
+        // دالة فتح وإغلاق لوحة التحكم بالتصفير والحذف
+        function openResetControlModal() { document.getElementById('reset-control-modal').classList.remove('hidden'); }
+        function closeResetControlModal() { document.getElementById('reset-control-modal').classList.add('hidden'); }
+
+        // دالة التصفير الذكي والآمن الجديد حسب الاختيار
+        function triggerSecureReset(mode) {
+            let confirmMsg = "";
+            if (mode === 'stock') confirmMsg = "هل أنت متأكد من تصفير كميات المخزن فقط؟ (سيتم إرجاع جميع الفئات إلى 0)";
+            if (mode === 'customers') confirmMsg = "هل أنت متأكد من مسح جميع بيانات وسجلات الزبائن نهائياً؟";
+            if (mode === 'logs') confirmMsg = "هل أنت متأكد من مسح أرشيف عمليات الشحن والتوريد السابقة؟";
+            if (mode === 'odn') confirmMsg = "هل أنت متأكد من مسح كافة مشاريع الأحياء والأبنية المؤرشفة في هندسة ODN؟";
+            if (mode === 'all') confirmMsg = "⚠️ تحذير خطير: أنت تطلب تصفير التطبيق بالكامل ومسح كل شيء بدون استثناء! هل تريد المتابعة؟";
+
+            if (confirm(confirmMsg)) {
+                // تأكيد إضافي في حالة المسح الشامل
+                if (mode === 'all' && !confirm("تأكيد أخير: لن تتمكن من استعادة أي بيانات بعد هذه الخطوة. هل أنت متأكد 100%؟")) {
+                    return;
+                }
+
+                if (mode === 'stock' || mode === 'all') {
+                    appData.stocks = { "20": 0, "30": 0, "50": 0, "80": 0 };
+                }
+                if (mode === 'customers' || mode === 'all') {
+                    appData.installations = [];
+                }
+                if (mode === 'logs' || mode === 'all') {
+                    appData.supplyArchive = [];
+                }
+                if (mode === 'odn' || mode === 'all') {
+                    appData.currentDistrict = "";
+                    appData.odnBuildings = [];
+                    appData.archivedDistricts = [];
+                }
+
+                localStorage.setItem('cableInventoryData_Final_V10', JSON.stringify(appData));
+                updateUI();
+                closeResetControlModal();
+                alert("تم تنفيذ عملية الحذف والتحديث بنجاح. ✅");
+            }
+        }
+
         function updateDistrictName() {
             appData.currentDistrict = document.getElementById('odn-district-input').value.trim();
-            localStorage.setItem('cableInventoryData_Final_V9', JSON.stringify(appData));
+            localStorage.setItem('cableInventoryData_Final_V10', JSON.stringify(appData));
         }
 
         function handleNewOdnBuilding(e) {
@@ -493,9 +567,8 @@
         }
 
         function updateUI() {
-            localStorage.setItem('cableInventoryData_Final_V9', JSON.stringify(appData));
+            localStorage.setItem('cableInventoryData_Final_V10', JSON.stringify(appData));
             
-            // تحديث كروت المخزن بالألوان الفردية والأيقونات المدمجة
             const cardsArea = document.getElementById('dynamic-cards-area');
             if(!cardsArea) return;
             cardsArea.innerHTML = '';
@@ -520,7 +593,6 @@
             inSel.innerHTML += `<option value="custom">${translations[currentLang].customOpt}</option>`;
             document.getElementById('total-stock').innerText = total;
 
-            // الزبائن
             const cCont = document.getElementById('customers-cards-container'); cCont.innerHTML = '';
             if(appData.installations.length === 0) document.getElementById('no-data-msg').classList.remove('hidden');
             else {
@@ -530,13 +602,11 @@
                 });
             }
 
-            // الأرشيف
             const aCont = document.getElementById('archive-cards-container'); aCont.innerHTML = '';
             appData.supplyArchive.forEach(item => {
                 aCont.innerHTML += `<div class="card" style="display:flex; justify-content:space-between; align-items:center;"><div><small style="color:var(--slate-500); font-weight:bold;">${item.dateTime}</small></div><b style="color:var(--emerald-600);">+${item.quantity} [فئة ${item.cableType}M]</b></div>`;
             });
 
-            // هندسة ODN
             document.getElementById('odn-district-input').value = appData.currentDistrict || "";
             const tbody = document.getElementById('odn-table-body'); tbody.innerHTML = '';
             let fSum=0, gSum=0, aSum=0;
@@ -553,7 +623,6 @@
             document.getElementById('grand-ground').innerText = gSum;
             document.getElementById('grand-aerial').innerText = aSum;
 
-            // الأحياء المؤرشفة
             const distCont = document.getElementById('district-archive-container'); distCont.innerHTML = '';
             appData.archivedDistricts.forEach(d => {
                 distCont.innerHTML += `
@@ -600,9 +669,7 @@
             updateUI(); showPage('customers-page');
         }
 
-        function resetAllFactory() { if(confirm('هل تريد مسح جميع البيانات؟')) { appData={stocks:{"20":0,"30":0,"50":0,"80":0},installations:[],supplyArchive:[],currentDistrict:"",odnBuildings:[],archivedDistricts:[]}; updateUI(); } }
-
-        // بدء التشغيل الفوري واللغة الافتراضية
+        // بدء التشغيل الفوري بالنسخة الأمنية العاشرة V10
         changeLanguage('ar');
     </script>
 </body>
