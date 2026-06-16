@@ -2,66 +2,37 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SRF App</title>
     <style>
-        body { font-family: sans-serif; text-align: center; background: #0f172a; color: white; padding-top: 50px; }
-        .container { background: #1e293b; padding: 30px; border-radius: 20px; width: 90%; max-width: 400px; margin: auto; }
+        body { font-family: sans-serif; text-align: center; background: #0f172a; color: white; padding: 20px; }
+        .container { background: #1e293b; padding: 30px; border-radius: 20px; max-width: 400px; margin: auto; }
         input { width: 90%; padding: 12px; margin: 10px 0; border-radius: 8px; border: none; text-align: center; }
-        button { width: 100%; padding: 12px; background: #0284c7; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        button { width: 95%; padding: 12px; background: #0284c7; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div id="login-screen" class="container">
-        <h3>SRF App</h3>
-        <p id="dev-id">جاري التحميل...</p>
-        <input type="text" id="activation-code" placeholder="أدخل كود التفعيل">
-        <button onclick="checkActivation()">تفعيل التطبيق</button>
-    </div>
-
-    <div id="main-app" class="container" style="display:none;">
-        <h1>مرحباً بك</h1>
-        <p>التطبيق مفعل بنجاح</p>
-        <input type="number" id="start" placeholder="البداية"><br>
-        <input type="number" id="end" placeholder="النهاية"><br>
-        <button onclick="calculate()">احسب</button>
-        <h2 id="result">النتيجة: 0</h2>
+    <div class="container">
+        <h1>حاسبة الأمتار</h1>
+        <input type="number" id="start" placeholder="رقم البداية">
+        <input type="number" id="end" placeholder="رقم النهاية">
+        <br>
+        <button onclick="calculate()">احسب الأمتار</button>
+        <h2 id="result">النتيجة: 0 متر</h2>
     </div>
 
     <script>
-        // تثبيت الرمز لكل جهاز
-        let deviceId = localStorage.getItem('myDeviceId');
-        if (!deviceId) {
-            deviceId = "SRF-" + Math.floor(Math.random() * 90000000).toString(16).toUpperCase();
-            localStorage.setItem('myDeviceId', deviceId);
-        }
-        document.getElementById('dev-id').innerText = "رمز جهازك: " + deviceId;
-
-        // دالة التفعيل النهائية
-        function checkActivation() {
-            let input = document.getElementById('activation-code').value.trim().toUpperCase();
-            let num = parseInt(deviceId.replace("SRF-", ""), 16);
-            let calc = (num * 2026) % 1000000;
-            let expectedKey = "ACT-" + calc.toString().padStart(6, '0');
-
-            if (input === expectedKey) {
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('main-app').style.display = 'block';
-                localStorage.setItem('activated', 'true');
-            } else {
-                alert("كود خاطئ!");
-            }
-        }
-
-        // التحقق التلقائي
-        if (localStorage.getItem('activated') === 'true') {
-            document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('main-app').style.display = 'block';
-        }
-
         function calculate() {
-            let res = Math.abs(document.getElementById('end').value - document.getElementById('start').value);
-            document.getElementById('result').innerText = "النتيجة: " + res;
+            let start = parseFloat(document.getElementById('start').value);
+            let end = parseFloat(document.getElementById('end').value);
+            
+            if (isNaN(start) || isNaN(end)) {
+                document.getElementById('result').innerText = "يرجى إدخال أرقام صحيحة";
+            } else {
+                let res = Math.abs(end - start);
+                document.getElementById('result').innerText = "النتيجة: " + res + " متر";
+            }
         }
     </script>
 </body>
