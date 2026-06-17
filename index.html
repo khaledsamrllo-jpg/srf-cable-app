@@ -96,11 +96,20 @@
         @media (min-width: 1024px) { .grid-2 { grid-template-columns: 1fr 1fr; } }
         
         /* النماذج وحقول الإدخال */
-        .form-group { margin-bottom: 15px; }
+        .form-group { margin-bottom: 12px; }
+        .form-row { display: flex; gap: 10px; margin-bottom: 12px; }
+        .form-row .form-group { flex: 1; margin-bottom: 0; }
         label { display: block; font-size: 13px; font-weight: bold; margin-bottom: 6px; color: var(--slate-600); }
         input, select { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--slate-200); background: var(--slate-50); font-size: 14px; font-weight: bold; transition: all 0.2s; }
         input:focus, select:focus { border-color: var(--indigo-600); background: white; outline: none; box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); }
         
+        /* علامات مميزة لكروت المشتركين (Tags) */
+        .cust-tag { display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; }
+        .tag-blue { background: #eff6ff; color: #1e40af; }
+        .tag-purple { background: #f5f3ff; color: #5b21b6; }
+        .tag-emerald { background: #ecfdf5; color: #065f46; }
+        .tag-amber { background: #fffbeb; color: #92400e; }
+
         /* الجداول */
         .table-resp { overflow-x: auto; margin-top: 15px; border-radius: 12px; border: 1px solid var(--slate-100); }
         table { width: 100%; border-collapse: collapse; text-align: right; font-size: 13px; }
@@ -203,7 +212,17 @@
                 <h2 id="form-out-title" style="font-size:15px; font-weight:bold; margin-bottom:15px; display:flex; align-items:center; gap:6px; color:var(--sky-600); border-bottom:1px solid var(--slate-100); padding-bottom:10px;"><svg viewBox="0 0 24 24"><path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg> تسجيل زبون وتركيب جديد</h2>
                 <form id="form-sale" onsubmit="handleNewInstallation(event)">
                     <div class="form-group"><label id="lbl-cust-name">اسم الزبون الكامل</label><input type="text" id="out-name" required placeholder="اسم المشترك"></div>
-                    <div class="form-group"><label id="lbl-cust-phone">رقم الهاتف</label><input type="tel" id="out-phone" required placeholder="06XXXXXXXX"></div>
+                    
+                    <div class="form-row">
+                        <div class="form-group"><label id="lbl-cust-phone">رقم المحمول</label><input type="tel" id="out-phone" required placeholder="06XXXXXXXX"></div>
+                        <div class="form-group"><label id="lbl-cust-fixe">الهاتف الأرضي</label><input type="tel" id="out-fixe" placeholder="027XXXXXXX"></div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group"><label id="lbl-cust-bldg">رقم البناية 🏢</label><input type="text" id="out-bldg" required placeholder="مثال: 14"></div>
+                        <div class="form-group"><label id="lbl-cust-pbo">رقم علبة PBO 🏷️</label><input type="text" id="out-pbo" required placeholder="مثال: PBO-03"></div>
+                    </div>
+
                     <div class="form-group"><label id="lbl-type-out">الكابل المستخدم للتركيب</label><select id="out-type"></select></div>
                     <button type="submit" id="btn-out-submit" style="width:100%; background:var(--sky-600); color:white; padding:12px; border-radius:12px; font-weight:bold; font-size:13px;">حفظ البيانات وخصم المخزن فورا</button>
                 </form>
@@ -214,8 +233,8 @@
     <main id="customers-page" class="container main-content app-page hidden">
         <div class="card">
             <h2 id="table-title" style="font-size:16px; font-weight:bold; margin-bottom:15px; color:var(--slate-800);">قاعدة بيانات وسجلات الزبائن المسجلة</h2>
-            <input type="text" id="customer-search-input" oninput="filterCustomers()" style="margin-bottom:15px;" placeholder="ابحث هنا عن اسم الزبون...">
-            <div id="customers-cards-container" style="display:grid; gap:12px;"></div>
+            <input type="text" id="customer-search-input" oninput="filterCustomers()" style="margin-bottom:15px;" placeholder="ابحث هنا عن زبون (الاسم، الهاتف، البناية، الـ PBO)...">
+            <div id="customers-cards-container" style="display:grid; gap:14px;"></div>
             <div id="no-data-msg" style="text-align:center; padding:30px; color:var(--slate-400);" class="hidden"><span id="no-cust-txt">لا توجد عمليات مسجلة حالياً</span></div>
         </div>
     </main>
@@ -374,11 +393,10 @@
     </footer>
 
     <script>
-        // 🚀 آلية التحديث الذكي ومنع الكاش لـ GitHub و Netlify
         const urlParams = new URLSearchParams(window.location.search);
         if (!urlParams.has('update_version')) {
             const uniqueStamp = Math.floor(Math.random() * 999999);
-            urlParams.set('update_version', 'v_auto_odn_' + uniqueStamp);
+            urlParams.set('update_version', 'v_auto_odn_v2_' + uniqueStamp);
             window.location.search = urlParams.toString();
         }
 
@@ -394,39 +412,26 @@
 
         let currentLang = 'ar';
 
-        // 🎛️ 🌟 دالة إنتاج صوت "التشيك" الإلكتروني التفاعلي القصير لجميع الأزرار
         function playCheckSound() {
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 const oscillator = audioCtx.createOscillator();
                 const gainNode = audioCtx.createGain();
-                
                 oscillator.type = 'sine';
-                // تردد عالي وقصير جداً لإنتاج صوت نقرة (Check) إلكترونية نظيفة
                 oscillator.frequency.setValueAtTime(1200, audioCtx.currentTime);
                 oscillator.frequency.exponentialRampToValueAtTime(1800, audioCtx.currentTime + 0.04); 
-                
                 gainNode.gain.setValueAtTime(0.12, audioCtx.currentTime);
                 gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
-                
                 oscillator.connect(gainNode);
                 gainNode.connect(audioCtx.destination);
-                
-                oscillator.start();
-                oscillator.stop(audioCtx.currentTime + 0.05);
-            } catch (e) {
-                console.log("AudioContext blocked by browser policies.");
-            }
+                oscillator.start(); oscillator.stop(audioCtx.currentTime + 0.05);
+            } catch (e) { console.log("Audio blocked."); }
         }
 
-        // 🚪 دالة الخروج من الواجهة الترحيبية
         function exitSplashScreen() {
             playCheckSound();
             const splash = document.getElementById('splash-screen');
-            if (splash) {
-                splash.classList.add('fade-out');
-                setTimeout(() => splash.remove(), 500); 
-            }
+            if (splash) { splash.classList.add('fade-out'); setTimeout(() => splash.remove(), 500); }
         }
 
         const styleConfig = {
@@ -442,8 +447,9 @@
                 sectionStock: "حالة المخزن الحالي (اضغط على أي كرت للتعديل المباشر)", cardTotal: "المجموع الكلي للمخزون", unitT: "بكرة إجمالية", unitM: "بكرة متاحة",
                 formIn: "إمداد وتغذية المخزن", lblTypeIn: "اختر الفئة", lblManualType: "اكتب طول الفئة الجديدة بالأمتار", customOpt: "✍️ إدخال يدوي فئة جديدة...",
                 lblQtyIn: "الكمية الموردة الحالية", btnIn: "تأكيد الإدخال والأرشفة بالتاريخ", formOut: "تسجيل زبون وتركيب جديد", lblCustName: "اسم الزبون الكامل",
-                lblCustPhone: "رقم الهاتف", lblTypeOut: "الكابل المستخدم للتركيب", btnOut: "حفظ البيانات وخصم المخزن فورا", tableTitle: "قاعدة بيانات وسجلات الزبائن المسجلة",
-                searchPlh: "ابحث هنا عن اسم الزبون...", noCust: "لا توجد عمليات مسجلة حالياً", archiveTitle: "أرشيف سجل التوريدات وشحنات المخزن المؤرخة",
+                lblCustPhone: "رقم المحمول", lblCustFixe: "الهاتف الأرضي", lblCustBldg: "رقم البناية 🏢", lblCustPbo: "رقم علبة PBO 🏷️",
+                lblTypeOut: "الكابل المستخدم للتركيب", btnOut: "حفظ البيانات وخصم المخزن فورا", tableTitle: "قاعدة بيانات وسجلات الزبائن المسجلة",
+                searchPlh: "ابحث هنا عن زبون (الاسم، الهاتف، البناية، الـ PBO)...", noCust: "لا توجد عمليات مسجلة حالياً", archiveTitle: "أرشيف سجل التوريدات وشحنات المخزن المؤرخة",
                 lblDistrict: "الحي الحالي قيد الإنجاز 📍", btnCloseDist: "إغلاق الحي وحفظ المشروع نهائياً 🔒", lblOdnSum: "الحساب التلقائي لأمتار وعلب الحي الحالي",
                 totFacade: "إجمالي مسارات الواجهة", totGround: "إجمالي مسارات الأرضي", totAerial: "إجمالي مسارات الهوائي", addBTitle: "تقسيم كابل بناية جديدة",
                 bNum: "رقم أو اسم البناية 🏢", fRoute: "مسار الواجهة (متر الكابل)", gRoute: "مسار الأرضي (متر الكابل)", aRoute: "مسار الهوائي (متر الكابل)",
@@ -456,8 +462,9 @@
                 sectionStock: "État actuel du stock (Cliquez pour modifier)", cardTotal: "Total Stock Global", unitT: "Bobines au total", unitM: "Bobines dispos",
                 formIn: "Approvisionnement du Stock", lblTypeIn: "Sélectionnez la catégorie", lblManualType: "Longueur de la catégorie (mètres)", customOpt: "✍️ Entrée manuelle...",
                 lblQtyIn: "Quantité livrée actuelle", btnIn: "Confirmer l'entrée et archiver", formOut: "Nouvelle Installation Client", lblCustName: "Nom complet du client",
-                lblCustPhone: "Numéro de téléphone", lblTypeOut: "Câble utilisé pour l'installation", btnOut: "Enregistrer et déduire le stock", tableTitle: "Base de données des clients enregistrés",
-                searchPlh: "Rechercher le nom du client ici...", noCust: "Aucune opération enregistrée actuellement", archiveTitle: "Historique des approvisionnements archivés",
+                lblCustPhone: "N° Mobile", lblCustFixe: "N° Fixe Tél", lblCustBldg: "N° Bâtiment 🏢", lblCustPbo: "N° Boîtier PBO 🏷️",
+                lblTypeOut: "Câble utilisé pour l'installation", btnOut: "Enregistrer et déduire le stock", tableTitle: "Base de données des clients enregistrés",
+                searchPlh: "Rechercher client (Nom, Tél, Bât, PBO)...", noCust: "Aucune opération enregistrée actuellement", archiveTitle: "Historique des approvisionnements archivés",
                 lblDistrict: "Quartier en cours d'exécution 📍", btnCloseDist: "Clôturer le quartier et sauvegarder 🔒", lblOdnSum: "Calcul métrique automatique du quartier",
                 totFacade: "Total Tracé Façade", totGround: "Total Tracé Souterrain", totAerial: "Total Tracé Aérien", addBTitle: "Diviser le câble d'un nouveau bâtiment",
                 bNum: "Numéro ou nom du bâtiment 🏢", fRoute: "Tracé Façade (Mètres)", gRoute: "Tracé Souterrain (Mètres)", aRoute: "Tracé Aérien (Mètres)",
@@ -470,8 +477,9 @@
                 sectionStock: "Current Stock Status (Click any card for instant edit)", cardTotal: "Total Combined Stock", unitT: "Total Drums", unitM: "Drums Available",
                 formIn: "Stock Supply & Feeding", lblTypeIn: "Choose Category", lblManualType: "Enter new category length in meters", customOpt: "✍️ Manual Entry...",
                 lblQtyIn: "Quantity Delivered Currently", btnIn: "Confirm Input & Log with Date", formOut: "New Customer Installation", lblCustName: "Customer Full Name",
-                lblCustPhone: "Active Phone Number", lblTypeOut: "Cable Used for Installation", btnOut: "Save Data & Deduct Stock Instantly", tableTitle: "Registered Customers Database System",
-                searchPlh: "Search customer name or phone...", noCust: "No registered operations found at the moment", archiveTitle: "Historical Dated Stock Supply Archive",
+                lblCustPhone: "Mobile Num", lblCustFixe: "Landline Num", lblCustBldg: "Building No 🏢", lblCustPbo: "PBO Box No 🏷️",
+                lblTypeOut: "Cable Used for Installation", btnOut: "Save Data & Deduct Stock Instantly", tableTitle: "Registered Customers Database System",
+                searchPlh: "Search customer (Name, Phone, Building, PBO)...", noCust: "No registered operations found at the moment", archiveTitle: "Historical Dated Stock Supply Archive",
                 lblDistrict: "Current Neighborhood under construction 📍", btnCloseDist: "Close Neighborhood & Save Project 🔒", lblOdnSum: "Automatic Distance Calculation for Current District",
                 totFacade: "Total Facade Route", totGround: "Total Underground Route", totAerial: "Total Aerial Route", addBTitle: "Divide Cable for New Building",
                 bNum: "Building Name/Number 🏢", fRoute: "Facade Route (Cable Meters)", gRoute: "Underground Route (Cable Meters)", aRoute: "Aerial Route (Cable Meters)",
@@ -513,6 +521,9 @@
             document.getElementById('form-out-title').innerText = dict.formOut;
             document.getElementById('lbl-cust-name').innerText = dict.lblCustName;
             document.getElementById('lbl-cust-phone').innerText = dict.lblCustPhone;
+            document.getElementById('lbl-cust-fixe').innerText = dict.lblCustFixe;
+            document.getElementById('lbl-cust-bldg').innerText = dict.lblCustBldg;
+            document.getElementById('lbl-cust-pbo').innerText = dict.lblCustPbo;
             document.getElementById('lbl-type-out').innerText = dict.lblTypeOut;
             document.getElementById('btn-out-submit').innerText = dict.btnOut;
             document.getElementById('table-title').innerText = dict.tableTitle;
@@ -556,14 +567,12 @@
 
             if (confirm(confirmMsg)) {
                 if (mode === 'all' && !confirm("تأكيد أخير ونهائي للحذف الشامل؟")) return;
-
                 if (mode === 'stock' || mode === 'all') appData.stocks = { "20": 0, "30": 0, "50": 0, "80": 0 };
                 if (mode === 'customers' || mode === 'all') appData.installations = [];
                 if (mode === 'logs' || mode === 'all') appData.supplyArchive = [];
                 if (mode === 'odn' || mode === 'all') {
                     appData.currentDistrict = ""; appData.odnBuildings = []; appData.archivedDistricts = [];
                 }
-
                 localStorage.setItem('cableInventoryData_V12_Update', JSON.stringify(appData));
                 updateUI(); closeResetControlModal(); alert("تم المسح بنجاح. ✅");
             }
@@ -589,8 +598,7 @@
             const calc = (s, e) => (s && e) ? Math.abs(parseInt(s) - parseInt(e)) : 0;
 
             appData.odnBuildings.push({
-                name,
-                pbo: pboCount,
+                name, pbo: pboCount,
                 facade: calc(fStart, fEnd), facadeMark: (fStart && fEnd) ? `[${fStart}-${fEnd}]` : "",
                 ground: calc(gStart, gEnd), groundMark: (gStart && gEnd) ? `[${gStart}-${gEnd}]` : "",
                 aerial: calc(aStart, aEnd), aerialMark: (aStart && aEnd) ? `[${aStart}-${aEnd}]` : ""
@@ -601,7 +609,6 @@
             document.getElementById('odn-facade-start').value = ''; document.getElementById('odn-facade-end').value = '';
             document.getElementById('odn-ground-start').value = ''; document.getElementById('odn-ground-end').value = '';
             document.getElementById('odn-aerial-start').value = ''; document.getElementById('odn-aerial-end').value = '';
-
             updateUI();
         }
 
@@ -661,6 +668,28 @@
             document.getElementById('manual-type-container').style.display = (document.getElementById('in-type-select').value === 'custom') ? 'block' : 'none';
         }
 
+        // 🌟 بناء كرت العرض التفصيلي للمشترك داخل السجل لدعم الخانات الجديدة
+        function generateCustomerCardHtml(i) {
+            return `
+                <div class="card" style="display:flex; flex-direction:column; gap:10px; border-right: 4px solid var(--sky-600);">
+                    <div style="display:flex; justify-content:between; align-items:start; width:100%;">
+                        <div style="flex-grow:1;">
+                            <b style="color:var(--slate-800); font-size:15px;">${i.name}</b>
+                        </div>
+                        <span style="background:var(--sky-100); color:var(--sky-600); padding:4px 8px; border-radius:6px; font-size:11px; font-weight:bold;">
+                            فئة ${i.cableType} M
+                        </span>
+                    </div>
+                    
+                    <div style="display:flex; flex-wrap:wrap; gap:6px;">
+                        <span class="cust-tag tag-blue">📱 محمول: ${i.phone}</span>
+                        ${i.fixe ? `<span class="cust-tag tag-purple">📞 أرضي: ${i.fixe}</span>` : ''}
+                        <span class="cust-tag tag-amber">🏢 بناية: ${i.bldg || 'غير محدد'}</span>
+                        <span class="cust-tag tag-emerald">🏷️ علبة: ${i.pbo || 'غير محدد'}</span>
+                    </div>
+                </div>`;
+        }
+
         function updateUI() {
             localStorage.setItem('cableInventoryData_V12_Update', JSON.stringify(appData));
             
@@ -690,9 +719,7 @@
             if(appData.installations.length === 0) document.getElementById('no-data-msg').classList.remove('hidden');
             else {
                 document.getElementById('no-data-msg').classList.add('hidden');
-                appData.installations.forEach(i => {
-                    cCont.innerHTML += `<div class="card" style="display:flex; justify-content:space-between; align-items:center;"><div><b style="color:var(--slate-800);">${i.name}</b><br><small style="color:var(--slate-500); font-weight:bold;">${i.phone}</small></div><span style="background:var(--sky-100); color:var(--sky-600); padding:5px 10px; border-radius:8px; font-size:12px; font-weight:bold;">${i.cableType} M</span></div>`;
-                });
+                appData.installations.forEach(i => { cCont.innerHTML += generateCustomerCardHtml(i); });
             }
 
             const aCont = document.getElementById('archive-cards-container'); aCont.innerHTML = '';
@@ -730,14 +757,19 @@
             toggleManualInputVisibility();
         }
 
+        // 🌟 دالة البحث والفلترة الذكية المحدثة لتشمل التصفية بالهاتف الأرضي ورقم البناية والـ PBO
         function filterCustomers() {
             const q = document.getElementById('customer-search-input').value.toLowerCase().trim();
             if(!q) { updateUI(); return; }
-            const f = appData.installations.filter(i => i.name.toLowerCase().includes(q) || i.phone.includes(q));
+            const f = appData.installations.filter(i => 
+                i.name.toLowerCase().includes(q) || 
+                i.phone.includes(q) || 
+                (i.fixe && i.fixe.includes(q)) || 
+                (i.bldg && i.bldg.toLowerCase().includes(q)) || 
+                (i.pbo && i.pbo.toLowerCase().includes(q))
+            );
             const cCont = document.getElementById('customers-cards-container'); cCont.innerHTML = '';
-            f.forEach(i => {
-                cCont.innerHTML += `<div class="card" style="display:flex; justify-content:space-between; align-items:center;"><div><b>${i.name}</b><br><small style="color:var(--slate-500);">${i.phone}</small></div><span style="background:var(--sky-100); color:var(--sky-600); padding:5px 10px; border-radius:8px; font-size:12px; font-weight:bold;">${i.cableType} M</span></div>`;
-            });
+            f.forEach(i => { cCont.innerHTML += generateCustomerCardHtml(i); });
         }
 
         function handleStockIn(e) {
@@ -752,16 +784,31 @@
             document.getElementById('in-qty').value = ''; updateUI(); showPage('archive-page');
         }
 
+        // 🌟 حفظ البيانات الموسعة للزبائن بالتصميم الجديد
         function handleNewInstallation(e) {
             e.preventDefault();
             playCheckSound();
-            const name = document.getElementById('out-name').value;
-            const phone = document.getElementById('out-phone').value;
+            const name = document.getElementById('out-name').value.trim();
+            const phone = document.getElementById('out-phone').value.trim();
+            const fixe = document.getElementById('out-fixe').value.trim();
+            const bldg = document.getElementById('out-bldg').value.trim();
+            const pbo = document.getElementById('out-pbo').value.trim();
             const type = document.getElementById('out-type').value;
+
             if(!type || appData.stocks[type] < 1) { alert(translations[currentLang].noStock); return; }
-            appData.stocks[type] -= 1; appData.installations.unshift({ name, phone, cableType: type });
-            document.getElementById('out-name').value = ''; document.getElementById('out-phone').value = '';
-            updateUI(); showPage('customers-page');
+            
+            appData.stocks[type] -= 1; 
+            appData.installations.unshift({ name, phone, fixe, bldg, pbo, cableType: type });
+            
+            // تصفير خانات الإدخال
+            document.getElementById('out-name').value = ''; 
+            document.getElementById('out-phone').value = '';
+            document.getElementById('out-fixe').value = '';
+            document.getElementById('out-bldg').value = '';
+            document.getElementById('out-pbo').value = '';
+
+            updateUI(); 
+            showPage('customers-page');
         }
 
         // إقلاع النظام
