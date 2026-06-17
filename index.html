@@ -16,7 +16,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
         body { background: var(--slate-50); color: var(--slate-800); min-height: 100vh; display: flex; flex-direction: column; }
         
-        /* 🌟 تصفيف شاشة الواجهة الترحيبية الجديدة */
+        /* 🌟 تصفيف شاشة الواجهة الترحيبية الجديدة والمحدثة */
         .splash-screen {
             position: fixed; inset: 0; background: linear-gradient(135deg, var(--slate-900), var(--indigo-900));
             display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999;
@@ -24,32 +24,33 @@
         }
         .splash-screen.fade-out { opacity: 0; transform: scale(1.05); pointer-events: none; }
         
-        /* الأيقونة المضيئة المتغيرة الألوان تلقائياً */
+        /* الدائرة المضيئة المتطورة المحتوية على النصوص */
         .splash-icon-wrapper {
-            width: 130px; height: 130px; border-radius: 50%; background: rgba(255,255,255,0.05);
-            display: flex; align-items: center; justify-content: center; margin-bottom: 25px;
-            cursor: pointer; position: relative; border: 2px solid transparent;
+            width: 170px; height: 170px; border-radius: 50%; background: rgba(255,255,255,0.03);
+            display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 35px;
+            cursor: pointer; position: relative; border: 2px solid transparent; padding: 15px;
             animation: pulseGlow 3s infinite ease-in-out, changeBorderColor 8s infinite linear;
-            box-shadow: 0 0 20px rgba(79, 70, 229, 0.2);
+            box-shadow: 0 0 25px rgba(79, 70, 229, 0.2);
         }
-        .splash-icon-wrapper svg { width: 60px; height: 60px; color: white; }
+        .splash-icon-wrapper svg { width: 35px; height: 35px; color: white; margin-bottom: 6px; }
+        .splash-circle-title { font-size: 18px; font-weight: 800; letter-spacing: 0.5px; color: white; margin-bottom: 2px; }
+        .splash-circle-subtitle { font-size: 9px; color: var(--slate-400); font-weight: 500; text-transform: uppercase; max-width: 130px; line-height: 1.2; }
         
         @keyframes pulseGlow {
             0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(16, 185, 129, 0.3); }
-            50% { transform: scale(1.06); box-shadow: 0 0 40px rgba(79, 70, 229, 0.6); }
+            50% { transform: scale(1.04); box-shadow: 0 0 40px rgba(79, 70, 229, 0.6); }
         }
         @keyframes changeBorderColor {
-            0% { border-color: var(--emerald-500); color: var(--emerald-500); }
-            25% { border-color: #3b82f6; color: #3b82f6; }
-            50% { border-color: #a855f7; color: #a855f7; }
-            75% { border-color: #f97316; color: #f97316; }
-            100% { border-color: var(--emerald-500); color: var(--emerald-500); }
+            0% { border-color: var(--emerald-500); }
+            25% { border-color: #3b82f6; }
+            50% { border-color: #a855f7; }
+            75% { border-color: #f97316; }
+            100% { border-color: var(--emerald-500); }
         }
         
-        .splash-title { font-size: 24px; font-weight: 800; letter-spacing: 1px; margin-bottom: 8px; color: white; text-shadow: 0 2px 10px rgba(0,0,0,0.3); }
-        .splash-subtitle { font-size: 14px; color: var(--slate-400); font-weight: 500; margin-bottom: 40px; text-transform: uppercase; letter-spacing: 2px; }
+        .splash-title-outer { font-size: 26px; font-weight: 800; margin-bottom: 30px; letter-spacing: 1px; text-shadow: 0 2px 10px rgba(0,0,0,0.3); }
         
-        .enter-btn { background: white; color: var(--indigo-900); padding: 12px 35px; border-radius: 30px; font-weight: bold; font-size: 14px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 8px; }
+        .enter-btn { background: white; color: var(--indigo-900); padding: 12px 40px; border-radius: 30px; font-weight: bold; font-size: 14px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 8px; }
         .enter-btn:hover { background: var(--slate-100); }
 
         .splash-footer { position: absolute; bottom: 25px; font-size: 12px; color: var(--slate-400); line-height: 1.6; width: 100%; padding: 0 20px; }
@@ -69,7 +70,7 @@
         
         .nav-btn { padding: 10px 14px; border-radius: 12px; font-size: 12px; font-weight: bold; color: white; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         
-        /* نظام اللغات الأنيق */
+        /* نظام اللغات */
         .lang-switcher { background: rgba(255,255,255,0.1); padding: 4px; border-radius: 12px; display: flex; gap: 4px; border: 1px solid rgba(255,255,255,0.15); }
         .lang-btn { padding: 4px 8px; border-radius: 8px; font-size: 11px; font-weight: bold; color: white; background: transparent; }
         .lang-btn.active { background: white; color: var(--indigo-900); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
@@ -110,11 +111,11 @@
         .modal { position: fixed; inset: 0; background: rgba(15,23,42,0.6); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 100; }
         .modal-body { background: white; border-radius: 20px; width: 100%; max-width: 460px; padding: 24px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
         
-        /* أزرار لوحة التصفير الذكية */
+        /* أزرار لوحة التصفير */
         .reset-opt-btn { width: 100%; text-align: right; padding: 12px; margin-bottom: 8px; border-radius: 10px; background: var(--slate-50); border: 1px solid var(--slate-200); font-weight: bold; color: var(--slate-800); display: flex; align-items: center; gap: 8px; }
         .reset-opt-btn:hover { background: #fef2f2; border-color: #fca5a5; color: var(--red-600); }
 
-        /* الفوتر وشريط الحقوق */
+        /* الفوتر */
         footer { background: var(--slate-900); color: var(--slate-400); text-align: center; padding: 20px; font-size: 12px; border-top: 1px solid var(--slate-800); margin-top: auto; }
         footer a { color: #60a5fa; text-decoration: none; font-weight: bold; margin-left: 5px; }
         footer a:hover { text-decoration: underline; }
@@ -124,13 +125,13 @@
 </head>
 <body>
 
-    <!-- 🌐 🚀 شاشة الواجهة الترحيبية المضيئة والموسيقية الجديدة -->
     <div id="splash-screen" class="splash-screen">
         <div onclick="exitSplashScreen()" class="splash-icon-wrapper" title="اضغط للدخول">
             <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+            <div class="splash-circle-title">SRF App</div>
+            <div class="splash-circle-subtitle">Optical Distribution Network</div>
         </div>
-        <h1 class="splash-title">SRF App</h1>
-        <p class="splash-subtitle">Optical Network Distribution</p>
+        <h1 class="splash-title-outer">نظام إدارة وتخطيط الشبكات البصرية</h1>
         
         <button onclick="exitSplashScreen()" class="enter-btn">
             <span>دخول النظام</span>
@@ -144,31 +145,28 @@
         </div>
     </div>
 
-    <!-- 🌐 الهيدر العلوي ونظام الملاحة -->
     <header>
         <div class="container nav-box">
-            <div onclick="showPage('stock-page')" style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+            <div onclick="playCheckSound(); showPage('stock-page')" style="display:flex; align-items:center; gap:10px; cursor:pointer;">
                 <svg viewBox="0 0 24 24" style="width:24px; height:24px;"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
                 <h1 id="nav-title" style="font-size:16px; font-weight:bold;">نظام تتبع الكوابل وشبكات ODN التفصيلي</h1>
             </div>
             
             <div class="btn-grid">
-                <button onclick="showPage('stock-page')" class="nav-btn" style="background:var(--slate-600);"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg> <span id="nav-stock-btn">المخزن الرئيسي</span></button>
-                <button onclick="showPage('customers-page')" class="nav-btn" style="background:var(--indigo-600);"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg> <span id="nav-cust-btn">سجل الزبائن</span></button>
-                <button onclick="showPage('archive-page')" class="nav-btn" style="background:var(--amber-600);"><svg viewBox="0 0 24 24"><path d="M20.54 5.23l-1.39-1.68C18.88 3.21 18.47 3 18 3H6c-.47 0-.88.21-1.16.55L3.46 5.23C3.17 5.57 3 6.01 3 6.5V19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6.5c0-.49-.17-.93-.46-1.27zM12 17.5L6.5 12H10v-4h4v4h3.5L12 17.5z"/></svg> <span id="nav-arch-btn">أرشيف الشحنات</span></button>
-                <button onclick="showPage('odn-page')" class="nav-btn" style="background:var(--emerald-600); border:1px solid #a7f3d0;"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg> <span id="nav-odn-btn">هندسة وتوزيع ODN</span></button>
+                <button onclick="playCheckSound(); showPage('stock-page')" class="nav-btn" style="background:var(--slate-600);"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg> <span id="nav-stock-btn">المخزن الرئيسي</span></button>
+                <button onclick="playCheckSound(); showPage('customers-page')" class="nav-btn" style="background:var(--indigo-600);"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg> <span id="nav-cust-btn">سجل الزبائن</span></button>
+                <button onclick="playCheckSound(); showPage('archive-page')" class="nav-btn" style="background:var(--amber-600);"><svg viewBox="0 0 24 24"><path d="M20.54 5.23l-1.39-1.68C18.88 3.21 18.47 3 18 3H6c-.47 0-.88.21-1.16.55L3.46 5.23C3.17 5.57 3 6.01 3 6.5V19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6.5c0-.49-.17-.93-.46-1.27zM12 17.5L6.5 12H10v-4h4v4h3.5L12 17.5z"/></svg> <span id="nav-arch-btn">أرشيف الشحنات</span></button>
+                <button onclick="playCheckSound(); showPage('odn-page')" class="nav-btn" style="background:var(--emerald-600); border:1px solid #a7f3d0;"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg> <span id="nav-odn-btn">هندسة وتوزيع ODN</span></button>
                 
-                <!-- لوحة تحويل اللغات الثلاث -->
                 <div class="lang-switcher">
-                    <button onclick="changeLanguage('ar')" id="lang-ar-btn" class="lang-btn active">العربية</button>
-                    <button onclick="changeLanguage('fr')" id="lang-fr-btn" class="lang-btn">Français</button>
-                    <button onclick="changeLanguage('en')" id="lang-en-btn" class="lang-btn">English</button>
+                    <button onclick="playCheckSound(); changeLanguage('ar')" id="lang-ar-btn" class="lang-btn active">العربية</button>
+                    <button onclick="playCheckSound(); changeLanguage('fr')" id="lang-fr-btn" class="lang-btn">Français</button>
+                    <button onclick="playCheckSound(); changeLanguage('en')" id="lang-en-btn" class="lang-btn">English</button>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- 📱 الشاشة الأولى: المخزن الرئيسي والعمليات الميدانية -->
     <main id="stock-page" class="container main-content app-page">
         <h2 id="section-stock-title" style="font-size:14px; font-weight:bold; color:var(--slate-500); margin-bottom:12px;">حالة المخزن الحالي (اضغط على أي كرت للتعديل المباشر)</h2>
         
@@ -182,7 +180,6 @@
         </section>
 
         <div class="grid-2">
-            <!-- نموذج التوريد والإدخل للمخزن -->
             <div class="card">
                 <h2 id="form-in-title" style="font-size:15px; font-weight:bold; margin-bottom:15px; display:flex; align-items:center; gap:6px; color:var(--emerald-600); border-bottom:1px solid var(--slate-100); padding-bottom:10px;"><svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9h-4v4h-2v-4H9V9h4V5h2v4h4v2z"/></svg> إمداد وتغذية المخزن</h2>
                 <form id="form-stock-in" onsubmit="handleStockIn(event)">
@@ -202,7 +199,6 @@
                 </form>
             </div>
 
-            <!-- نموذج خصم وتركيب للمشتركين والزبائن -->
             <div class="card">
                 <h2 id="form-out-title" style="font-size:15px; font-weight:bold; margin-bottom:15px; display:flex; align-items:center; gap:6px; color:var(--sky-600); border-bottom:1px solid var(--slate-100); padding-bottom:10px;"><svg viewBox="0 0 24 24"><path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg> تسجيل زبون وتركيب جديد</h2>
                 <form id="form-sale" onsubmit="handleNewInstallation(event)">
@@ -215,7 +211,6 @@
         </div>
     </main>
 
-    <!-- 👥 الشاشة الثانية: سجل الزبائن والمشتركين المسجلين -->
     <main id="customers-page" class="container main-content app-page hidden">
         <div class="card">
             <h2 id="table-title" style="font-size:16px; font-weight:bold; margin-bottom:15px; color:var(--slate-800);">قاعدة بيانات وسجلات الزبائن المسجلة</h2>
@@ -225,12 +220,11 @@
         </div>
     </main>
 
-    <!-- 📜 الشاشة الثالثة: أرشيف الشحنات الموردة المؤرخة -->
     <main id="archive-page" class="container main-content app-page hidden">
         <div class="card">
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--slate-100); padding-bottom:10px; margin-bottom:15px;">
                 <h2 id="archive-title" style="font-size:16px; font-weight:bold;">أرشيف سجل التوريدات وشحنات المخزن المؤرخة</h2>
-                <button onclick="openResetControlModal()" style="background:#fee2e2; color:var(--red-600); padding:8px 16px; border-radius:10px; font-size:12px; font-weight:bold; display:flex; align-items:center; gap:4px;">
+                <button onclick="playCheckSound(); openResetControlModal()" style="background:#fee2e2; color:var(--red-600); padding:8px 16px; border-radius:10px; font-size:12px; font-weight:bold; display:flex; align-items:center; gap:4px;">
                     <svg viewBox="0 0 24 24" style="width:14px; height:14px;"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H4v2h15V4z"/></svg> لوحة التصفير والحذف
                 </button>
             </div>
@@ -238,18 +232,17 @@
         </div>
     </main>
 
-    <!-- 🌐 الشاشة الرابعة: هندسة وحساب مسارات شبكات ODN واستهلاك الكوابل -->
     <main id="odn-page" class="container main-content app-page hidden">
         <div class="card card-dark" style="margin-bottom:20px; background:linear-gradient(to right, var(--slate-800), var(--indigo-900)); display:flex; flex-direction:column; gap:15px;">
             <div style="width:100%;">
                 <label id="lbl-district-name" style="color:white; opacity:0.8; margin-bottom:5px;">الحي الحالي قيد الإنجاز 📍</label>
                 <input type="text" id="odn-district-input" oninput="updateDistrictName()" style="background:rgba(255,255,255,0.15); color:white; border:none; padding:12px;" placeholder="اكتب اسم الحي هنا...">
             </div>
-            <button onclick="archiveCurrentDistrict()" style="background:var(--amber-600); color:var(--slate-900); padding:14px; border-radius:12px; font-weight:900; font-size:13px;">إغلاق الحي وحفظ المشروع نهائياً 🔒</button>
+            <button onclick="playCheckSound(); archiveCurrentDistrict()" style="background:var(--amber-600); color:var(--slate-900); padding:14px; border-radius:12px; font-weight:900; font-size:13px;">إغلاق الحي وحفظ المشروع نهائياً 🔒</button>
         </div>
 
-        <h3 id="lbl-odn-summary-title" style="font-size:14px; font-weight:bold; color:var(--slate-500); margin-bottom:12px;">الحساب التلقائي لأمتار الحي الحالي</h3>
-        <div class="grid-3" style="margin-bottom:20px;">
+        <h3 id="lbl-odn-summary-title" style="font-size:14px; font-weight:bold; color:var(--slate-500); margin-bottom:12px;">الحساب التلقائي لأمتار وعلب الحي الحالي</h3>
+        <div class="grid-3" style="margin-bottom:20px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); display:grid;">
             <div class="card" style="border-left: 5px solid var(--purple-600); padding:15px;">
                 <span id="lbl-tot-facade" style="font-size:12px; color:var(--purple-600); font-weight:bold;">إجمالي مسارات الواجهة</span>
                 <p style="font-size:26px; font-weight:900; margin-top:5px;"><span id="grand-facade">0</span> M</p>
@@ -262,16 +255,25 @@
                 <span id="lbl-tot-aerial" style="font-size:12px; color:var(--sky-600); font-weight:bold;">إجمالي مسارات الهوائي</span>
                 <p style="font-size:26px; font-weight:900; margin-top:5px;"><span id="grand-aerial">0</span> M</p>
             </div>
+            <div class="card" style="border-left: 5px solid var(--emerald-600); padding:15px;">
+                <span id="lbl-tot-pbo" style="font-size:12px; color:var(--emerald-600); font-weight:bold;">إجمالي علب PBO المطلوبة</span>
+                <p style="font-size:26px; font-weight:900; margin-top:5px;"><span id="grand-pbo">0</span> علبة</p>
+            </div>
         </div>
 
         <div class="grid-2">
-            <!-- تقسيم كابل عمارة أو بناية جديدة -->
             <div class="card">
                 <h3 id="lbl-add-b-title" style="font-size:15px; font-weight:bold; margin-bottom:15px; color:var(--slate-800);">تقسيم كابل بناية جديدة</h3>
                 <form onsubmit="handleNewOdnBuilding(event)">
                     <div class="form-group"><label id="lbl-b-num">رقم أو اسم البناية 🏢</label><input type="text" id="odn-b-name" required placeholder="مثال: بناية 393"></div>
+                    
+                    <div class="form-group" style="background:#ecfdf5; padding:10px; border-radius:12px; margin-bottom:10px; border:1px solid #a7f3d0;">
+                        <label id="lbl-pbo-count" style="color:var(--emerald-600); font-weight:bold; margin-bottom:4px;">عدد علب التوزيع PBO للبناية</label>
+                        <input type="number" id="odn-b-pbo" min="0" default="1" value="1" required placeholder="مثال: 1 أو 2">
+                    </div>
+
                     <div class="form-group" style="background:#f5f3ff; padding:10px; border-radius:12px; margin-bottom:10px; border:1px solid #ede9fe;">
-                        <span id="lbl-f-route" style="font-size:12px; font-weight:bold; color:var(--purple-600);">مسار الواجهة (متر الكابل)</span>
+                        <span id="lbl-f-route" style="font-size:12px; font-weight:bold; color:var(--purple-600);">مشار الواجهة (متر الكابل)</span>
                         <div style="display:flex; gap:8px; margin-top:6px;"><input type="number" id="odn-facade-start" placeholder="البداية"><input type="number" id="odn-facade-end" placeholder="النهاية"></div>
                     </div>
                     <div class="form-group" style="background:#fffbeb; padding:10px; border-radius:12px; margin-bottom:10px; border:1px solid #fef3c7;">
@@ -286,13 +288,20 @@
                 </form>
             </div>
 
-            <!-- قائمة الحسابات والنتائج للحي قيد العمل -->
             <div class="card" style="display:flex; flex-direction:column;">
                 <h3 id="lbl-curr-b-list" style="font-size:15px; font-weight:bold; margin-bottom:10px;">قائمة البنايات والمفاتيح الرقمية للحي الحالي</h3>
                 <div class="table-resp" style="flex-grow:1;">
                     <table>
                         <thead>
-                            <tr><th id="th-b">🏢 البناية</th><th id="th-f" style="color:var(--purple-600);">الواجهة</th><th id="th-g" style="color:var(--amber-600);">الأرضي</th><th id="th-a" style="color:var(--sky-600);">الهوائي</th><th id="th-t">الإجمالي</th><th>إجراء</th></tr>
+                            <tr>
+                                <th id="th-b">🏢 البناية</th>
+                                <th style="color:var(--emerald-600); font-weight:bold;">علب PBO</th>
+                                <th id="th-f" style="color:var(--purple-600);">الواجهة</th>
+                                <th id="th-g" style="color:var(--amber-600);">الأرضي</th>
+                                <th id="th-a" style="color:var(--sky-600);">الهوائي</th>
+                                <th id="th-t">الإجمالي</th>
+                                <th>إجراء</th>
+                            </tr>
                         </thead>
                         <tbody id="odn-table-body"></tbody>
                     </table>
@@ -301,14 +310,12 @@
             </div>
         </div>
 
-        <!-- أرشيف الأحياء الكاملة والمغلقة نهائياً -->
         <div class="card" style="margin-top:20px;">
             <h3 id="lbl-final-arch-title" style="font-size:15px; font-weight:bold; margin-bottom:12px; color:var(--slate-900);">أرشيف المشاريع والأحياء المكتملة والمغلقة نهائياً</h3>
             <div id="district-archive-container" style="display:grid; gap:12px;"></div>
         </div>
     </main>
 
-    <!-- ⚠️ نافذة التحكم بالتصفير والحذف الاختياري والآمن الجديد -->
     <div id="reset-control-modal" class="modal hidden">
         <div class="modal-body">
             <h3 style="font-size:16px; font-weight:bold; margin-bottom:6px; color:var(--red-600); display:flex; align-items:center; gap:6px;">
@@ -317,17 +324,16 @@
             </h3>
             <p style="font-size:12px; color:var(--slate-500); margin-bottom:15px;">برجاء اختيار القسم الذي تود مسحه بدقة. الحذف نهائي ولا يمكن التراجع عنه:</p>
             
-            <button onclick="triggerSecureReset('stock')" class="reset-opt-btn">📦 تصفير كميات المخزن الرئيسي فقط</button>
-            <button onclick="triggerSecureReset('customers')" class="reset-opt-btn">👥 مسح سجل الزبائن والمشتركين فقط</button>
-            <button onclick="triggerSecureReset('logs')" class="reset-opt-btn">📜 مسح أرشيف عمليات الشحن والتوريد السابقة</button>
-            <button onclick="triggerSecureReset('odn')" class="reset-opt-btn">🌐 مسح أرشيف ومشاريع أحياء ODN فقط</button>
-            <button onclick="triggerSecureReset('all')" class="reset-opt-btn" style="background:#fee2e2; color:var(--red-600); border-color:#fca5a5;">🚨 تصفير ومسح شامل لكل التطبيق</button>
+            <button onclick="playCheckSound(); triggerSecureReset('stock')" class="reset-opt-btn">📦 تصفير كميات المخزن الرئيسي فقط</button>
+            <button onclick="playCheckSound(); triggerSecureReset('customers')" class="reset-opt-btn">👥 مسح سجل الزبائن والمشتركين فقط</button>
+            <button onclick="playCheckSound(); triggerSecureReset('logs')" class="reset-opt-btn">📜 مسح أرشيف عمليات الشحن والتوريد السابقة</button>
+            <button onclick="playCheckSound(); triggerSecureReset('odn')" class="reset-opt-btn">🌐 مسح أرشيف ومشاريع أحياء ODN فقط</button>
+            <button onclick="playCheckSound(); triggerSecureReset('all')" class="reset-opt-btn" style="background:#fee2e2; color:var(--red-600); border-color:#fca5a5;">🚨 تصفير ومسح شامل لكل التطبيق</button>
             
-            <button onclick="closeResetControlModal()" style="width:100%; background:var(--slate-200); padding:10px; border-radius:12px; font-weight:bold; font-size:13px; margin-top:12px;">إلغاء وإغلاق النافذة</button>
+            <button onclick="playCheckSound(); closeResetControlModal()" style="width:100%; background:var(--slate-200); padding:10px; border-radius:12px; font-weight:bold; font-size:13px; margin-top:12px;">إلغاء وإغلاق النافذة</button>
         </div>
     </div>
 
-    <!-- ⚖️ نافذة الشحن السريع للمخزن عند النقر على كرت المتر -->
     <div id="quick-stock-modal" class="modal hidden">
         <div class="modal-body">
             <h3 id="modal-title" style="font-size:16px; font-weight:bold; margin-bottom:15px; color:var(--slate-800);">تحديث كمية الفئة</h3>
@@ -338,30 +344,28 @@
                     <input type="number" id="modal-qty-input" min="1" required style="font-size:28px; text-align:center; font-weight:900; border-color:var(--indigo-600);">
                 </div>
                 <div style="display:flex; gap:12px; margin-top:20px;">
-                    <button type="button" onclick="closeQuickStockModal()" style="flex:1; background:var(--slate-200); padding:12px; border-radius:12px; font-weight:bold; font-size:13px;">إلغاء</button>
+                    <button type="button" onclick="playCheckSound(); closeQuickStockModal()" style="flex:1; background:var(--slate-200); padding:12px; border-radius:12px; font-weight:bold; font-size:13px;">إلغاء</button>
                     <button type="submit" id="modal-btn-txt" style="flex:1; background:var(--indigo-600); color:white; padding:12px; border-radius:12px; font-weight:bold; font-size:13px;">تحديث وأرشفة</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- 👁️ نافذة عرض تفاصيل البنايات للأحياء المغلقة -->
     <div id="district-details-modal" class="modal hidden">
         <div class="modal-body" style="max-width: 650px; max-height:85vh; overflow-y:auto;">
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--slate-100); padding-bottom:10px; margin-bottom:15px;">
                 <h3 id="details-modal-title" style="font-weight:bold; font-size:16px; color:var(--indigo-900);">تفاصيل البنايات</h3>
-                <button onclick="closeDetailsModal()" style="font-size:24px; color:var(--slate-400); background:none; border:none; outline:none;">&times;</button>
+                <button onclick="playCheckSound(); closeDetailsModal()" style="font-size:24px; color:var(--slate-400); background:none; border:none; outline:none;">&times;</button>
             </div>
             <div class="table-resp">
                 <table>
-                    <thead><tr><th>🏢 البناية</th><th style="color:var(--purple-600);">الواجهة</th><th style="color:var(--amber-600);">الأرضي</th><th style="color:var(--sky-600);">الهوائي</th><th>المجموع</th></tr></thead>
+                    <thead><tr><th>🏢 البناية</th><th style="color:var(--emerald-600);">علب PBO</th><th style="color:var(--purple-600);">الواجهة</th><th style="color:var(--amber-600);">الأرضي</th><th style="color:var(--sky-600);">الهوائي</th><th>المجموع</th></tr></thead>
                     <tbody id="details-modal-tbody"></tbody>
                 </table>
             </div>
         </div>
     </div>
 
-    <!-- 🔒 شريط الحقوق البريدي السفلي المحدث -->
     <footer>
         <span id="footer-rights">© 2026 جميع الحقوق محفوظة. تم التطوير وبناء النظام بواسطة:</span> 
         <strong style="color:white; background:var(--slate-800); padding:4px 8px; border-radius:6px; font-size:13px; border:1px solid var(--slate-700);">khaledsaadeddine</strong>
@@ -370,12 +374,11 @@
     </footer>
 
     <script>
-        // 🚀 آلية التحديث الذكي: تدمير وحظر الكاش عبر التحقق من معلمة الرابط تلقائياً
+        // 🚀 آلية التحديث الذكي ومنع الكاش لـ GitHub و Netlify
         const urlParams = new URLSearchParams(window.location.search);
         if (!urlParams.has('update_version')) {
-            // توليد رمز عشوائي متغير لإجبار GitHub والمتصفح على كسر الكاش في ثانية واحدة
             const uniqueStamp = Math.floor(Math.random() * 999999);
-            urlParams.set('update_version', 'v_auto_' + uniqueStamp);
+            urlParams.set('update_version', 'v_auto_odn_' + uniqueStamp);
             window.location.search = urlParams.toString();
         }
 
@@ -391,33 +394,34 @@
 
         let currentLang = 'ar';
 
-        // 🎛️ دالة إنتاج الصوت التفاعلي الإلكتروني
-        function playSystemSound() {
+        // 🎛️ 🌟 دالة إنتاج صوت "التشيك" الإلكتروني التفاعلي القصير لجميع الأزرار
+        function playCheckSound() {
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 const oscillator = audioCtx.createOscillator();
                 const gainNode = audioCtx.createGain();
                 
                 oscillator.type = 'sine';
-                oscillator.frequency.setValueAtTime(587.33, audioCtx.currentTime);
-                oscillator.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.1); 
+                // تردد عالي وقصير جداً لإنتاج صوت نقرة (Check) إلكترونية نظيفة
+                oscillator.frequency.setValueAtTime(1200, audioCtx.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(1800, audioCtx.currentTime + 0.04); 
                 
-                gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
+                gainNode.gain.setValueAtTime(0.12, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
                 
                 oscillator.connect(gainNode);
                 gainNode.connect(audioCtx.destination);
                 
                 oscillator.start();
-                oscillator.stop(audioCtx.currentTime + 0.25);
+                oscillator.stop(audioCtx.currentTime + 0.05);
             } catch (e) {
-                console.log("AudioContext blocked.");
+                console.log("AudioContext blocked by browser policies.");
             }
         }
 
         // 🚪 دالة الخروج من الواجهة الترحيبية
         function exitSplashScreen() {
-            playSystemSound();
+            playCheckSound();
             const splash = document.getElementById('splash-screen');
             if (splash) {
                 splash.classList.add('fade-out');
@@ -440,7 +444,7 @@
                 lblQtyIn: "الكمية الموردة الحالية", btnIn: "تأكيد الإدخال والأرشفة بالتاريخ", formOut: "تسجيل زبون وتركيب جديد", lblCustName: "اسم الزبون الكامل",
                 lblCustPhone: "رقم الهاتف", lblTypeOut: "الكابل المستخدم للتركيب", btnOut: "حفظ البيانات وخصم المخزن فورا", tableTitle: "قاعدة بيانات وسجلات الزبائن المسجلة",
                 searchPlh: "ابحث هنا عن اسم الزبون...", noCust: "لا توجد عمليات مسجلة حالياً", archiveTitle: "أرشيف سجل التوريدات وشحنات المخزن المؤرخة",
-                lblDistrict: "الحي الحالي قيد الإنجاز 📍", btnCloseDist: "إغلاق الحي وحفظ المشروع نهائياً 🔒", lblOdnSum: "الحساب التلقائي لأمتار الحي الحالي",
+                lblDistrict: "الحي الحالي قيد الإنجاز 📍", btnCloseDist: "إغلاق الحي وحفظ المشروع نهائياً 🔒", lblOdnSum: "الحساب التلقائي لأمتار وعلب الحي الحالي",
                 totFacade: "إجمالي مسارات الواجهة", totGround: "إجمالي مسارات الأرضي", totAerial: "إجمالي مسارات الهوائي", addBTitle: "تقسيم كابل بناية جديدة",
                 bNum: "رقم أو اسم البناية 🏢", fRoute: "مسار الواجهة (متر الكابل)", gRoute: "مسار الأرضي (متر الكابل)", aRoute: "مسار الهوائي (متر الكابل)",
                 btnCalcB: "احسب وأدرج البناية في القائمة", currBList: "قائمة البنايات والمفاتيح الرقمية للحي الحالي", thB: "🏢 البناية", thF: "الواجهة", thG: "الأرضي", thA: "الهوائي",
@@ -561,7 +565,7 @@
                 }
 
                 localStorage.setItem('cableInventoryData_V12_Update', JSON.stringify(appData));
-                updateUI(); closeResetControlModal(); alert("تم المسح التخصصي للقسم بنجاح. ✅");
+                updateUI(); closeResetControlModal(); alert("تم المسح بنجاح. ✅");
             }
         }
 
@@ -572,7 +576,9 @@
 
         function handleNewOdnBuilding(e) {
             e.preventDefault();
+            playCheckSound();
             const name = document.getElementById('odn-b-name').value.trim();
+            const pboCount = parseInt(document.getElementById('odn-b-pbo').value) || 0;
             const fStart = document.getElementById('odn-facade-start').value;
             const fEnd = document.getElementById('odn-facade-end').value;
             const gStart = document.getElementById('odn-ground-start').value;
@@ -584,12 +590,14 @@
 
             appData.odnBuildings.push({
                 name,
+                pbo: pboCount,
                 facade: calc(fStart, fEnd), facadeMark: (fStart && fEnd) ? `[${fStart}-${fEnd}]` : "",
                 ground: calc(gStart, gEnd), groundMark: (gStart && gEnd) ? `[${gStart}-${gEnd}]` : "",
                 aerial: calc(aStart, aEnd), aerialMark: (aStart && aEnd) ? `[${aStart}-${aEnd}]` : ""
             });
 
             document.getElementById('odn-b-name').value = '';
+            document.getElementById('odn-b-pbo').value = '1';
             document.getElementById('odn-facade-start').value = ''; document.getElementById('odn-facade-end').value = '';
             document.getElementById('odn-ground-start').value = ''; document.getElementById('odn-ground-end').value = '';
             document.getElementById('odn-aerial-start').value = ''; document.getElementById('odn-aerial-end').value = '';
@@ -597,18 +605,18 @@
             updateUI();
         }
 
-        function deleteOdnBuilding(i) { appData.odnBuildings.splice(i, 1); updateUI(); }
+        function deleteOdnBuilding(i) { playCheckSound(); appData.odnBuildings.splice(i, 1); updateUI(); }
 
         function archiveCurrentDistrict() {
             const dName = appData.currentDistrict || document.getElementById('odn-district-input').value.trim();
             if(!dName || appData.odnBuildings.length === 0) { alert("أدخل اسم الحي وبناية واحدة على الأقل."); return; }
 
-            let fSum = 0, gSum = 0, aSum = 0;
-            appData.odnBuildings.forEach(b => { fSum += b.facade; gSum += b.ground; aSum += b.aerial; });
+            let fSum = 0, gSum = 0, aSum = 0, pboSum = 0;
+            appData.odnBuildings.forEach(b => { fSum += b.facade; gSum += b.ground; aSum += b.aerial; pboSum += (b.pbo || 0); });
 
             appData.archivedDistricts.unshift({
                 id: Date.now(), districtName: dName, date: new Date().toLocaleDateString('ar-DZ'),
-                facadeSum: fSum, groundSum: gSum, aerialSum: aSum,
+                facadeSum: fSum, groundSum: gSum, aerialSum: aSum, pboTotal: pboSum,
                 bldgsCount: appData.odnBuildings.length, details: [...appData.odnBuildings]
             });
 
@@ -618,17 +626,19 @@
         }
 
         function openDistrictDetails(id) {
+            playCheckSound();
             const t = appData.archivedDistricts.find(d => d.id === id); if(!t) return;
             document.getElementById('details-modal-title').innerText = t.districtName;
             const tbody = document.getElementById('details-modal-tbody'); tbody.innerHTML = '';
             t.details.forEach(b => {
-                tbody.innerHTML += `<tr><td><b>${b.name}</b></td><td style="color:var(--purple-600); font-weight:bold;">${b.facade}M</td><td style="color:var(--amber-600); font-weight:bold;">${b.ground}M</td><td style="color:var(--sky-600); font-weight:bold;">${b.aerial}M</td><td style="background:var(--slate-50); font-weight:black;">${b.facade+b.ground+b.aerial}M</td></tr>`;
+                tbody.innerHTML += `<tr><td><b>${b.name}</b></td><td style="color:var(--emerald-600); font-weight:bold;">${b.pbo || 0} علبة</td><td style="color:var(--purple-600); font-weight:bold;">${b.facade}M</td><td style="color:var(--amber-600); font-weight:bold;">${b.ground}M</td><td style="color:var(--sky-600); font-weight:bold;">${b.aerial}M</td><td style="background:var(--slate-50); font-weight:black;">${b.facade+b.ground+b.aerial}M</td></tr>`;
             });
             document.getElementById('district-details-modal').classList.remove('hidden');
         }
         function closeDetailsModal() { document.getElementById('district-details-modal').classList.add('hidden'); }
 
         function openQuickStockModal(cat) {
+            playCheckSound();
             document.getElementById('modal-category-id').value = cat;
             document.getElementById('modal-title').innerText = `${translations[currentLang].modalTitle} ${cat} M`;
             document.getElementById('modal-qty-input').value = '';
@@ -638,6 +648,7 @@
 
         function handleQuickStockSubmit(e) {
             e.preventDefault();
+            playCheckSound();
             const cat = document.getElementById('modal-category-id').value;
             const qty = parseInt(document.getElementById('modal-qty-input').value);
             if(!cat || !qty) return;
@@ -691,26 +702,27 @@
 
             document.getElementById('odn-district-input').value = appData.currentDistrict || "";
             const tbody = document.getElementById('odn-table-body'); tbody.innerHTML = '';
-            let fSum=0, gSum=0, aSum=0;
+            let fSum=0, gSum=0, aSum=0, pboSum=0;
 
             if(appData.odnBuildings.length === 0) document.getElementById('odn-empty-msg').style.display = 'block';
             else {
                 document.getElementById('odn-empty-msg').style.display = 'none';
                 appData.odnBuildings.forEach((b, idx) => {
-                    fSum+=b.facade; gSum+=b.ground; aSum+=b.aerial;
-                    tbody.innerHTML += `<tr><td><b>${b.name}</b></td><td style="color:var(--purple-600); font-weight:bold;">${b.facade}M <small style="color:var(--slate-400);">${b.facadeMark}</small></td><td style="color:var(--amber-600); font-weight:bold;">${b.ground}M <small style="color:var(--slate-400);">${b.groundMark}</small></td><td style="color:var(--sky-600); font-weight:bold;">${b.aerial}M <small style="color:var(--slate-400);">${b.aerialMark}</small></td><td style="background:var(--slate-50); font-weight:900;">${b.facade+b.ground+b.aerial}M</td><td><button onclick="deleteOdnBuilding(${idx})" style="color:var(--red-600); font-weight:bold; background:none;">حذف</button></td></tr>`;
+                    fSum+=b.facade; gSum+=b.ground; aSum+=b.aerial; pboSum+=(b.pbo || 0);
+                    tbody.innerHTML += `<tr><td><b>${b.name}</b></td><td style="color:var(--emerald-600); font-weight:bold;">${b.pbo || 0} علبة</td><td style="color:var(--purple-600); font-weight:bold;">${b.facade}M <small style="color:var(--slate-400);">${b.facadeMark}</small></td><td style="color:var(--amber-600); font-weight:bold;">${b.ground}M <small style="color:var(--slate-400);">${b.groundMark}</small></td><td style="color:var(--sky-600); font-weight:bold;">${b.aerial}M <small style="color:var(--slate-400);">${b.aerialMark}</small></td><td style="background:var(--slate-50); font-weight:900;">${b.facade+b.ground+b.aerial}M</td><td><button onclick="deleteOdnBuilding(${idx})" style="color:var(--red-600); font-weight:bold; background:none;">حذف</button></td></tr>`;
                 });
             }
             document.getElementById('grand-facade').innerText = fSum;
             document.getElementById('grand-ground').innerText = gSum;
             document.getElementById('grand-aerial').innerText = aSum;
+            document.getElementById('grand-pbo').innerText = pboSum;
 
             const distCont = document.getElementById('district-archive-container'); distCont.innerHTML = '';
             appData.archivedDistricts.forEach(d => {
                 distCont.innerHTML += `
                     <div class="card" style="background:var(--slate-50); border:1px solid var(--slate-200);">
                         <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <div><b style="color:var(--indigo-900);">📍 ${d.districtName}</b> <small style="color:var(--slate-400); font-weight:bold; margin-right:6px; margin-left:6px;">${d.date}</small></div>
+                            <div><b style="color:var(--indigo-900);">📍 ${d.districtName}</b> <span style="background: #e6fbf1; color: var(--emerald-600); font-size:11px; padding:2px 6px; border-radius:6px; font-weight:bold; margin-right:8px;">${d.pboTotal || 0} PBO</span><small style="color:var(--slate-400); font-weight:bold; margin-right:6px; margin-left:6px;">${d.date}</small></div>
                             <button onclick="openDistrictDetails(${d.id})" style="background:var(--indigo-600); color:white; font-size:11px; padding:6px 12px; border-radius:8px; font-weight:bold;">${translations[currentLang].viewDetails}</button>
                         </div>
                     </div>`;
@@ -730,6 +742,7 @@
 
         function handleStockIn(e) {
             e.preventDefault();
+            playCheckSound();
             const sel = document.getElementById('in-type-select').value;
             const qty = parseInt(document.getElementById('in-qty').value);
             let cat = (sel === 'custom') ? document.getElementById('in-type-manual').value.trim() : sel;
@@ -741,6 +754,7 @@
 
         function handleNewInstallation(e) {
             e.preventDefault();
+            playCheckSound();
             const name = document.getElementById('out-name').value;
             const phone = document.getElementById('out-phone').value;
             const type = document.getElementById('out-type').value;
