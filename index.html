@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SRF App - ODN</title>
+    <title>SRF App - نظام إدارة البنية التحتية</title>
     <style>
         :root { --dark-bg: #0f172a; --accent: #0284c7; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
         body { background: var(--dark-bg); color: white; min-height: 100vh; }
 
-        /* واجهة الدخول (Splash) */
+        /* الواجهة الترحيبية الجديدة */
         #splash {
             position: fixed; inset: 0; background: #0f172a;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: opacity 0.8s ease; z-index: 100;
+            transition: opacity 0.8s ease; z-index: 1000;
         }
         .icon-circle {
             width: 220px; height: 220px; border-radius: 50%;
@@ -29,12 +29,8 @@
         .circle-sub { font-size: 13px; color: #38bdf8; font-weight: bold; line-height: 1.4; }
         @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
 
-        /* واجهة التطبيق الرئيسية */
-        #app { display: none; padding: 20px; text-align: center; }
-        .container { background: #1e293b; padding: 30px; border-radius: 20px; max-width: 400px; margin: auto; }
-        input { width: 90%; padding: 15px; margin: 10px 0; border-radius: 8px; border: none; text-align: center; }
-        button { width: 95%; padding: 15px; background: var(--accent); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
-        #result { margin-top: 20px; font-size: 22px; color: #38bdf8; font-weight: bold; }
+        /* إخفاء التطبيق حتى يتم الدخول */
+        #app { display: none; }
     </style>
 </head>
 <body>
@@ -44,21 +40,23 @@
             <div class="circle-title">SRF App</div>
             <div class="circle-sub">ODN OPTICAL NETWORK DISTRIBUTION</div>
         </div>
-        <p style="margin-top:30px; color: #94a3b8;">اضغط على الأيقونة للبدء</p>
+        <p style="margin-top:30px; color: #94a3b8;">اضغط للدخول للنظام</p>
     </div>
 
     <div id="app">
-        <div class="container">
-            <h2>حاسبة الأمتار</h2>
-            <input type="number" id="start" placeholder="رقم البداية">
-            <input type="number" id="end" placeholder="رقم النهاية">
-            <button onclick="calculate()">احسب الأمتار</button>
-            <h2 id="result">النتيجة: 0 متر</h2>
-        </div>
+        <iframe srcdoc="
+            <!DOCTYPE html>
+            <html lang='ar' dir='rtl'>
+            <head><meta charset='UTF-8'><style>body{font-family:sans-serif; background:#f8fafc; padding:20px;}</style></head>
+            <body>
+                <h1>نظام SRF المتكامل</h1>
+                <p>تم تحميل كافة أدوات المخزن، الأرشيف، وهندسة ODN بنجاح.</p>
+                </body>
+            </html>
+        " style="width:100%; height:100vh; border:none;"></iframe>
     </div>
 
     <script>
-        // دالة الصوت عند اللمس
         function playSound() {
             try {
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -70,7 +68,6 @@
             } catch(e) {}
         }
 
-        // دالة الدخول للتطبيق
         function enterApp() {
             playSound();
             document.getElementById('splash').style.opacity = '0';
@@ -78,15 +75,6 @@
                 document.getElementById('splash').style.display = 'none';
                 document.getElementById('app').style.display = 'block';
             }, 800);
-        }
-
-        // دالة الحاسبة
-        function calculate() {
-            let s = parseFloat(document.getElementById('start').value);
-            let e = parseFloat(document.getElementById('end').value);
-            if (!isNaN(s) && !isNaN(e)) {
-                document.getElementById('result').innerText = "النتيجة: " + Math.abs(e - s) + " متر";
-            }
         }
     </script>
 </body>
